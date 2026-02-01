@@ -17,6 +17,7 @@ import {
   Tag,
   Wallet,
   X,
+  FileText,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -29,8 +30,13 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     label: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: <LayoutDashboard className="h-5 w-5" />,
+  },
+  {
+    label: "Laporan",
+    href: "/reports",
+    icon: <FileText className="h-5 w-5" />,
   },
   {
     label: "Products",
@@ -51,11 +57,6 @@ const navItems: NavItem[] = [
     label: "Customers",
     href: "/customers",
     icon: <Users className="h-5 w-5" />,
-  },
-  {
-    label: "Reports",
-    href: "/reports",
-    icon: <BarChart3 className="h-5 w-5" />,
   },
   {
     label: "Payments",
@@ -83,7 +84,7 @@ export function Sidebar() {
     useUIStore();
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === href || pathname === "/dashboard";
+    if (href === "/dashboard") return pathname === "/" || pathname === "/dashboard";
     return pathname.startsWith(href);
   };
 
@@ -92,15 +93,15 @@ export function Sidebar() {
       href={item.href}
       onClick={() => setSidebarMobileOpen(false)}
       className={cn(
-        "group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 mb-1",
+        "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 mb-0.5",
         isActive(item.href)
-          ? "bg-brand-600 text-white shadow-md shadow-brand-500/20"
-          : "text-slate-400 hover:text-white hover:bg-slate-800",
+          ? "bg-primary text-white"
+          : "text-gray-400 hover:text-white hover:bg-secondary-light",
         sidebarCollapsed && "justify-center px-2"
       )}
     >
       <div className={cn(
-        "transition-transform duration-200 group-hover:scale-110",
+        "transition-transform duration-200 group-hover:scale-105",
         sidebarCollapsed ? "" : "min-w-[20px]"
       )}>
         {item.icon}
@@ -110,42 +111,42 @@ export function Sidebar() {
   );
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full py-6">
+    <div className="flex flex-col h-full py-5">
       {/* Logo */}
       <div
         className={cn(
-          "flex items-center px-6 mb-10 transition-layout",
+          "flex items-center px-5 mb-8 transition-layout",
           sidebarCollapsed ? "justify-center px-0" : "gap-3"
         )}
       >
-        <div className="h-10 w-10 flex-shrink-0 rounded-2xl bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/30">
-          <Store className="h-6 w-6 text-white" />
+        <div className="h-10 w-10 flex-shrink-0 rounded-xl bg-primary flex items-center justify-center">
+          <Store className="h-5 w-5 text-white" />
         </div>
         {!sidebarCollapsed && (
           <div className="flex flex-col">
             <span className="font-bold text-lg text-white leading-tight">{APP_NAME}</span>
-            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Admin Panel</span>
+            <span className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Admin Panel</span>
           </div>
         )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-1">
+      <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
         <p className={cn(
-          "text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2 mb-4",
+          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3",
           sidebarCollapsed && "hidden"
-        )}>Main Menu</p>
+        )}>Menu Utama</p>
         {navItems.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
       </nav>
 
       {/* Bottom Navigation */}
-      <div className="px-4 mt-auto">
+      <div className="px-3 mt-auto pt-4 border-t border-secondary-light">
         <p className={cn(
-          "text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2 mb-4",
+          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3",
           sidebarCollapsed && "hidden"
-        )}>Configuration</p>
+        )}>Pengaturan</p>
         {bottomNavItems.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
@@ -154,7 +155,7 @@ export function Sidebar() {
       {/* Collapse Button (Desktop) */}
       <button
         onClick={toggleSidebar}
-        className="hidden lg:flex absolute -right-3 top-24 h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 shadow-sm text-slate-400 hover:text-brand-600 hover:border-brand-200 transition-all z-50 focus:outline-none"
+        className="hidden lg:flex absolute -right-3 top-20 h-6 w-6 items-center justify-center rounded-full bg-white border border-divider shadow-sm text-gray-400 hover:text-primary hover:border-primary transition-all z-50 focus:outline-none"
       >
         {sidebarCollapsed ? (
           <ChevronRight className="h-3.5 w-3.5" />
@@ -171,8 +172,8 @@ export function Sidebar() {
       <aside
         className={cn(
           "hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:z-40",
-          "bg-slate-950 border-r border-slate-900 transition-layout",
-          sidebarCollapsed ? "lg:w-20" : "lg:w-64"
+          "bg-secondary transition-layout",
+          sidebarCollapsed ? "lg:w-20" : "lg:w-60"
         )}
       >
         <SidebarContent />
@@ -181,7 +182,7 @@ export function Sidebar() {
       {/* Mobile Sidebar Overlay */}
       {sidebarMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 z-40 bg-black/60 lg:hidden transition-opacity duration-300"
           onClick={() => setSidebarMobileOpen(false)}
         />
       )}
@@ -189,7 +190,7 @@ export function Sidebar() {
       {/* Mobile Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-slate-950 lg:hidden shadow-2xl",
+          "fixed inset-y-0 left-0 z-50 w-60 bg-secondary lg:hidden shadow-2xl",
           "transform transition-transform duration-300 ease-in-out",
           sidebarMobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
@@ -197,7 +198,7 @@ export function Sidebar() {
         {/* Close button */}
         <button
           onClick={() => setSidebarMobileOpen(false)}
-          className="absolute right-4 top-6 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg"
+          className="absolute right-3 top-5 p-2 text-gray-400 hover:text-white hover:bg-secondary-light rounded-lg"
         >
           <X className="h-5 w-5" />
         </button>

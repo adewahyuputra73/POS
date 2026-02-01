@@ -3,42 +3,68 @@
 @theme inline {
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   
-  /* Refined Color Palette */
-  --color-brand-50: #f5f7ff;
-  --color-brand-100: #ebf0fe;
-  --color-brand-200: #dae3fd;
-  --color-brand-300: #bdcdfa;
-  --color-brand-400: #93abf7;
-  --color-brand-500: #6682f2;
-  --color-brand-600: #4a5eeb;
-  --color-brand-700: #3b4ad9;
-  --color-brand-800: #333eb1;
-  --color-brand-900: #2e388d;
-  --color-brand-950: #1d2153;
-
+  /* ========================================
+     FERE POS COLOR SYSTEM
+     Matching Flutter Mobile AppColor
+     ======================================== */
+  
+  /* Primary Colors - Blue */
+  --color-primary: #2196F3;
+  --color-primary-light: #E3F2FD;
+  --color-primary-dark: #1976D2;
+  
+  /* Secondary Colors - Navy Blue */
+  --color-secondary: #1E2C47;
+  --color-secondary-light: #334155;
+  --color-secondary-dark: #0F172A;
+  
+  /* Semantic Colors */
+  --color-success: #4CAF50;
+  --color-success-light: #E8F5E9;
+  --color-warning: #FF9800;
+  --color-warning-light: #FFF3E0;
+  --color-error: #F44336;
+  --color-error-light: #FFEBEE;
+  --color-info: #2196F3;
+  --color-info-light: #E3F2FD;
+  
+  /* Extended Palette */
+  --color-green: #4CAF50;
+  --color-red: #F44336;
+  --color-yellow: #FFEB3B;
+  --color-orange: #FF9800;
+  --color-purple: #9C27B0;
+  --color-pink: #E91E63;
+  --color-cyan: #00BCD4;
+  --color-teal: #009688;
+  --color-indigo: #3F51B5;
+  --color-amber: #FFC107;
+  --color-lime: #CDDC39;
+  
+  /* Neutral Colors */
+  --color-grey: #9E9E9E;
+  --color-blue-grey: #607D8B;
+  --color-brown: #795548;
+  
   /* UI Colors */
-  --color-surface-50: #f8fafc;
-  --color-surface-100: #f1f5f9;
-  --color-surface-200: #e2e8f0;
-  --color-surface-300: #cbd5e1;
-  --color-surface-400: #94a3b8;
-  --color-surface-500: #64748b;
+  --color-background: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-divider: #E0E0E0;
+  --color-border: #E0E0E0;
+  --color-border-input: #BDBDBD;
+  
+  /* Text Colors */
+  --color-text-primary: #212121;
+  --color-text-secondary: #757575;
+  --color-text-disabled: #9E9E9E;
+  --color-text-on-primary: #FFFFFF;
 }
 
 :root {
-  --background: #fcfcfd;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --border: #f1f5f9;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020617;
-    --foreground: #f8fafc;
-    --card: #0f172a;
-    --border: #1e293b;
-  }
+  --background: #F8F9FA;
+  --foreground: #212121;
+  --card: #FFFFFF;
+  --nav-bg: #1E2C47;
 }
 
 * {
@@ -58,26 +84,19 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Glassmorphism utility */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
 /* Premium Shadows */
-.shadow-premium {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 5px 15px 0 rgba(0, 0, 0, 0.03);
+.shadow-card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 4px 12px 0 rgba(0, 0, 0, 0.04);
 }
 
-.shadow-premium-hover:hover {
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+.shadow-card-hover:hover {
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08), 0 8px 24px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -85,10 +104,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
+  background: #E0E0E0;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #cbd5e1;
+  background: #BDBDBD;
+}
+
+/* Focus Ring */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }

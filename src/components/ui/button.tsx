@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive" | "success";
   size?: "sm" | "md" | "lg" | "icon";
   isLoading?: boolean;
 }
@@ -24,25 +24,27 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-bold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-xl active:scale-95";
+      "inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-lg active:scale-[0.98]";
 
     const variants = {
       primary:
-        "bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500 shadow-lg shadow-brand-500/20",
+        "bg-primary text-white hover:bg-primary-dark focus:ring-primary shadow-sm",
       secondary:
-        "bg-slate-100 text-slate-900 hover:bg-slate-200 focus:ring-slate-500",
+        "bg-secondary text-white hover:bg-secondary-light focus:ring-secondary",
       outline:
-        "border-2 border-slate-200 bg-transparent text-slate-700 hover:bg-slate-50 hover:border-slate-300 focus:ring-slate-500",
+        "border border-border bg-transparent text-text-primary hover:bg-background focus:ring-primary",
       ghost:
-        "bg-transparent text-slate-600 hover:bg-slate-50 hover:text-brand-600 focus:ring-slate-500",
+        "bg-transparent text-text-secondary hover:bg-background hover:text-text-primary focus:ring-primary",
       destructive:
-        "bg-rose-600 text-white hover:bg-rose-700 focus:ring-rose-500 shadow-lg shadow-rose-500/20",
+        "bg-error text-white hover:bg-red-700 focus:ring-error shadow-sm",
+      success:
+        "bg-success text-white hover:bg-green-700 focus:ring-success shadow-sm",
     };
 
     const sizes = {
-      sm: "h-9 px-4 text-xs gap-2",
-      md: "h-11 px-6 text-sm gap-2.5",
-      lg: "h-13 px-8 text-base gap-3",
+      sm: "h-8 px-3 text-xs gap-1.5",
+      md: "h-10 px-4 text-sm gap-2",
+      lg: "h-12 px-6 text-base gap-2",
       icon: "h-10 w-10 p-0",
     };
 
