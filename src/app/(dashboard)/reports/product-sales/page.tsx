@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/layout";
+import { useToast } from "@/components/ui";
 import { 
   DateRangePicker, 
   OutletSelector, 
@@ -105,6 +106,7 @@ export default function ProductSalesPage() {
   const [aggregationMode, setAggregationMode] = useState<AggregationMode>("daily");
   const [isExporting, setIsExporting] = useState(false);
   const [tableSearch, setTableSearch] = useState("");
+  const { showToast } = useToast();
 
   // Filter products based on selections
   const filteredProducts = useMemo(() => {
@@ -164,10 +166,13 @@ export default function ProductSalesPage() {
     
     const filterInfo = [];
     if (selectedOutlet !== "all") filterInfo.push(`Outlet: ${outletMap[selectedOutlet]}`);
-    if (selectedProducts.length > 0) filterInfo.push(`Produk: ${selectedProducts.length} dipilih`);
-    if (selectedCategories.length > 0) filterInfo.push(`Kategori: ${selectedCategories.length} dipilih`);
+    if (selectedProducts.length > 0) filterInfo.push(`${selectedProducts.length} produk`);
+    if (selectedCategories.length > 0) filterInfo.push(`${selectedCategories.length} kategori`);
     
-    alert(`Export berhasil!\n${filterInfo.length > 0 ? filterInfo.join("\n") : "Semua Data"}\nTotal: ${filteredProducts.length} produk`);
+    showToast(
+      `Laporan penjualan produk berhasil diekspor (${filteredProducts.length} produk)`,
+      "success"
+    );
     setIsExporting(false);
   };
 

@@ -4,3 +4,4 @@ export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 export { Badge, type BadgeProps } from "./badge";
 export { Avatar, type AvatarProps } from "./avatar";
 export { Spinner, LoadingOverlay, PageLoader } from "./spinner";
+export { ToastProvider, useToast } from "./toast";

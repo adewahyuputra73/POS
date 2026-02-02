@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/layout";
+import { useToast } from "@/components/ui";
 import { 
   DateRangePicker, 
   OutletSelector, 
@@ -115,6 +116,7 @@ export default function SalesSummaryPage() {
   const [selectedOutlet, setSelectedOutlet] = useState("all");
   const [isExporting, setIsExporting] = useState(false);
   const [paymentSearch, setPaymentSearch] = useState("");
+  const { showToast } = useToast();
 
   // Get data based on selected outlet
   const summaryData = useMemo(() => {
@@ -135,7 +137,10 @@ export default function SalesSummaryPage() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     // In real implementation, call API and trigger download
     console.log("Export triggered with:", { dateRange, selectedOutlet });
-    alert(`Export berhasil!\nOutlet: ${summaryData.outlet_name}\nPeriode: ${dateRange.startDate.toLocaleDateString()} - ${dateRange.endDate.toLocaleDateString()}`);
+    showToast(
+      `Laporan ringkasan penjualan ${summaryData.outlet_name} berhasil diekspor`,
+      "success"
+    );
     setIsExporting(false);
   };
 
