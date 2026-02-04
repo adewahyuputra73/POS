@@ -1367,7 +1367,343 @@ Kodeka x DigitaLink
 * Ubah tanggal \= update `completed_at`  
 * Semua action dicatat di audit log
 
-**B. Menu**  
+**B. Menu**
+
+1. **Produk**
+
+   ## **1.1 REQUIREMENT (Fungsional)**
+
+   ### **A. Halaman Produk (List)**
+
+   **Fungsi utama**  
+* Menampilkan daftar produk per outlet  
+* Filter:  
+  * Tab status: Aktif / Tidak Aktif / Semua  
+  * Search by nama produk  
+* Aksi per produk:  
+  * Ubah produk  
+  * Toggle status jual (Dijual/ Tidak Dijual)  
+* Informasi ditampilkan:  
+  * Foto utama  
+  * Nama produk  
+  * Kategori  
+  * Harga  
+  * Harga coret (opsional)  
+  * Status jual  
+  * Sisa stok  
+  * Status stok (aktif / tidak)  
+    **Validasi**  
+* Produk Tidak Dijual tidak muncul di POS / checkout  
+* Produk stok habis tidak bisa dipesan (jika stok diaktifkan)  
+* Produk bisa di nonaktifkan dengan fitur edit/ubah
+
+  ### **B. Tambah / Ubah Produk**
+
+  **UI & field IDENTIK, beda di:**
+
+* Tambah → insert data  
+* Ubah → update data
+
+  **Field-field:**
+
+* Nama Produk  
+* Harga Produk  
+* Kategori  
+* Status jual (aktif/tidak)  
+* Foto produk (max 5\)  
+* Deskripsi  
+* Harga coret  
+* Harga per channel (GoFood / GrabFood / ShopeeFood)  
+* Barcode  
+* SKU (Stock Keeping Unit)  
+* Varian  
+* Pajak  
+* Service fee  
+* Biaya bawa pulang  
+* Stok & batas stok  
+* Dimensi pengiriman
+
+  **Validasi**
+
+* Nama produk unik per outlet  
+* Harga \> 0  
+* Jika stok aktif → qty wajib  
+* Tidak bisa hapus produk jika:  
+  * Pernah dipakai di transaksi (soft delete)
+
+  ## **1.2. FLOW (Alur Singkat)**
+
+    ### **A. Flow List Produk**
+
+    `User buka Menu Produk`
+
+    `→ System load produk by outlet`
+
+    `→ Filter tab (aktif/tidak/semua)`
+
+    `→ User search / toggle status`
+
+    `→ Update langsung ke DB`
+
+    ### **B. Flow Tambah Produk**
+
+    `Klik "Tambah Produk"`
+
+    `→ Isi form (sama dengan edit)`
+
+    `→ Validasi field`
+
+    `→ Simpan`
+
+    `→ Produk muncul di list`
+
+    ### **C. Flow Ubah Produk**
+
+    `Klik icon edit`
+
+    `→ Load data produk`
+
+    `→ User ubah field`
+
+    `→ Simpan`
+
+    `→ Update data produk`
+
+    ### **D. Flow Hapus Produk**
+
+    `Klik "Hapus Produk"`
+
+    `→ Validasi:`
+
+       `- Jika sudah ada transaksi → tidak boleh hard delete`
+
+    `→ Soft delete (is_active = false)`
+
+    `→ Produk pindah ke tab Tidak Aktif`
+
+  ## **1.3. SOURCE VALUE (Mapping Data ke Tabel)**
+
+  ### **A. products**
+
+| Field UI | Source |
+| ----- | ----- |
+| Nama Produk | products.name |
+| Deskripsi | products.description |
+| Harga | products.price |
+| Harga Coret | products.compare\_price |
+| Status Dijual | products.is\_active |
+| Barcode | products.barcode |
+| SKU | products.sku |
+| Hitung Dimensi | products.use\_dimension |
+| Aktifkan Stok | products.use\_stock |
+| Batas Stok | products.stock\_limit |
+| Pajak Aktif | products.tax\_id |
+| Service Fee Aktif | products.service\_fee\_id |
+| Biaya Bawa Pulang | products.takeaway\_fee |
+
+  ### **B. product\_images**
+
+| UI | Source |
+| ----- | ----- |
+| Foto Produk | product\_images.url |
+| Foto Utama | product\_images.is\_primary |
+
+  ### **C. categories**
+
+| UI | Source |
+| ----- | ----- |
+| Kategori Produk | categories.name |
+
+  (relasi: `product_categories.product_id`)
+
+  ### **D. product\_prices (multi channel)**
+
+| UI | Source |
+| ----- | ----- |
+| Harga Default | product\_prices.price (channel \= POS) |
+| Harga GoFood | product\_prices.price (channel \= gofood) |
+| Harga GrabFood | product\_prices.price (channel \= grabfood) |
+| Harga ShopeeFood | product\_prices.price (channel \= shopeefood) |
+
+  ### **E. product\_stock**
+
+| UI | Source |
+| ----- | ----- |
+| Sisa Stok | product\_stock.quantity |
+| Status Stok | product\_stock.is\_active |
+
+  ### **F. variants (jika ada)**
+
+| UI | Source |
+| ----- | ----- |
+| Nama Varian | variants.name |
+| Harga Varian | variant\_options.price |
+
+  ## **1.4. Notes**
+
+* Tambah & Ubah \= 1 form, 1 schema  
+* Jangan hard delete produk → audit & laporan aman  
+* Harga per channel override, bukan replace harga utama  
+* Produk non-aktif tetap muncul di laporan  
+2. **Varian**
+
+   ## **2.1. Goals**
+
+   Menu Varian digunakan untuk mengelola opsi tambahan produk (contoh: topping, ukuran, paket) yang nantinya diterapkan ke Produk, baik dibuat custom maupun mengambil dari Buku Menu (Produk).
+
+   ## **2.2. Halaman dalam Menu Varian**
+
+1. Daftar Varian  
+2. Tambah Varian  
+3. Ubah Varian
+
+   ## **2.3. Requirement Fungsional**
+
+   ### **2.3.1 Daftar Varian**
+
+   Menampilkan daftar seluruh varian yang tersedia.  
+   **Kolom di halaman depan:**  
+* Nama Varian  
+* Status:  
+  * Wajib / Tidak Wajib  
+* Total Opsi  
+* Penerapan Produk:  
+  * Belum Diterapkan  
+  * Sudah Diterapkan  
+* Aktif  
+* Aksi:  
+  * Edit  
+  * Hapus
+
+    **Fitur tambahan:**
+
+* Search varian  
+* Toggle aktif / non-aktif (dengan aturan tertentu, lihat poin 6\)
+
+  ### **2.3.2 Tambah / Ubah Varian – Informasi Dasar**
+
+  Field:
+
+* Nama Varian \*  
+* Batas maksimal opsi:  
+  * Tidak ada batas  
+  * Dibatasi (angka)  
+* Status pemilihan:  
+  * Wajib  
+  * Tidak Wajib
+
+  ## **2.4. Pilih Opsi Form (WAJIB)**
+
+    User wajib memilih satu sumber opsi, dan tidak bisa diubah setelah varian disimpan.
+
+    ### Opsi:
+
+1. Buat Opsi Varian Sendiri  
+2. Pilih Opsi dari Buku Menu
+
+   Info helper:  
+    *Pilihan opsi yang dipilih tidak dapat diubah setelah melakukan penyimpanan.*
+
+   ## **2.5. Behaviour Berdasarkan Sumber Opsi**
+
+   ### **2.5.1 Opsi Varian Sendiri**
+
+   Opsi dibuat dan dikelola langsung di menu varian.
+
+   Field per opsi:
+
+* Nama opsi  
+* Harga  
+* Harga per channel:  
+  * GrabFood  
+  * GoFood  
+  * ShopeeFood  
+* Pengaturan stok:  
+  * Aktifkan batas stok  
+  * Sisa stok  
+* Status aktif
+
+  Hak Akses:
+
+* Bisa aktif / non-aktif langsung di halaman varian  
+* Bisa edit harga & stok  
+* Bisa hapus opsi
+
+  ### **2.5.2 Opsi dari Buku Menu**
+
+  Opsi diambil dari Produk yang sudah ada.
+
+  Sumber data:
+
+* Nama opsi → Nama produk  
+* Harga → Harga produk  
+* Harga channel → Harga produk per channel  
+* Status aktif → Status produk
+
+  Behaviour khusus:
+
+* Toggle aktif DISABLED  
+* Harga READ ONLY
+
+  Pesan helper (wajib):
+
+  *Opsi ini berasal dari Menu Produk.*  
+   *Untuk mengubah status aktif/non-aktif, silakan kelola dari Menu Produk.*
+
+  ## **2.6. Aturan Aktif / Non-Aktif (IMPORTANT)**
+
+| Kondisi | Perilaku |
+| ----- | ----- |
+| Opsi varian buatan sendiri | Bisa aktif / non-aktif di menu varian |
+| Opsi dari buku menu | Tidak bisa diubah (disabled) |
+| Produk non-aktif | Otomatis non-aktif sebagai opsi |
+| Varian non-aktif | Tidak tampil di menu penjualan |
+| Varian sudah diterapkan | Tidak boleh ganti source opsi |
+
+  ## **2.7. Flow Utama**
+
+  ### Flow Tambah Varian
+
+1. User klik Tambah Varian  
+2. Isi informasi dasar  
+3. Pilih Opsi Form  
+4. Tambah / pilih opsi  
+5. Klik Simpan  
+6. Varian masuk ke daftar → status Aktif
+
+   ### **Flow Terapkan Varian ke Produk**
+
+1. Masuk ke Menu Produk  
+2. Edit produk  
+3. Pilih varian  
+4. Simpan  
+5. Varian tampil di menu penjualan
+
+   ## **2.8. Source Value (Teknis)**
+
+| Data | Source |
+| ----- | ----- |
+| Varian | `variants` |
+| Opsi manual | `variant_options` |
+| Opsi dari produk | `products` |
+| Relasi produk-varian | `product_variants` |
+| Status aktif | `is_active` |
+| Stok opsi | `variant_option_stocks` |
+
+   
+
+   ## **2.9. Notes:**
+
+1. Source opsi tidak bisa diubah setelah simpan  
+2. Opsi dari produk read-only  
+3. Produk adalah single source of truth  
+4. Non-aktif produk → non-aktif opsi otomatis  
+5. Varian non-aktif → tidak muncul di menu  
+3. **Kategori**  
+4. **Master Produk**  
+5. **Master Varian**  
+6. **Master Kategori**
+
 **C. Inventory**  
 **D. Pelanggan**  
 **E. Manajemen Meja**  

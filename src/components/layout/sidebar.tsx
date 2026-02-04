@@ -18,6 +18,7 @@ import {
   Wallet,
   X,
   FileText,
+  Layers,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -39,27 +40,32 @@ const navItems: NavItem[] = [
     icon: <FileText className="h-5 w-5" />,
   },
   {
-    label: "Products",
+    label: "Produk",
     href: "/products",
     icon: <Package className="h-5 w-5" />,
   },
   {
-    label: "Categories",
+    label: "Varian",
+    href: "/products/variants",
+    icon: <Layers className="h-5 w-5" />,
+  },
+  {
+    label: "Kategori",
     href: "/categories",
     icon: <Tag className="h-5 w-5" />,
   },
   {
-    label: "Transactions",
+    label: "Transaksi",
     href: "/transactions",
     icon: <ShoppingCart className="h-5 w-5" />,
   },
   {
-    label: "Customers",
+    label: "Pelanggan",
     href: "/customers",
     icon: <Users className="h-5 w-5" />,
   },
   {
-    label: "Payments",
+    label: "Pembayaran",
     href: "/payments",
     icon: <Wallet className="h-5 w-5" />,
   },
@@ -85,6 +91,12 @@ export function Sidebar() {
 
   const isActive = (href: string) => {
     if (href === "/dashboard") return pathname === "/" || pathname === "/dashboard";
+    
+    // For /products, only match exact path, not /products/variants
+    if (href === "/products") {
+      return pathname === "/products";
+    }
+    
     return pathname.startsWith(href);
   };
 
