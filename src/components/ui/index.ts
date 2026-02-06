@@ -5,3 +5,8 @@ export { Badge, type BadgeProps } from "./badge";
 export { Avatar, type AvatarProps } from "./avatar";
 export { Spinner, LoadingOverlay, PageLoader } from "./spinner";
 export { ToastProvider, useToast } from "./toast";
+export { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, DialogTrigger } from "./dialog";
+export { Checkbox } from "./checkbox";
+export { Label } from "./label";
+export { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./alert-dialog";
+export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter, TableCaption } from "./table";

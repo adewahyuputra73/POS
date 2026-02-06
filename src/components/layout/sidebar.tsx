@@ -71,6 +71,25 @@ const navItems: NavItem[] = [
   },
 ];
 
+// Master menu items
+const masterNavItems: NavItem[] = [
+  {
+    label: "Master Produk",
+    href: "/master/products",
+    icon: <Package className="h-5 w-5" />,
+  },
+  {
+    label: "Master Varian",
+    href: "/master/variants",
+    icon: <Layers className="h-5 w-5" />,
+  },
+  {
+    label: "Master Kategori",
+    href: "/master/categories",
+    icon: <Tag className="h-5 w-5" />,
+  },
+];
+
 const bottomNavItems: NavItem[] = [
   {
     label: "Store Settings",
@@ -149,6 +168,15 @@ export function Sidebar() {
           sidebarCollapsed && "hidden"
         )}>Menu Utama</p>
         {navItems.map((item) => (
+          <NavLink key={item.href} item={item} />
+        ))}
+
+        {/* Master Section */}
+        <p className={cn(
+          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+          sidebarCollapsed && "hidden"
+        )}>Master</p>
+        {masterNavItems.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
       </nav>

@@ -9,6 +9,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   helperText?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  wrapperClassName?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -21,6 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       leftIcon,
       rightIcon,
+      wrapperClassName,
       id,
       ...props
     },
@@ -28,8 +30,29 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
+    // If no label and no error/helperText, just return the input directly
+    // This allows external positioning to work correctly
+    if (!label && !error && !helperText && !leftIcon && !rightIcon) {
+      return (
+        <input
+          type={type}
+          id={inputId}
+          ref={ref}
+          className={cn(
+            "w-full h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg",
+            "placeholder:text-gray-400",
+            "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary",
+            "disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed",
+            "transition-all duration-200",
+            className
+          )}
+          {...props}
+        />
+      );
+    }
+
     return (
-      <div className="w-full">
+      <div className={cn("w-full", wrapperClassName)}>
         {label && (
           <label
             htmlFor={inputId}
@@ -40,7 +63,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
               {leftIcon}
             </div>
           )}
@@ -49,14 +72,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={cn(
-              "w-full h-10 px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg",
+              "w-full h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg",
               "placeholder:text-gray-400",
-              "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent",
+              "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary",
               "disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed",
               "transition-all duration-200",
               leftIcon && "pl-10",
               rightIcon && "pr-10",
-              error && "border-red-500 focus:ring-red-500",
+              error && "border-red-500 focus:ring-red-500/30 focus:border-red-500",
               className
             )}
             aria-invalid={error ? "true" : "false"}
@@ -85,3 +108,4 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input };
+

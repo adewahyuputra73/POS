@@ -1699,10 +1699,532 @@ Kodeka x DigitaLink
 3. Produk adalah single source of truth  
 4. Non-aktif produk → non-aktif opsi otomatis  
 5. Varian non-aktif → tidak muncul di menu  
-3. **Kategori**  
+3. **Kategori**
+
+   ## **3.1. Requirement Fungsional**
+
+   ### **A. Halaman List Kategori**
+
+   Fungsi:  
+* Menampilkan daftar kategori  
+* Filter berdasarkan:  
+  * Aktif  
+  * Tidak Aktif  
+  * Semua  
+* Pencarian berdasarkan nama kategori
+
+  Data yang ditampilkan:
+
+* Nama kategori  
+* Jumlah produk terkait  
+* Status (aktif / tidak aktif)  
+* Aksi: Edit
+
+  Aturan:
+
+* Toggle Aktif / Tidak Aktif hanya mengubah status kategori  
+* Produk di dalam kategori tidak ikut berubah status  
+* Default sorting: kategori aktif lebih dulu
+
+  ### **B. Tambah Kategori**
+
+  Field:  
+* Nama Kategori (mandatory)  
+* Pilih Produk untuk Kategori (opsional, multi-select)
+
+  Aturan:
+
+* Minimal boleh menyimpan kategori tanpa produk  
+* Produk dipilih via modal “Tambah Produk”  
+* Produk bisa berasal dari kategori lain (many-to-many)
+
+  Default Value:
+
+* Status kategori: Aktif  
+* Produk baru ditambahkan → langsung aktif di kategori
+
+  ### **C. Edit Kategori**
+
+  Behavior:  
+* Halaman & komponen sama persis dengan Tambah Kategori  
+* Data terisi dari existing category  
+* Bisa:  
+  * Ubah nama kategori  
+  * Tambah / hapus produk dari kategori  
+  * Ubah status aktif / non-aktif kategori
+
+  ## **3.2. Flow Pengguna**
+
+  ### **Flow List Kategori**
+
+1. User buka Menu → Kategori  
+2. Sistem load kategori by outlet  
+3. User:  
+   * Filter status  
+   * Cari kategori  
+   * Toggle aktif / tidak aktif  
+   * Klik edit
+
+   ### **Flow Tambah Kategori**
+
+1. Klik Tambah Kategori  
+2. Input nama kategori  
+3. (Opsional) Klik Tambah Produk  
+4. Modal produk muncul → user pilih produk → Tambah  
+5. Klik Simpan  
+6. Sistem simpan kategori \+ relasi produk  
+7. Redirect ke list kategori
+
+   ### **Flow Edit Kategori**
+
+1. Klik icon edit pada kategori  
+2. Sistem load detail kategori \+ produk terkait  
+3. User ubah data  
+4. Klik Simpan  
+5. Data ter-update, status default tetap aktif kecuali diubah
+
+   ## **3.3. Source Value & Data Model**
+
+   ### Tabel `categories`
+
+   `categories`  
+   `├── id`  
+   `├── outlet_id`  
+   `├── name`  
+   `├── is_active`  
+   `├── created_at`  
+   `├── updated_at`
+
+     
+   **Source Value:**  
+* `name` → input user
+
+* `is_active` → toggle (default: true)
+
+  ### **Tabel `products`**
+
+  `products`  
+  `├── id`  
+  `├── outlet_id`  
+  `├── name`  
+  `├── base_price`  
+  `├── is_active`
+
+  **Source Value:**  
+* Digunakan sebagai master produk  
+* Harga ditarik dari produk, bukan dari kategori
+
+  ### **Tabel Relasi `category_products`**
+
+  `category_products`  
+  `├── id`  
+  `├── category_id`  
+  `├── product_id`  
+  `├── created_at`
+
+  **Source Value:**  
+* Dibentuk saat user pilih produk di modal  
+* 1 produk bisa ada di banyak kategori  
+* Hapus produk dari kategori → hanya delete relasi, produk tetap ada
+
+  ## **3.4. Aturan Status (Penting)**
+
+* Kategori non-aktif  
+  * Tidak ditampilkan di menu customer  
+  * Relasi produk tetap disimpan  
+* Produk non-aktif  
+  * Tidak tampil walaupun kategorinya aktif  
+* Status kategori ≠ status produk (dipisah jelas)
+
+  ## **3.5. Notes**
+
+* Kategori \= grouping logic  
+* Produk \= sumber harga & availability  
+* Relasi kategori–produk \= many-to-many  
+* Tambah & Edit pakai form yang sama  
+* Default kategori baru: aktif  
+    
 4. **Master Produk**  
-5. **Master Varian**  
+   Fitur ini digunakan untuk mengelola Master Produk yang bisa:  
+* Dibuat baru  
+* Diimpor dari outlet lain  
+* Digunakan ulang oleh satu atau banyak outlet  
+* Menjadi dasar untuk Produk jualan \+ Vari**an**
+
+## **4.1. Requirement Fungsional**
+
+### **A. List Master Produk**
+
+* Menampilkan daftar master produk  
+* Filter:  
+  * Semua  
+  * Aktif  
+  * Tidak Aktif  
+* Search by nama produk  
+* Informasi ditampilkan:  
+  * Foto  
+  * Nama produk  
+  * Harga aktif  
+  * Jumlah outlet terkait  
+  * Terakhir diubah  
+  * Status (Dijual / Tidak dijual)  
+* Aksi:  
+  * Toggle aktif/nonaktif  
+  * Edit produk
+
+  ### **B. Tambah Master Produk**
+
+  User klik Tambah Produk → pilih salah satu opsi:
+
+1. Tambah Baru Master Produk  
+2. Impor Produk dari Outlet (gambar ke-8)
+
+   ### **C. Form Tambah / Edit Master Produk**
+
+   Halaman Edit \= sama persis dengan Tambah  
+    Default produk baru: Aktif
+
+   #### **Field Wajib**
+
+* Foto Produk (max 5, max 5MB)  
+* Nama Produk  
+* Harga Produk (default/base price)
+
+  #### **Field Opsional**
+
+* Deskripsi Produk  
+* Harga Coret  
+* Harga GoFood  
+* Harga GrabFood  
+* Harga ShopeeFood
+
+  #### **Relasi & Pengaturan**
+
+* Pilih Outlet (multi-select)  
+* Pilih Kategori  
+* Pilih Varian (default: Tanpa Varian)
+
+  #### **Lainnya (Toggle)**
+
+* Hitung Dimensi Pengiriman  
+* Aktifkan Batas Stok  
+* Aktifkan Pajak  
+* Aktifkan Service Fee  
+* Aktifkan Biaya Bawa Pulang
+
+  ### **D. Impor Master Produk dari Outlet**
+
+* Pilih outlet sumber  
+* Pilih produk (multi-select)  
+* Produk yang diimpor:  
+  * Disalin sebagai Master Produk baru  
+  * Status default: Aktif  
+* Setelah sukses:  
+  * CTA: Tambah Produk ke Outlet  
+  * CTA: Kembali ke Halaman Utama
+
+  ## **4.2. Flow Utama**
+
+  ### **Flow 1 — Tambah Master Produk Baru**
+
+1. User buka Master Produk  
+2. Klik Tambah Produk  
+3. Pilih Tambah Baru Master Produk  
+4. Isi form  
+5. Klik Simpan  
+6. Produk tersimpan → muncul di list master produk (status: Aktif)
+
+   ### **Flow 2 — Edit Master Produk**
+
+1. User klik icon Edit  
+2. Form terbuka (value existing ter-load)  
+3. User ubah data  
+4. Klik Simpan  
+5. Data ter-update di master produk & outlet terkait
+
+   ### **Flow 3 — Impor Produk dari Outlet**
+
+1. Klik Tambah Produk  
+2. Pilih Impor Produk dari Outlet  
+3. Pilih outlet sumber  
+4. Pilih produk  
+5. Klik Impor Produk  
+6. Sistem:  
+   * Copy data produk → master produk  
+   * Set status aktif  
+7. Tampilkan modal sukses
+
+   ## **4.3. Source Value (Paling Penting)**
+
+   ### **A. Master Produk (Core)**
+
+   Sumber utama semua data produk.  
+   Tabel: `master_products`  
+* `id`  
+* `name`  
+* `description`  
+* `is_active`  
+* `created_at`  
+* `updated_at`
+
+  ### **B. Harga Produk**
+
+  Harga disimpan terpisah per channel.  
+  Tabel: `master_product_prices`  
+* `master_product_id`  
+* `channel`  
+   (`default`, `coret`, `gofood`, `grabfood`, `shopeefood`)  
+* `price`  
+  Form harga diambil & disimpan dari tabel ini
+
+  ### **C. Foto Produk**
+
+  Tabel: `master_product_images`  
+* `master_product_id`  
+* `image_url`  
+* `order`
+
+  ### **D. Relasi Outlet**
+
+  Tabel: `master_product_outlets`  
+* `master_product_id`  
+* `outlet_id`  
+* `status`  
+  Dipakai untuk:  
+* Hitung “Outlet Terkait”  
+* Menentukan produk aktif di outlet mana
+
+  ### **E. Kategori**
+
+  Tabel: `master_product_categories`  
+* `master_product_id`  
+* `category_id`
+
+  ### **F. Varian**
+
+  Tabel: `master_product_variants`  
+* `master_product_id`  
+* `variant_group_id`
+
+  ### **G. Toggle / Lainnya**
+
+  Tabel: `master_product_settings`  
+* `master_product_id`  
+* `use_stock_limit`  
+* `use_tax`  
+* `use_service_fee`  
+* `use_takeaway_fee`  
+* `use_dimension`
+
+  ## **4.4. Notes**
+
+* Produk baru & hasil impor → default aktif  
+* Edit master → berdampak ke semua outlet terkait
+
+5. **Master Varian**
+
+   ### **4.1. Requirement**
+
+   ## Fungsi
+
+* ## Mengelola varian global yang bisa diterapkan ke produk.
+
+* ## Varian bisa dibuat baru atau diimpor dari outlet.
+
+  ## **Field Wajib**
+
+* ## Nama Varian
+
+* ## Wajib / Tidak Wajib
+
+  ## **Field Opsional**
+
+* ## Batas maksimal pilihan
+
+* ## Opsi varian (custom / dari menu)
+
+  ## **Aturan Penting**
+
+* ## Opsi form tidak bisa diubah setelah disimpan
+
+* ## Varian belum aktif ke produk sampai diterapkan
+
+  ### **4.2. Flow Master Varian**
+
+  #### **Tambah Master Varian**
+
+1. ## User klik Tambah Varian
+
+2. ## Muncul modal:
+
+   * ## Tambah Master Varian
+
+   * ## Impor Varian Dari Outlet
+
+   #### **Tambah Master Varian Baru**
+
+1. ## User isi:
+
+   * ## Nama varian
+
+   * ## Wajib / tidak
+
+   * ## Batas opsi
+
+2. ## Pilih Opsi Form:
+
+   * ## Buat opsi sendiri
+
+   * ## Pilih dari buku menu
+
+3. ## Klik Simpan
+
+4. ## Sistem:
+
+   * ## Simpan sebagai Master Varian
+
+   * ## Status Aktif
+
+   * ## Penerapan produk \= Belum Diterapkan
+
+   #### **Impor Varian Dari Outlet (gambar ke-7)**
+
+1. ## User pilih outlet sumber
+
+2. ## Pilih varian (single / multi)
+
+3. ## Klik Impor Varian
+
+4. ## Sistem:
+
+   * ## Menyalin data varian
+
+   * ## AUTO AKTIF
+
+   * ## Langsung tersedia di Master Varian
+
+5. ## Tampilkan notifikasi sukses
+
+   ### **4.3. Source Value Master Varian**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Varian | Input user / outlet |
+| Wajib | Data outlet / input |
+| Batas Pilihan | Data outlet / input |
+| Opsi Varian | Custom / Buku Menu |
+| Outlet | Dari master produk |
+| Status | Aktif (auto saat impor) |
+| Penerapan Produk | Manual (setelah apply ke produk) |
+
+   ## **4.4. Notes**
+
+* ## Produk & varian hasil impor → otomatis aktif
+
+* ## Varian tidak otomatis diterapkan ke produk
+
+* ## Outlet pada varian mengikuti outlet di master produk
+
+* ## Status aktif/nonaktif tidak menghapus data
+
+* ## Edit varian tidak boleh ubah tipe opsi
+
 6. **Master Kategori**
+
+   ## **6.1. Requirement**
+
+   ### **6.1.1 Umum**
+
+* Sistem mendukung Master Kategori (bukan kategori per outlet).  
+* 1 Master Kategori bisa:  
+  * Digunakan di banyak outlet  
+  * Berisi banyak Master Produk  
+* Status default:  
+  * Aktif \= true  
+* Master Kategori tidak tergantung outlet saat dibuat.
+
+  ### **6.1.2 Fitur yang Wajib Ada**
+
+* List Master Kategori:  
+  * Tab: Aktif / Tidak Aktif / Semua  
+  * Search by nama  
+* Tambah Master Kategori:  
+  * Buat baru  
+  * Impor dari outlet  
+* Edit nama kategori  
+* Toggle aktif / nonaktif
+
+  ## **6.2 Flow**
+
+  ### **6.2.1 Tambah Master Kategori (Buat Baru)**
+
+1. User klik Tambah Master Kategori  
+2. Pilih Tambah Master Kategori  
+3. User isi:  
+   * Nama Master Kategori  
+4. (Opsional) Pilih Master Produk  
+5. Klik Simpan  
+6. Sistem:  
+   * Simpan kategori  
+   * Set `is_active = true`
+
+   ### **6.2.2 Tambah Master Kategori (Impor dari Outlet)**
+
+1. User klik Tambah Master Kategori  
+2. Pilih Impor Kategori dari Outlet  
+3. User pilih:  
+   * Outlet sumber  
+   * Satu / banyak kategori  
+4. Klik Impor  
+5. Sistem:  
+   * Clone kategori ke Master Kategori  
+   * Clone relasi produk (jika ada)  
+   * Set `is_active = true`
+
+   Notes: Kategori hasil impor langsung aktif (auto aktif) tanpa toggle manual.
+
+   ### **6.2.3 Assign Produk ke Master Kategori**
+
+1. Dari halaman Tambah / Edit Master Kategori  
+2. Klik \+ Tambah pada section *Pilih Master Produk*  
+3. Pilih Master Produk  
+4. Simpan → relasi tersimpan
+
+   ### **6.2.4 Penerapan ke Outlet**
+
+* Master Kategori tidak langsung terikat outlet  
+* Kategori akan ikut diterapkan ke outlet saat:  
+  * Master Produk yang menggunakan kategori tersebut  
+  * Ditambahkan ke outlet
+
+  ## **6.3 Source Value (Data Mapping)**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Master Kategori | Input user / outlet source |
+| Status Aktif | Auto `true` |
+| Produk Terkait | Master Produk (manual select) |
+| Outlet | Turunan dari Master Produk |
+| Terakhir Diperbarui | System timestamp |
+
+  ## **6.4. Rules**
+
+* Master Kategori tidak bisa dihapus jika masih dipakai produk  
+* Boleh dinonaktifkan  
+* Jika Master Kategori nonaktif:  
+  * Tidak muncul di pilihan kategori produk  
+  * Tidak menghapus relasi existing  
+* Impor kategori:  
+  * Selalu auto aktif  
+  * Nama boleh duplikat → dibedakan oleh ID
+
+  ## **6.5 Relasi Data (Sederhana)**
+
+    `Master Kategori`
+
+     `└── Master Produk (N)`
+
+           `└── Outlet (N)`
 
 **C. Inventory**  
 **D. Pelanggan**  
