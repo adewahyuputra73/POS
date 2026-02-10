@@ -19,6 +19,12 @@ import {
   X,
   FileText,
   Layers,
+  Warehouse,
+  FlaskConical,
+  Ruler,
+  FolderOpen,
+  Truck,
+  BookOpen,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -87,6 +93,35 @@ const masterNavItems: NavItem[] = [
     label: "Master Kategori",
     href: "/master/categories",
     icon: <Tag className="h-5 w-5" />,
+  },
+];
+
+// Inventory menu items
+const inventoryNavItems: NavItem[] = [
+  {
+    label: "Bahan Dasar",
+    href: "/inventory/raw-materials",
+    icon: <FlaskConical className="h-5 w-5" />,
+  },
+  {
+    label: "Konversi Unit",
+    href: "/inventory/unit-conversion",
+    icon: <Ruler className="h-5 w-5" />,
+  },
+  {
+    label: "Kategori",
+    href: "/inventory/categories",
+    icon: <FolderOpen className="h-5 w-5" />,
+  },
+  {
+    label: "Supplier",
+    href: "/inventory/suppliers",
+    icon: <Truck className="h-5 w-5" />,
+  },
+  {
+    label: "Resep",
+    href: "/inventory/recipes",
+    icon: <BookOpen className="h-5 w-5" />,
   },
 ];
 
@@ -177,6 +212,15 @@ export function Sidebar() {
           sidebarCollapsed && "hidden"
         )}>Master</p>
         {masterNavItems.map((item) => (
+          <NavLink key={item.href} item={item} />
+        ))}
+
+        {/* Inventory Section */}
+        <p className={cn(
+          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+          sidebarCollapsed && "hidden"
+        )}>Inventory</p>
+        {inventoryNavItems.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
       </nav>

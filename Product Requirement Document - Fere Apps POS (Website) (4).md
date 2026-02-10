@@ -2226,7 +2226,978 @@ Kodeka x DigitaLink
 
            `└── Outlet (N)`
 
-**C. Inventory**  
+**C. Inventory**
+
+1. **Bahan Dasar**
+
+   # **1.1 DEFINISI & SCOPE MODUL**
+
+   ## **1.1.1 Modul: Inventory – Bahan Dasar**
+
+   Bahan Dasar adalah master inventory yang merepresentasikan:  
+* Bahan Mentah (Raw / Mentah)  
+* Bahan Setengah Jadi  
+  Digunakan oleh:  
+* Resep  
+* Produksi  
+* Perhitungan HPP  
+* Arus Stok  
+* Pembelian (via Supplier)
+
+## **1.2 DATA MASTER & RELASI (SOURCE UTAMA)**
+
+| Entitas | Sumber |
+| ----- | ----- |
+| Supplier | Fitur Supplier / Master Supplier |
+| Kategori | Fitur Kategori / Master Kategori |
+| Bahan Mentah | Detail Bahan Mentah (Raw Material) |
+| Unit & Konversi | Fitur Konversi Unit |
+| Resep | Fitur Resep |
+
+# **1.3 REQUIREMENT SISTEM**
+
+## **1.3.1 Bahan Dasar – List Page**
+
+### Functional Requirement
+
+User dapat:
+
+* Melihat list Bahan Dasar  
+* Switch tab:  
+  * Raw (Mentah)  
+  * Setengah Jadi  
+* Search berdasarkan nama bahan  
+* Filter:  
+  * Kategori  
+  * Status stok (Semua / Masih Ada / Menipis / Habis)  
+* Export Master Data (.xls)
+
+  ### **Field yang ditampilkan**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Bahan Dasar | Bahan Mentah / Setengah Jadi |
+| Kategori | Master Kategori |
+| Total Harga | Kalkulasi stok × harga |
+| Terakhir Diperbarui | Transaksi stok terakhir |
+| Stok Saat Ini | Akumulasi stok |
+| Status | Auto (rule stok) |
+| Aksi | Edit / Detail |
+
+  ## **1.3.2 Status Stok (Auto Rule)**
+
+| Status | Rule |
+| ----- | ----- |
+| Masih Ada | Stok \> batas bawah |
+| Menipis | Stok ≤ batas bawah |
+| Habis | Stok \= 0 |
+
+  Batas bawah diambil dari field *Batas Bawah* pada bahan.
+
+  ## **1.3.3 Tambah / Ubah Bahan Dasar (Raw & Setengah Jadi)**
+
+  ### **Field Requirement**
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Item | ✅ | Input user |
+| Kategori | ✅ | Master Kategori |
+| Estimasi Produksi per Resep | Opsional | Input user |
+| Batas Bawah | Opsional | Input user |
+| Unit Dasar | ✅ | Konversi Unit |
+| Status Unit (Base / Transfer / Purchase) | ✅ | Konversi Unit |
+
+
+  ## **1.3.4 Konversi Unit**
+
+  ### Functional Requirement
+
+* Set unit dasar (Base)  
+* Set unit Sedang (Transfer) dan Besar (Purchase)  
+* Nilai konversi otomatis dipakai di:  
+  * Pembelian  
+  * Resep  
+  * Pengurangan stok
+
+  ### **Source Value**
+
+| Field | Source |
+| ----- | ----- |
+| Unit | Master Konversi Unit |
+| Nilai Konversi | Master Konversi Unit |
+
+
+  ## **1.3.5 Detail Bahan Dasar – Stok**
+
+  ### **Functional Requirement**
+
+    User dapat:
+
+* Menambah stok  
+* Mengurangi stok  
+* Melihat histori arus stok
+
+  ### **Modal Tambah Stok**
+
+| Field | Source |
+| ----- | ----- |
+| Jumlah | Input user |
+| Harga | Input user |
+| Supplier | Master Supplier |
+| Unit | Auto dari konversi |
+| Keterangan | Input user |
+
+  ### **Business Rule**
+
+* Stok bertambah → nilai stok bertambah  
+* Harga tersimpan sebagai harga beli histori  
+* Supplier wajib dipilih saat penambahan stok
+
+  ## **1.3.6 Arus Stok (Log)**
+
+  ### **Field Log**
+
+| Field | Source |
+| ----- | ----- |
+| Deskripsi | Sistem |
+| Keterangan | Input user |
+| Harga Beli | Input |
+| Jumlah | Input |
+| Stok Baru | Kalkulasi |
+| Nilai Stok Sekarang | Kalkulasi |
+| Tanggal | System timestamp |
+| User | Session user |
+
+
+  # **1.4. BAHAN SETENGAH JADI – RESEP**
+
+  ## **1.4.1 Resep Bahan Setengah Jadi**
+
+  ### **Functional Requirement**
+
+* Menambahkan bahan mentah ke resep setengah jadi  
+* Perubahan auto-save  
+* HPP dihitung realtime
+
+  ### **Field Resep**
+
+| Field | Source |
+| ----- | ----- |
+| Bahan Dasar | Detail Bahan Mentah |
+| Jumlah | Input user |
+| Unit | Auto dari konversi |
+| Total Harga | Auto (HPP × jumlah) |
+
+  ## **1.4.2 Modal Pilih Bahan Dasar**
+
+* Data diambil dari Bahan Mentah (Raw)  
+* Bisa multi-select  
+* Searchable
+
+  ## **1.4.3 Perhitungan HPP**
+
+  HPP \= Σ (Harga Bahan × Qty / Konversi)
+
+* HPP disimpan di:  
+  * Bahan Setengah Jadi  
+  * Digunakan oleh menu / produk
+
+    # **1.5 FLOW END-TO-END**
+
+    ## **1.5.1 Flow Tambah Bahan Mentah**
+
+1. User → Inventory → Bahan Dasar  
+2. Klik Tambah Bahan Dasar  
+3. Isi form  
+4. Pilih kategori  
+5. Set unit & konversi  
+6. Simpan → bahan aktif
+
+   ## **1.5.2 Flow Penambahan Stok**
+
+1. Buka detail bahan  
+2. Klik Tambah  
+3. Isi jumlah & harga  
+4. Pilih supplier  
+5. Simpan  
+6. Sistem:  
+   * Update stok  
+   * Update nilai stok  
+   * Simpan histori
+
+     ## **1.5.3 Flow Bahan Setengah Jadi**
+
+1. Buat bahan setengah jadi  
+2. Set estimasi produksi  
+3. Tambah resep  
+4. Pilih bahan mentah  
+5. Input jumlah  
+6. Sistem hitung HPP otomatis  
+7. Simpan
+
+   ## **1.6 SOURCE VALUE – RINGKASAN**
+
+| Field | Source |
+| ----- | ----- |
+| Supplier | Master Supplier |
+| Kategori | Master Kategori |
+| Bahan | Detail Bahan Mentah |
+| Unit | Konversi Unit |
+| Harga | Input \+ histori |
+| Stok | Transaksi sistem |
+| HPP | Kalkulasi resep |
+
+   ## **1.7 OUTPUT KE MODUL LAIN**
+
+* Resep Produk  
+* Menu  
+* Laporan HPP  
+* Arus Stok  
+* Pembelian  
+* Inventory Report  
+    
+2. **Arus Stock**  
+3. **Supplier**  
+   Supplier tidak menyimpan stok, tetapi terhubung langsung ke:  
+* Bahan Dasar  
+* Arus Stok (penambahan)  
+* Purchase / pembelian  
+* HPP
+
+# **3.1 RELASI DATA (HIGH LEVEL)**
+
+Supplier  
+   ↓  
+Supplier \- Bahan Dasar (pricing & purchase rule)  
+   ↓  
+Pembelian / Penambahan Stok  
+   ↓  
+Inventory & HPP
+
+Satu Supplier:
+
+* Bisa memasok banyak Bahan Dasar  
+  Satu Bahan Dasar:  
+* Bisa punya lebih dari 1 Supplier (opsional, future-ready)
+
+# **3.2 REQUIREMENT SISTEM**
+
+## **3.2.1 List Supplier**
+
+### Functional Requirement
+
+User dapat:
+
+* Melihat daftar supplier  
+* Menambahkan supplier baru  
+* Edit supplier  
+* Masuk ke detail supplier
+
+  ### Field List
+
+| Field | Source |
+| ----- | ----- |
+| Nama Supplier | Master Supplier |
+| No. Telp | Master Supplier |
+| Alamat | Master Supplier |
+| Aksi | Sistem |
+
+## **3.2.2 Tambah / Ubah Supplier (Master Supplier)**
+
+### Field Requirement
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Supplier | ✅ | Input user |
+| No. Telp | Opsional | Input user |
+| Pinpoint Lokasi | Opsional | Google Maps |
+| Alamat | Opsional | Maps reverse geocode |
+| Tempo Pembayaran | Opsional | Dropdown |
+| Tipe Pembayaran | Opsional | Cash / Transfer |
+
+### Business Rule
+
+* Nama supplier unik per outlet  
+* No. telp valid format negara  
+* Lokasi tidak wajib (supplier non-fisik allowed)
+
+  ## **3.2.3 Detail Supplier**
+
+  ### Informasi Umum
+
+  Menampilkan:  
+* Nama  
+* Kontak  
+* Alamat  
+* Tipe & tempo pembayaran  
+* Total produk (bahan dasar) yang dipasok
+
+## **3.2.4 Supplier → Bahan Dasar (Purchase Rule)**
+
+### Functional Requirement
+
+Di dalam Detail Supplier, user dapat:
+
+* Menambahkan bahan dasar yang dipasok supplier  
+* Menentukan rule pembelian per bahan
+
+  ### Field Supplier–Bahan Dasar
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Bahan Dasar | ✅ | Detail Bahan Mentah |
+| Kategori | Auto | Master Kategori |
+| Jumlah Pembelian | ✅ | Input user |
+| Satuan Pembelian | ✅ | Konversi Unit (Purchase) |
+| Harga per Jumlah/Satuan | ✅ | Input user |
+| Min. Jumlah Order | Opsional | Input user |
+| MOV | Opsional | Input user |
+| Waktu Tunggu | Opsional | Input user |
+| Supplier Utama | Opsional | Checkbox |
+| PPN | Opsional | Checkbox |
+
+## **3.2.5 Validasi Supplier–Bahan**
+
+| Rule | Keterangan |
+| ----- | ----- |
+| Bahan wajib ada | Ambil dari master bahan |
+| Satuan pembelian valid | Harus role Purchase |
+| Harga \> 0 | Valid |
+| Min order ≤ jumlah beli | Validasi |
+| Supplier utama max 1 | Per bahan |
+
+# **3.3 FLOW SISTEM**
+
+## **3.3.1 Flow Tambah Supplier**
+
+1. User → Inventory → Supplier  
+2. Klik Tambah Supplier  
+3. Isi data supplier  
+4. Simpan  
+5. Supplier aktif & bisa dipakai
+
+   ## **3.3.2 Flow Edit Supplier**
+
+1. User buka detail supplier  
+2. Klik edit  
+3. Ubah data  
+4. Simpan  
+5. Update ke seluruh relasi
+
+   ## **3.3.3 Flow Tambah Bahan ke Supplier**
+
+1. User buka Detail Supplier  
+2. Klik Tambah  
+3. Pilih bahan dasar  
+4. Set:  
+   * Qty pembelian  
+   * Satuan (purchase unit)  
+   * Harga  
+   * Min order / MOV  
+5. Simpan  
+6. Sistem:  
+   * Simpan pricing rule  
+   * Siap dipakai untuk pembelian & stok
+
+   ## **3.3.4 Flow Penambahan Stok via Supplier**
+
+1. User tambah stok bahan  
+2. Pilih supplier  
+3. Sistem:  
+   * Ambil harga & unit supplier  
+   * Konversi ke base unit  
+4. Update stok & nilai stok
+
+   # **3.4 SOURCE VALUE (SUMBER DATA)**
+
+   ## **3.4.1 Mapping Field → Source**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Supplier | Input user |
+| No Telp | Input user |
+| Alamat | Maps / Input |
+| Tempo Pembayaran | Input user |
+| Tipe Pembayaran | Input user |
+| Bahan Dasar | Detail Bahan Mentah |
+| Kategori | Master Kategori |
+| Satuan Pembelian | Konversi Unit (Purchase) |
+| Harga | Input user |
+| Min Order | Input user |
+| MOV | Input user |
+| PPN | Input user |
+
+   # **3.5 DAMPAK KE MODUL LAIN**
+
+   ## Dipakai oleh:
+
+* Bahan Dasar → penambahan stok  
+* Arus Stok → histori supplier  
+* HPP → harga beli  
+* Purchase (future) → PO otomatis  
+  Jika supplier diubah:  
+* Harga baru tidak mengubah histori  
+* Dipakai untuk transaksi selanjutnya
+
+  # **3.6 Notes**
+
+* Supplier dihapus tapi sudah dipakai → ❌ (soft delete)  
+* Supplier tanpa bahan → allowed  
+* Bahan tanpa supplier → allowed (manual price)  
+* Banyak supplier satu bahan → allowed  
+* Supplier utama → 1 per bahan
+
+4. **Kategori**
+
+   # **4.1 RELASI DATA**
+
+   Kategori  
+      ↓  
+   Bahan Dasar  
+      ↓  
+   Resep / Stok / Supplier  
+     
+   Satu Kategori:  
+* Bisa dipakai banyak Bahan Dasar  
+  Satu Bahan Dasar:  
+* Wajib punya 1 Kategori  
+* Default fallback → Tanpa Kategori
+
+# **4.2 REQUIREMENT SISTEM**
+
+## **4.2.1 List Kategori**
+
+### Functional Requirement
+
+User dapat:
+
+* Melihat daftar kategori inventory  
+* Menambahkan kategori baru  
+* Mengubah nama kategori  
+* Melihat kategori default Tanpa Kategori
+
+### Field List
+
+| Field | Source |
+| ----- | ----- |
+| Nama Kategori | Master Kategori |
+| Aksi (Ubah) | Sistem |
+
+Tidak ada tombol hapus untuk mencegah data orphan
+
+## **4.2.2 Tambah Kategori**
+
+### **Modal Tambah Kategori**
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Kategori | ✅ | Input user |
+
+### Business Rule
+
+* Panjang max 50 karakter  
+* Nama kategori unik per outlet  
+* Case-insensitive (`Bahan Kering` \= `bahan kering`)  
+* Tidak boleh kosong
+
+  ## **4.2.3 Ubah Kategori**
+
+  ### **Modal Ubah Kategori**
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Kategori | ✅ | Input user |
+
+  ### Business Rule
+
+* Update nama langsung mempengaruhi:  
+  * Bahan Dasar  
+  * Supplier → Bahan  
+  * Filter inventory  
+* Tidak mengubah histori transaksi
+
+  ## **4.2.4 Kategori Default – “Tanpa Kategori”**
+
+  ### Rule
+
+* Sistem otomatis menyediakan Tanpa Kategori  
+* Tidak bisa:  
+  * Dihapus  
+  * Diubah nama  
+* Dipakai jika:  
+  * Bahan dibuat tanpa kategori  
+  * Kategori lama dihapus (future)
+
+  # **4.3 FLOW SISTEM**
+
+  ## **4.3.1 Flow Tambah Kategori**
+
+1. User buka Inventory → Kategori  
+2. Klik Tambah Kategori  
+3. Input nama kategori  
+4. Klik Tambah  
+5. Sistem:  
+   * Validasi unik  
+   * Simpan  
+   * Kategori aktif & bisa dipakai
+
+   ## **4.3.2 Flow Ubah Kategori**
+
+1. User klik ikon Ubah  
+2. Modal edit muncul  
+3. Ubah nama kategori  
+4. Klik Ubah  
+5. Sistem:  
+   * Update master kategori  
+   * Propagate ke semua relasi
+
+   ## **4.3.3 Flow Pemakaian Kategori**
+
+* Saat:  
+  * Tambah Bahan Dasar  
+  * Edit Bahan Dasar  
+  * Tambah Supplier → Bahan  
+* User memilih kategori dari Master Kategori
+
+  # **4.4 SOURCE VALUE (SUMBER DATA)**
+
+  ## **4.4.1 Mapping Field → Source**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Kategori | Input user |
+| Relasi ke Bahan | Sistem |
+| Dipakai di Supplier | Auto dari bahan |
+| Dipakai di Resep | Auto dari bahan |
+| Dipakai di Report | Sistem |
+
+# **4.5 DAMPAK KE MODUL LAIN**
+
+| Modul | Dampak |
+| ----- | ----- |
+| Bahan Dasar | Wajib kategori |
+| Supplier | Menampilkan kategori bahan |
+| Resep | Grouping & filtering |
+| Arus Stok | Filtering laporan |
+| Inventory Report | Analisa stok per kategori |
+
+# **4.6 Notes**
+
+* Kategori di-rename → histori aman  
+* Kategori tidak boleh dihapus  
+* Bahan tanpa kategori → auto fallback  
+* Multi outlet → kategori per outlet  
+* Tidak ada hierarki (flat category)
+
+5. **Resep**
+
+   # **5.1 DEFINISI & PERAN MODUL RESEP**
+
+   ## **5.1.1 Resep**
+
+   Resep adalah definisi komposisi bahan untuk:  
+* Menu utama (produk)  
+* Varian menu  
+  Resep digunakan untuk:  
+* Menghitung HPP otomatis  
+* Mengurangi stok bahan dasar  
+* Menentukan biaya produksi per menu
+
+  # **5.1.2 STRUKTUR & RELASI DATA**
+
+  Menu / Varian  
+     ↓  
+  Resep  
+     ↓  
+  Resep Detail  
+     ↓  
+  Bahan Dasar  
+     ↓  
+  Konversi Unit  
+     ↓  
+  Stok & HPP  
+    
+  Relasi penting:  
+* 1 Menu → 1 Resep Menu  
+* 1 Varian → 1 Resep Varian  
+* 1 Resep → banyak Bahan Dasar  
+* Bahan Dasar bisa:  
+  * Mentah  
+  * Setengah Jadi (hasil resep lain)
+
+# **5.2 REQUIREMENT SISTEM**
+
+## **5.2.1 List Resep – Tab Menu**
+
+### **Functional Requirement**
+
+User dapat:
+
+* Melihat daftar menu  
+* Melihat status resep  
+* Melihat HPP total  
+* Edit resep menu
+
+### **Field List**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Produk | Master Produk |
+| Kategori | Master Kategori |
+| HPP | Kalkulasi Resep |
+| Jumlah Bahan | Resep Detail |
+| Terakhir Diperbarui | Sistem |
+| Status | Resep |
+
+## **5.2.2 List Resep – Tab Varian**
+
+### **Functional Requirement**
+
+User dapat:
+
+* Melihat resep per varian  
+* Melihat total harga (HPP varian)  
+* Edit resep varian
+
+  ### **Field List**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Opsi Varian | Master Varian |
+| Varian | Master Varian |
+| Total Harga | Kalkulasi Resep |
+| Jumlah Bahan | Resep Detail |
+| Terakhir Diperbarui | Sistem |
+
+  # **5.3 DETAIL RESEP (MENU / VARIAN)**
+
+  ## **5.3.1 Header Informasi**
+
+  Menampilkan:
+
+* Nama menu / varian  
+* Kategori  
+* Total HPP (auto)  
+* Jumlah bahan dasar
+
+## **5.3.2 Daftar Bahan Resep**
+
+### **Field Resep Detail**
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Bahan Dasar | ✅ | Master Bahan Dasar |
+| Pemakaian | ✅ | Input user |
+| Satuan | Auto | Konversi Unit (Base) |
+| Harga | Auto | Kalkulasi |
+| Aksi | Sistem |  |
+
+# **5.4 TAMBAH BAHAN KE RESEP**
+
+## **5.4.1 Modal “Pilih Opsi dari Bahan Dasar”**
+
+### **Functional Requirement**
+
+User dapat:
+
+* Mencari bahan dasar  
+* Memilih:  
+  * Mentah  
+  * Setengah Jadi  
+* Multi-select bahan  
+* Terapkan ke resep
+
+### **Source Data**
+
+| Data | Source |
+| ----- | ----- |
+| List Bahan Mentah | Master Bahan Dasar |
+| List Setengah Jadi | Resep lain |
+| Kategori | Master Kategori |
+| Unit | Konversi Unit |
+
+## **5.4.2 Rule Pemilihan**
+
+* Bahan yang sudah dipakai → tidak bisa dipilih ulang  
+* Setengah jadi \= output resep lain  
+* Satu bahan \= satu baris di resep
+
+  # **5.5 INPUT PEMAKAIAN & HARGA**
+
+  ## **5.5.1 Pemakaian Bahan**
+
+| Rule | Keterangan |
+| ----- | ----- |
+| Nilai ≥ 0 | Valid |
+| Satuan base | Auto |
+| Unit konversi | Sistem |
+
+  ### Contoh:
+
+* Beli gula: 1 kg  
+* Base unit: gr  
+* Pakai di resep: 50 gr
+
+  ## **5.5.2 Harga Bahan**
+
+  Harga dihitung otomatis:  
+  Harga Bahan \=  
+  (pemakaian / base unit supplier) × harga beli  
+    
+  Tidak bisa diinput manual ❌  
+  (Read-only)
+
+# **5.6 FLOW SISTEM**
+
+## **5.6.1 Flow Tambah Resep Menu**
+
+1. User buka Resep → Menu  
+2. Pilih menu  
+3. Masuk Detail Resep Menu  
+4. Klik Tambah Bahan Dasar  
+5. Pilih bahan  
+6. Input pemakaian  
+7. Simpan  
+8. Sistem hitung:  
+   * Harga per bahan  
+   * Total HPP
+
+   ## **5.6.2 Flow Tambah Resep Varian**
+
+   Sama dengan menu, tetapi:
+
+* Terikat ke varian  
+* HPP berdiri sendiri (override menu jika ada)
+
+  ## **5.6.3 Flow Update Resep**
+
+1. Edit pemakaian bahan  
+2. Simpan  
+3. Sistem:  
+   * Recalculate HPP  
+   * Update timestamp
+
+   ## **5.6.4 Flow Pengurangan Stok (Downstream)**
+
+   Saat transaksi terjadi:
+
+1. Menu/Varian terjual  
+2. Sistem cek resep  
+3. Kurangi stok bahan dasar  
+4. Catat di Arus Stok
+
+# **5.7 SOURCE VALUE (SUMBER DATA)**
+
+## **5.7.1 Mapping Field → Source**
+
+| Field | Source |
+| ----- | ----- |
+| Menu | Master Produk |
+| Varian | Master Varian |
+| Bahan Dasar | Master Bahan Dasar |
+| Tipe Bahan | Mentah / Setengah Jadi |
+| Pemakaian | Input user |
+| Satuan | Konversi Unit |
+| Harga Beli | Supplier |
+| Harga Resep | Kalkulasi |
+| HPP Total | Kalkulasi |
+
+# **5.8 Notes**
+
+* Resep boleh kosong → HPP \= 0  
+* Setengah jadi:  
+  * Ambil HPP dari resep lain  
+* Bahan dihapus → resep invalid (warning)  
+* Resep tidak mengubah histori transaksi  
+* Multi outlet → resep per outlet
+
+6. **Konversi Unit**
+
+   # **6.1. DEFINISI & TUJUAN MODUL**
+
+   ## **1.1.1 Konversi Unit**
+
+   Konversi Unit adalah master data yang mendefinisikan:  
+* Hubungan antar satuan (misalnya: kg → g, liter → ml)  
+* Peran satuan dalam proses inventory:  
+  * Base → satuan dasar stok & HPP  
+  * Sedang (Transfer) → satuan internal / produksi  
+  * Besar (Purchase) → satuan pembelian dari supplier
+
+  Modul ini tidak berdiri sendiri, tapi dipakai oleh:
+
+* Bahan Dasar  
+* Resep  
+* Arus Stok  
+* Pembelian (Supplier)
+
+  # **6.2. DATA & RELASI**
+
+  ## **6.2.1 Relasi Utama**
+
+  Konversi Unit  
+        ↓  
+  Bahan Dasar  
+        ↓  
+  Resep / Stok / Purchase  
+    
+  Satu Konversi Unit bisa dipakai oleh banyak Bahan Dasar  
+  Satu Bahan Dasar wajib punya 1 Base Unit
+
+# **6.3. REQUIREMENT SISTEM**
+
+## **6.3.1 List Konversi Unit**
+
+### **Functional Requirement**
+
+User dapat:
+
+* Melihat daftar konversi unit  
+* Search berdasarkan nama konversi  
+* Melihat:  
+  * Total unit konversi  
+  * Jumlah bahan dasar yang terhubung  
+  * Terakhir diperbarui  
+* Aksi:  
+  * View detail  
+  * Edit  
+  * Hapus (dengan validasi)
+
+  ### **Field List**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Konversi Unit | Input user |
+| Total Unit Konversi | Count detail unit |
+| Bahan Dasar Terhubung | Relasi ke bahan |
+| Terakhir Diperbarui | System timestamp |
+| Aksi | Sistem |
+
+  ## **6.3.2 Tambah / Ubah Konversi Unit**
+
+  ### **6.3.2.1 Header**
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Konversi Unit | ✅ | Input user |
+
+  Contoh:
+
+* Satuan Berat  
+* Satuan Cairan  
+* Satuan Takaran
+
+### **6.3.2.2 Detail Unit Konversi**
+
+User dapat menambahkan lebih dari 1 unit dalam satu konversi.
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Unit | ✅ | Input user |
+| Nilai Konversi | ✅ | Input user |
+| Per UOM | ✅ | Pilih dari unit |
+| Role Unit | ✅ | Radio (Base / Sedang / Besar) |
+
+### **6.3.2.3 Role Unit (Business Rule)**
+
+| Role | Rule |
+| ----- | ----- |
+| Base | Wajib 1 per konversi |
+| Sedang (Transfer) | Opsional |
+| Besar (Purchase) | Opsional |
+| Duplikasi Role | ❌ Tidak boleh |
+
+Sistem wajib validasi:  
+❌ Tidak bisa simpan jika tidak ada Base unit
+
+## **6.3.3 Validasi & Constraint**
+
+| Rule | Keterangan |
+| ----- | ----- |
+| Nama konversi unik | Tidak boleh sama |
+| Minimal 1 unit | Wajib |
+| Base unit wajib | 1 saja |
+| Nilai konversi \> 0 | Validasi |
+| Tidak bisa hapus | Jika sudah dipakai bahan |
+
+# **6.4. FLOW SISTEM**
+
+## **6.4.1 Flow Tambah Konversi Unit**
+
+1. User buka Inventory → Konversi Unit  
+2. Klik Tambah Konversi Unit  
+3. Isi:  
+   * Nama konversi  
+   * Unit \+ nilai konversi  
+4. Tentukan:  
+   * Base unit  
+   * (Opsional) Transfer / Purchase  
+5. Klik Simpan  
+6. Sistem:  
+   * Validasi base unit  
+   * Simpan master  
+   * Siap dipakai bahan dasar
+
+   ## **6.4.2 Flow Edit Konversi Unit**
+
+1. User klik Edit  
+2. Ubah unit / nilai / role  
+3. Simpan  
+4. Sistem:  
+   * Update konversi  
+   * Update seluruh bahan terkait  
+   * Recalculate HPP jika diperlukan
+
+## **6.4.3 Flow Pemakaian di Bahan Dasar**
+
+1. User buat / edit bahan dasar  
+2. Pilih Konversi Unit  
+3. Sistem:  
+   * Ambil Base unit → stok & HPP  
+   * Ambil Purchase unit → pembelian  
+   * Ambil Transfer unit → produksi
+
+   ## **6.4.4 Flow di Resep & Stok**
+
+* Input jumlah boleh pakai unit apapun  
+* Sistem:  
+  Jumlah Input × Nilai Konversi → Base Unit  
+* Semua perhitungan HPP & stok selalu pakai Base Unit
+
+# **6.5. SOURCE VALUE (SUMBER DATA)**
+
+## **6.5.1 Mapping Field → Source**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Konversi Unit | Input user |
+| Unit | Input user |
+| Nilai Konversi | Input user |
+| Per UOM | Input user |
+| Role Unit | Input user |
+| Terhubung ke Bahan | Relasi sistem |
+| Digunakan di Resep | Kalkulasi sistem |
+| Digunakan di Purchase | Kalkulasi sistem |
+
+# **6.6. DAMPAK KE MODUL LAIN**
+
+## Dipakai oleh:
+
+* Bahan Dasar → stok & batas bawah  
+* Resep → HPP  
+* Arus Stok → normalisasi unit  
+* Supplier / Purchase → konversi pembelian  
+  Jika konversi diubah:  
+* Semua HPP harus direcalculate  
+* Stok tetap aman karena disimpan dalam base unit
+
+  # **6.7. Notes**
+
+* Unit dihapus tapi masih dipakai bahan  
+* Base unit diganti → trigger recalculation  
+* Konversi tidak konsisten (0 atau negatif)  
+* Multiple bahan pakai konversi yang sama
+
 **D. Pelanggan**  
 **E. Manajemen Meja**  
 **F. Integrasi**
