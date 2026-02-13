@@ -198,3 +198,155 @@ export interface SupplierMaterialFormData {
   isPrimary: boolean;
   includePpn: boolean;
 }
+
+// === ARUS STOK (STOCK FLOW) ===
+export type StockFlowType = 'pembelian' | 'pengeluaran' | 'stok_opname' | 'transfer' | 'purchase_order';
+export type StockFlowStatus = 'selesai' | 'diminta' | 'dikirim';
+export type ExpenseReason = 'rusak' | 'hilang' | 'kadaluarsa' | 'uji_coba' | 'sampling' | 'lainnya';
+export type TransferType = 'pengiriman' | 'permintaan';
+
+export interface StockFlowRecord {
+  id: number;
+  type: StockFlowType;
+  referenceNumber: string;
+  outletOrSupplier: string; // supplier name for purchase, outlet name for transfer
+  totalItems: number;
+  totalPrice: number | null; // null for pengeluaran
+  status: StockFlowStatus;
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface StockFlowFilters {
+  type: StockFlowType | 'all';
+  search: string;
+  dateRange?: { start: string; end: string };
+}
+
+// -- Pembelian (Purchase)
+export interface PurchaseMaterialItem {
+  materialId: number;
+  materialName: string;
+  categoryName: string;
+  purchaseQty: number;
+  purchaseUnit: string;
+  totalPrice: number;
+  currentStock: number;
+  baseUnit: string;
+}
+
+export interface PurchaseFormData {
+  supplierId: number;
+  items: PurchaseMaterialItem[];
+}
+
+// -- Pengeluaran (Expense)
+export interface ExpenseItem {
+  materialId: number;
+  materialName: string;
+  currentStock: number;
+  qty: number;
+  unit: string;
+  reason: ExpenseReason | '';
+}
+
+export interface ExpenseFormData {
+  items: ExpenseItem[];
+}
+
+// -- Stok Opname
+export interface OpnameItem {
+  materialId: number;
+  materialName: string;
+  categoryName: string;
+  type: MaterialType;
+  currentStock: number;
+  newStock: number;
+  unit: string;
+  difference: number; // calculated: newStock - currentStock
+  adjustmentValue: number; // calculated: difference * avgCost
+}
+
+export interface OpnameFormData {
+  items: OpnameItem[];
+}
+
+// -- Transfer
+export interface TransferItem {
+  materialId: number;
+  materialName: string;
+  type: MaterialType;
+  categoryName: string;
+  currentStock: number;
+  transferQty: number;
+  unit: string;
+  transferPrice: number;
+}
+
+export interface TransferFormData {
+  transactionType: TransferType;
+  outletToId: number;
+  outletToName: string;
+  items: TransferItem[];
+}
+
+// -- Purchase Order
+export interface POItem {
+  materialId: number;
+  materialName: string;
+  categoryName: string;
+  qtyRequested: number;
+  priceRequested: number;
+  qtyReceived: number;
+  priceReceived: number;
+  qtyRejected: number;
+  rejectReason: string;
+  unit: string;
+}
+
+export interface PurchaseOrderData {
+  supplierId: number;
+  supplierName: string;
+  deliveryDate: string;
+  items: POItem[];
+}
+
+// -- PO Multi-Supplier
+export interface POMultiItem {
+  materialId: number;
+  materialName: string;
+  categoryName: string;
+  supplierId: number;
+  supplierName: string;
+  qty: number;
+  unit: string;
+  pricePerUnit: number;
+  subtotal: number;
+}
+
+export interface POMultiFormData {
+  deliveryDate: string;
+  items: POMultiItem[];
+}
+
+// -- Stock Flow Detail (for detail view)
+export interface StockFlowDetailItem {
+  id: number;
+  materialId: number;
+  materialName: string;
+  categoryName: string;
+  materialType: MaterialType;
+  qty: number;
+  unit: string;
+  price: number;
+  reason?: string;
+  finalStock?: number;
+}
+
+export interface StockFlowDetailRecord extends StockFlowRecord {
+  supplierName?: string;
+  outletFrom?: string;
+  outletTo?: string;
+  deliveryDate?: string;
+  items: StockFlowDetailItem[];
+}

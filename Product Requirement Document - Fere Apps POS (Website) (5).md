@@ -2456,7 +2456,1466 @@ User dapat:
 * Pembelian  
 * Inventory Report  
     
-2. **Arus Stock**  
+2. **Arus Stock**
+
+   ## **2.1 Arus Stok – Pembelian**
+
+   Fitur untuk mencatat penambahan stok bahan dasar akibat transaksi pembelian dari supplier.  
+   Tujuan:  
+* Menambah stok bahan dasar  
+* Mengupdate harga rata-rata (HPP bahan)  
+* Membuat histori arus stok  
+* Menjadi dasar kalkulasi resep
+
+  # **2.1.1 REQUIREMENT**
+
+  ## Entry Point
+
+  Dari:  
+  Inventory → Arus Stok → Tambah Arus Stok → Pembelian
+
+# **2.1.2 HALAMAN PEMBELIAN**
+
+## **Header Section**
+
+### **Field**
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Supplier | ✅ | Master Supplier |
+| Total Item Terpilih | Auto | Sistem |
+| Total Harga | Auto | Sistem |
+
+### Business Rule
+
+* Supplier wajib dipilih dulu  
+* Jika belum pilih supplier → list bahan tidak aktif  
+* Total item & harga real-time
+
+# **2.1.3 DAFTAR BAHAN YANG BISA DIBELI**
+
+**Setelah supplier dipilih:**
+
+## Filtering Logic
+
+Menampilkan hanya:
+
+* Bahan dasar yang terhubung dengan supplier tersebut
+
+  Relasi:
+
+  Supplier ↔ Supplier\_Bahan ↔ Bahan Dasar
+
+## **2.1.4 Struktur Input Pembelian**
+
+| Field | Mandatory | Source |
+| ----- | ----- | ----- |
+| Nama Bahan Dasar | Auto | Master Bahan |
+| Jumlah Pembelian | ✅ | Input user |
+| Satuan | Auto | Supplier\_Bahan |
+| Total Harga | ✅ | Input user |
+
+# **2.1.5 SOURCE VALUE DETAIL**
+
+## **Supplier**
+
+Diambil dari:
+
+Master Supplier
+
+Relasi:
+
+* Supplier punya banyak bahan  
+* Supplier punya harga per unit
+
+## **Nama Bahan Dasar**
+
+Diambil dari:
+
+Master Bahan Dasar
+
+Filter berdasarkan:
+
+Supplier\_id
+
+## **Satuan (Dropdown)**
+
+Source:
+
+Supplier\_Bahan.satuan\_beli
+
+Contoh:
+
+* cup  
+* kg  
+* liter  
+* Box
+
+  ## **Jumlah Pembelian**
+
+  Input numeric  
+  Rule:  
+* ≥ 0  
+* Decimal allowed
+
+## **Total Harga**
+
+Input manual oleh user  
+Format:
+
+* Currency  
+* Tidak boleh negatif
+
+# **2.1.6 FLOW SISTEM (END-TO-END)**
+
+## **Flow Normal Pembelian**
+
+- User klik Tambah Arus Stok  
+- Pilih Pembelian  
+- Pilih Supplier  
+- Sistem load bahan sesuai supplier  
+- User input:  
+  Jumlah pembelian  
+  Total harga  
+  \- Klik Perbarui Stok  
+  \- Sistem:
+
+  ### Step Internal:
+
+  FOR setiap bahan:  
+      konversi ke base unit  
+      tambah stok  
+      update harga rata-rata (jika pakai average method)  
+      insert ke arus\_stok
+
+# **2.1.7 LOGIKA UPDATE STOK**
+
+## **Konversi Unit**
+
+Contoh:
+
+* Supplier jual: 1 cup  
+* Base unit: gram  
+* 1 cup \= 200 gram  
+  Jika beli 100 cup:  
+  100 × 200 gr \= 20.000 gr  
+    
+  Masuk ke stok:  
+  stok\_base \+= 20.000
+
+## **Update Harga Rata-Rata (Weighted Average)**
+
+Jika sebelumnya:
+
+Stok lama: 10.000 gr  
+Harga lama: Rp5.000
+
+Beli:
+
+20.000 gr  
+Rp1.000
+
+Maka:
+
+Harga rata-rata baru \=  
+(total nilai lama \+ nilai baru) /  
+(total qty lama \+ qty baru)
+
+# **2.1.8 DATA YANG DIBUAT SISTEM**
+
+Saat klik Perbarui Stok:
+
+### Insert ke:
+
+## **Table: arus\_stok**
+
+| Field | Value |
+| ----- | ----- |
+| Tipe | Pembelian |
+| Supplier | supplier\_id |
+| Total Bahan | count item |
+| Total Harga | sum |
+| Tanggal | now |
+| Status | Selesai |
+
+## **Table: arus\_stok\_detail**
+
+| Field | Value |
+| ----- | ----- |
+| bahan\_id | id |
+| qty\_supplier | input |
+| qty\_base | hasil konversi |
+| harga\_total | input |
+
+## **Table: bahan\_stok**
+
+Update:
+
+stok \+= qty\_base  
+harga\_rata\_rata update
+
+# **2.1.9 TAMPILAN DI LIST ARUS STOK**
+
+**Field:**
+
+| Field | Source |
+| ----- | ----- |
+| Tipe Transfer | arus\_stok.tipe |
+| Outlet/Supplier | arus\_stok.supplier |
+| Total Bahan | count detail |
+| Total Harga | sum detail |
+| Tanggal | created\_at |
+| Status | system |
+| Aksi | View detail |
+
+# **2.1.10 EDGE CASE PENTING**
+
+* Supplier tidak punya bahan → tampil empty  
+* Jumlah \> 0 tapi harga 0 → valid (promo / gratis)  
+* Harga ada tapi jumlah 0 → invalid  
+* Tidak boleh submit jika semua jumlah \= 0  
+* Multi outlet → stok per outlet
+
+# **2.1.11 VALIDASI WAJIB**
+
+Sebelum submit:
+
+* Supplier harus dipilih  
+* Minimal 1 bahan qty \> 0  
+* Total harga ≥ 0  
+* Tidak boleh negative value
+
+# **2.1.12 RELASI DENGAN FITUR LAIN**
+
+| Modul | Dampak |
+| ----- | ----- |
+| Bahan Dasar | Update stok |
+| Resep | Pengaruh HPP |
+| Supplier | Source harga |
+| Konversi Unit | Konversi base |
+| Laporan | Cost & inventory report |
+
+# **2.1.13 Notes:**
+
+Pembelian adalah:
+
+INPUT:  
+Supplier \+ Qty \+ Harga
+
+PROSES:  
+Konversi → Update Stok → Update HPP
+
+OUTPUT:  
+Arus Stok Record
+
+# **2.2 Arus Stock \- Pengeluaran**
+
+Fitur Pengeluaran digunakan untuk:
+
+* Mengurangi stok bahan dasar  
+* Mencatat alasan pengurangan  
+* Mencatat histori arus stok tipe *Pengeluaran*  
+* Mengontrol shrinkage (rusak, hilang, expired, dll)
+
+# **2.2.1 REQUIREMENT**
+
+## **A. General Requirement**
+
+### 1\. Scope
+
+* Berlaku per Outlet  
+* Berlaku untuk:  
+  * Bahan Dasar → Mentah  
+  * Bahan Dasar → Setengah Jadi
+
+## **B. UI Requirement**
+
+### **Tab Filter**
+
+* Mentah  
+* Setengah Jadi
+
+  ### **Search**
+
+* Cari bahan dasar berdasarkan nama
+
+  ### **Sidebar Kategori**
+
+  Source:  
+* Master Kategori  
+  Fungsi:  
+* Filter bahan berdasarkan kategori
+
+## **C. Data Table Requirement**
+
+| Field | Keterangan |
+| ----- | ----- |
+| Nama Bahan Dasar | Dari Master Bahan |
+| Stok Saat Ini | Dari stok inventory current |
+| Jumlah Pengeluaran | Input numeric |
+| Unit | Default dari unit utama bahan |
+| Alasan | Dropdown mandatory |
+
+## **D. Alasan Pengeluaran (Mandatory)**
+
+Source:
+
+* Master Alasan Pengeluaran (harus ada tabel khusus)  
+  Contoh value:  
+* Rusak  
+* Hilang  
+* Kadaluarsa  
+* Uji Coba  
+* Sampling  
+* Lainnya  
+  ⚠ Wajib dipilih jika qty \> 0
+
+  ## **E. Validation Rules**
+
+1. Qty tidak boleh \> stok saat ini  
+2. Qty tidak boleh negatif  
+3. Jika qty \> 0 → alasan wajib  
+4. Minimal 1 item harus ada qty \> 0 sebelum tombol aktif  
+5. Tombol "Perbarui Stok" disable jika tidak ada perubahan
+
+# **2.2.2 FLOW PROSES**
+
+## **FLOW 1 — Create Pengeluaran**
+
+User klik Arus Stok  
+→ Klik Tambah Arus Stok  
+→ Pilih Pengeluaran  
+→ Masuk halaman Pengeluaran
+
+## **FLOW 2 — Input Pengeluaran**
+
+User pilih tab (Mentah / Setengah Jadi)  
+→ Pilih kategori  
+→ Input qty pengeluaran  
+→ Pilih alasan  
+→ Klik Perbarui Stok
+
+## **FLOW 3 — System Processing**
+
+Saat klik "Perbarui Stok":
+
+Untuk setiap item qty \> 0:
+
+new\_stock \= current\_stock \- qty\_pengeluaran
+
+**System melakukan:**
+
+1️⃣ Update stok bahan  
+2️⃣ Insert ke table arus\_stok  
+3️⃣ Insert ke table arus\_stok\_detail  
+4️⃣ Generate nomor transaksi
+
+Contoh:
+
+EX/K56432/2026/02/11/1
+
+Status default: Selesai
+
+## **FLOW 4 — After Success**
+
+Redirect ke:
+
+Arus Stok → Tab Pengeluaran
+
+Record tampil dengan:
+
+* Tipe Transfer: Pengeluaran  
+* Total Bahan: jumlah item  
+* Total Harga: \-  
+* Status: Selesai  
+* Tanggal: created\_at
+
+# **2.2.3 SOURCE VALUE (DATA MAPPING)**
+
+## **Nama Bahan Dasar**
+
+Source:
+
+inventory\_bahan\_dasar
+
+Filter:
+
+* outlet\_id  
+* kategori\_id  
+* tipe (mentah / setengah jadi)
+
+  ## **Stok Saat Ini**
+
+  Source:  
+  inventory\_stock.current\_qty  
+    
+  Logic:  
+  sum(pembelian)  
+  \- sum(pengeluaran)  
+  \- sum(pakai resep)  
+  \+ sum(stok opname adjustment)  
+  \+ sum(transfer masuk)  
+  \- sum(transfer keluar)
+
+  ## **Unit**
+
+  Source:  
+  inventory\_bahan\_dasar.default\_unit
+
+  ## **Alasan**
+
+  Source:  
+  master\_alasan\_pengeluaran  
+  Disarankan struktur:  
+  id  
+  nama\_alasan  
+  is\_active  
+  created\_at
+
+  ## **Nomor Transaksi**
+
+  Generated format:  
+  EX/{kodeOutlet}/{YYYY}/{MM}/{DD}/{running\_number}
+
+  ## **Total Bahan**
+
+  Count:  
+  jumlah item dengan qty \> 0
+
+  ## **Total Harga**
+
+  Untuk pengeluaran:  
+  NULL atau "-"  
+    
+  (Karena ini bukan transaksi pembelian)
+
+# **2.2.4 Gambaran Database Design**
+
+## **Table: arus\_stok**
+
+id  
+outlet\_id  
+type ENUM (pembelian, pengeluaran, stok\_opname, transfer)  
+reference\_number  
+total\_item  
+total\_value (nullable)  
+status  
+created\_by  
+created\_at
+
+## **Table: arus\_stok\_detail**
+
+id  
+arus\_stok\_id  
+bahan\_id  
+qty  
+unit  
+reason\_id (nullable kecuali pengeluaran)  
+Created\_at
+
+# **2.2.5 Notes**
+
+* Jika stok \= 0 → tidak bisa input qty \> 0  
+* Jika user cancel → tidak ada perubahan  
+* Jika 2 user update bersamaan → perlu locking / transaction DB  
+* Pengeluaran tidak boleh menghasilkan stok minus
+
+| Modul | Keterkaitan |
+| ----- | ----- |
+| Bahan Dasar | Ambil stok & unit |
+| Kategori | Filter bahan |
+| Resep | Resep juga kurangi stok (beda trigger) |
+| Laporan Arus Stok | Record muncul di history |
+| Laba Kotor | Tidak terpengaruh langsung |
+
+# **2.3 Arus Stok \- Stok Opname**
+
+# **2.3.1 REQUIREMENT**
+
+## **A. Scope**
+
+* Per Outlet  
+* Berlaku untuk:  
+  * Mentah  
+  * Setengah Jadi
+
+  ## **B. UI Requirement**
+
+    ### **Tab**
+
+* Mentah  
+* Setengah Jadi
+
+  ### **Search**
+
+  Cari bahan dasar berdasarkan nama
+
+  ### **Filter Kategori**
+
+  Source:
+
+  Master\_kategori
+
+## **C. Tabel Input**
+
+| Field | Keterangan |
+| ----- | ----- |
+| Nama Bahan Dasar | Dari master bahan |
+| Stok Terbaru | Input angka aktual fisik |
+| Unit | Default dari unit utama bahan |
+
+**Tidak ada field alasan (beda dengan pengeluaran)**
+
+## **D. Validation Rules**
+
+1. Stok terbaru tidak boleh negatif  
+2. Minimal 1 item harus berubah  
+3. Jika tidak ada perubahan → tombol disable  
+4. Input hanya numeric  
+5. Unit bisa diganti (jika ada konversi)
+
+   # **2.3.2 FLOW PROSES**
+
+   ## **FLOW 1 — Create Stok Opname**
+
+   User → Arus Stok  
+   → Klik Tambah Arus Stok  
+   → Pilih Stok Opname  
+   → Masuk halaman Stok Opname
+
+   ## **FLOW 2 — Input Penyesuaian**
+
+   User pilih kategori  
+   → Input stok fisik aktual  
+   → Klik Perbarui Stok
+
+   ## **FLOW 3 — System Calculation Logic**
+
+   Untuk setiap item yang diubah:  
+   selisih \= stok\_terbaru \- stok\_saat\_ini  
+   Jika:  
+* selisih \> 0 → stok bertambah  
+* selisih \< 0 → stok berkurang
+
+  ## **FLOW 4 — Update Database**
+
+  System melakukan dalam 1 transaction:  
+* Update stok bahan  
+* Insert ke arus\_stok (type \= stok\_opname)  
+* Insert ke arus\_stok\_detail
+
+  # **2.3.3 SOURCE VALUE (DATA MAPPING)**
+
+  ## **Nama Bahan**
+
+  Source:  
+  inventory\_bahan\_dasar  
+  Filter:  
+* outlet\_id  
+* kategori\_id  
+* tipe (mentah/setengah jadi)
+
+  ## **Stok Saat Ini**
+
+  Source:  
+  inventory\_stock.current\_qty  
+  Didapat dari perhitungan seluruh arus stok sebelumnya.
+
+## **Stok Terbaru (Input)**
+
+Source:
+
+user input
+
+Disimpan sebagai:
+
+Final\_stock
+
+## Jumlah (di Detail Arus Stok)
+
+Disimpan sebagai:
+
+qty\_adjustment \= selisih
+
+| Stok Lama | Stok Baru | Selisih |
+| ----- | ----- | ----- |
+| 10000 gr | 100 gr | \-9900 gr |
+| 190 cup | 100 cup | \-90 cup |
+
+## **Harga Penyesuaian**
+
+Source:
+
+bahan.average\_cost
+
+Logic:
+
+harga\_penyesuaian \= selisih \* average\_cost
+
+Jika selisih negatif:
+
+nilai minus
+
+Contoh:
+
+* \-90 cup  
+* avg\_cost \= 10  
+* total\_adjustment \= \-900
+
+  Itu yang muncul sebagai:
+
+  \-Rp900
+
+## **Nomor Transaksi**
+
+**Format:**
+
+SO/{kodeOutlet}/{YYYY}/{MM}/{DD}/{running\_number}
+
+Contoh:
+
+SO/K56432/2026/02/11/1
+
+# **2.3.4 Gambaran Database Structure**
+
+## **Table: arus\_stok**
+
+id
+
+outlet\_id
+
+type ENUM (pembelian, pengeluaran, stok\_opname, transfer)
+
+reference\_number
+
+total\_item
+
+total\_value
+
+status
+
+created\_by
+
+Created\_at
+
+## **Table: arus\_stok\_detail**
+
+id
+
+arus\_stok\_id
+
+bahan\_id
+
+qty\_adjustment
+
+unit
+
+cost\_per\_unit
+
+total\_adjustment\_value
+
+final\_stock
+
+created\_at
+
+# **2.3.5 DETAIL ARUS STOK PAGE**
+
+Berdasarkan screenshot Detail Arus Stok:
+
+Menampilkan:
+
+| Field | Source |
+| ----- | ----- |
+| Nama Bahan | master bahan |
+| Kategori | master kategori |
+| Tipe Bahan | mentah / setengah jadi |
+| Jumlah | qty\_adjustment |
+| Harga Penyesuaian | total\_adjustment\_value |
+| Stok Terbaru | final\_stock |
+
+# **2.3.6 Notes**
+
+* Jika stok sistem 0 dan user isi 100 → selisih \+100  
+* Jika stok sistem 100 dan user isi 100 → tidak dicatat  
+* Harus pakai DB transaction  
+* Tidak boleh stok akhir negatif
+
+| Modul | Pengaruh |
+| ----- | ----- |
+| Laba Kotor | Bisa mempengaruhi COGS |
+| Laporan Arus Stok | Tercatat sebagai SO |
+| Pengeluaran | Berbeda logika |
+| Pembelian | Tidak terkait |
+
+**2.4 Arus Stock \- Transfer Bahan**
+
+# **2.4.1 REQUIREMENT**
+
+## **A. Functional Requirement**
+
+### **1\. Buat Transfer Baru**
+
+User harus bisa:
+
+* Pilih Jenis Transaksi  
+  * Pengiriman Bahan  
+  * Permintaan Bahan  
+* Pilih Outlet Tujuan  
+* Sistem otomatis membaca:  
+  * Outlet asal \= outlet yang sedang aktif (dropdown header)
+
+  ### **2\. Input Item Transfer**
+
+  User harus bisa:
+
+* Search bahan  
+* Filter:  
+  * Mentah  
+  * Setengah Jadi  
+* Filter status stok:  
+  * Semua  
+  * Masih Ada  
+  * Menipis  
+  * Habis  
+* Pilih kategori  
+* Input:  
+  * Jumlah kirim  
+  * Unit  
+  * Harga kirim (opsional/auto)
+
+  ### **3\. Validasi**
+
+  Sistem harus:
+
+* Tidak boleh kirim \> stok saat ini  
+* Tidak boleh kirim bahan dengan stok 0  
+* Wajib isi outlet tujuan  
+* Wajib isi minimal 1 bahan
+
+  ### **4\. Submit Transfer**
+
+  Saat klik Kirim Transfer:  
+  Sistem harus:  
+* Generate nomor transaksi (contoh: TR/K56432/2026/02/11/1)  
+* Kurangi stok outlet asal  
+* Tambahkan stok ke outlet tujuan  
+* Catat harga transfer  
+* Set status awal:  
+  * Dikirim
+
+  ### **5\. Tracking Status**
+
+  Status flow:
+
+* Dikirim  
+* Selesai
+
+  ### **6\. List Transfer**
+
+  Menu Arus Stok → Tab Transfer harus menampilkan:  
+* Tipe Transfer  
+* Nomor transaksi  
+* Outlet tujuan  
+* Total bahan  
+* Total harga  
+* Tanggal  
+* Status  
+* Aksi (lihat detail)
+
+  ### **7\. Detail Transfer**
+
+  Menampilkan:  
+  Header:  
+* Nomor transfer  
+* Status timeline  
+* User  
+* Tanggal  
+* Total bahan  
+* Total harga  
+  Detail item:  
+* Nama bahan  
+* Tipe bahan  
+* Kategori  
+* Jumlah dikirim  
+* Harga dikirim
+
+  ## **B. Non Functional Requirement**
+
+* Real-time update stok  
+* Multi outlet aware  
+* Tidak boleh race condition (harus transactional DB)  
+* Harus audit trail (siapa kirim, kapan)
+
+# **2.4.2 FLOW PROSES**
+
+## **FLOW 1 — Pengiriman Transfer**
+
+Pilih Jenis Transaksi
+
+↓
+
+Pilih Outlet Tujuan
+
+↓
+
+Input Item & Jumlah
+
+↓
+
+Validasi stok cukup
+
+↓
+
+Klik Kirim Transfer
+
+↓
+
+System:
+
+  \- Generate nomor
+
+  \- Kurangi stok outlet asal
+
+  \- Tambah stok outlet tujuan
+
+  \- Simpan transaksi
+
+  \- Set status \= Dikirim
+
+↓
+
+Redirect ke Detail Transfer
+
+## **FLOW 2 — Status Transfer**
+
+Dikirim
+
+↓
+
+(Saat diterima outlet tujuan)
+
+↓
+
+Selesai
+
+# **2.4.3 SOURCE OF VALUE (SUMBER NILAI DATA)**
+
+**Berikut mapping value tiap field:**
+
+## **A. Header Transfer**
+
+| Field | Source Value |
+| ----- | ----- |
+| Nomor Transfer | Auto generate backend |
+| Tanggal | created\_at |
+| User | logged in user |
+| Outlet Asal | header outlet dropdown |
+| Outlet Tujuan | dropdown pilihan |
+| Total Bahan | COUNT item detail |
+| Total Harga | SUM(harga\_transfer) |
+| Status | enum |
+
+## **B. Item Transfer**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Bahan | master\_bahan |
+| Tipe Bahan | bahan.type (Mentah/Setengah Jadi) |
+| Kategori | bahan.category\_id |
+| Stok Saat Ini | stok table (by outlet\_id) |
+| Jumlah Kirim | user input |
+| Unit | bahan.default\_unit |
+| Harga Kirim | bisa dari harga beli terakhir |
+
+# **2.4.4 Gambaran Database Design**
+
+## **Tabel transfer\_header**
+
+id
+
+transfer\_number
+
+outlet\_from\_id
+
+outlet\_to\_id
+
+transaction\_type (pengiriman/permintaan)
+
+status (dikirim/selesai)
+
+total\_item
+
+total\_price
+
+created\_by
+
+Created\_at
+
+## **Tabel transfer\_detail**
+
+id
+
+transfer\_id
+
+bahan\_id
+
+qty
+
+unit
+
+price
+
+Subtotal
+
+## **Stok update logic**
+
+Saat submit:
+
+UPDATE stok
+
+SET qty \= qty \- transfer\_qty
+
+WHERE outlet\_id \= outlet\_from
+
+INSERT OR UPDATE stok
+
+WHERE outlet\_id \= outlet\_to
+
+SET qty \= qty \+ transfer\_qty
+
+Harus dalam 1 database transaction.
+
+# **2.4.5 IMPACT KE LAPORAN**
+
+Transfer mempengaruhi:
+
+* Laporan Arus Stok  
+* Laporan Nilai Persediaan  
+* Stok per outlet  
+* Costing outlet
+
+**2.5 Arus Stock \- Purchase Order (PO)**
+
+# **2.5.1 REQUIREMENT**
+
+## **A. Functional Requirement**
+
+## **1\. Buat Purchase Order**
+
+User harus bisa:
+
+* Pilih Supplier  
+* Pilih Tanggal Pengiriman  
+* Pilih bahan berdasarkan:  
+  * Kategori  
+  * Search bahan  
+  * Filter status stok (Semua / Masih Ada / Menipis / Habis)  
+* Input:  
+  * Jumlah Diminta  
+  * Unit
+
+  ## **2\. Submit PO (Kirim Permintaan)**
+
+  Saat klik Kirim Permintaan:
+
+  Sistem harus:
+
+* Generate nomor PO  
+  Contoh: `PO/K56432/2026/02/11/1`  
+* Simpan detail bahan  
+* Set status \= Diminta  
+* Masuk ke tab Arus Stok → Purchase Order
+
+  ## **3\. List Purchase Order**
+
+  Tab: Arus Stok → Purchase Order  
+  Menampilkan:  
+* Tipe \= Purchase Order  
+* Nomor PO  
+* Supplier  
+* Total Bahan  
+* Total Harga (kosong jika belum diterima)  
+* Tanggal  
+* Status (Diminta / Selesai)  
+* Aksi (Lihat detail)
+
+  ## **4\. Detail Purchase Order**
+
+  Menampilkan:
+
+  ### Header:
+
+* Nomor PO  
+* Supplier  
+* Outlet  
+* User  
+* Tanggal  
+* Status timeline (Diminta → Selesai)
+
+  ### Detail Item:
+
+* Nama bahan  
+* Kategori  
+* Jumlah Diminta  
+* Harga Diminta  
+* Jumlah Diterima  
+* Harga Diterima  
+* Jumlah Ditolak  
+* Alasan Ditolak
+
+  ## **5\. Proses Penerimaan Barang**
+
+  User bisa:  
+* Input:  
+  * Jumlah Diterima  
+  * Harga Diterima  
+  * Jumlah Ditolak  
+  * Alasan Ditolak  
+* Upload foto bukti penerimaan (max 10 foto, max 5MB)
+
+  ## **6\. Terima Barang**
+
+  Saat klik Terima Barang:  
+  Sistem harus:  
+* Generate nomor GR  
+  Contoh: `GR/K56432/2026/02/11/1`  
+* Tambahkan stok sesuai jumlah diterima  
+* Simpan harga diterima sebagai harga pembelian  
+* Update status \= Selesai  
+* Update nilai persediaan  
+* Catat arus stok sebagai Pembelian
+
+  ## **7\. Unduh Purchase Order**
+
+  User bisa:  
+* Unduh PO dalam format .xlsx  
+* Data yang diunduh:  
+  * Header PO  
+  * Detail bahan  
+  * Supplier  
+  * Jumlah & harga
+
+  # **2.5.2 FLOW PROSES**
+
+  # **FLOW 1 — Create PO**
+
+    Pilih Supplier
+
+    ↓
+
+    Pilih Tanggal Pengiriman
+
+    ↓
+
+    Pilih Bahan
+
+    ↓
+
+    Input Jumlah Diminta
+
+    ↓
+
+    Klik Kirim Permintaan
+
+    ↓
+
+    System:
+
+      \- Generate nomor PO
+
+      \- Simpan header
+
+      \- Simpan detail
+
+      \- Status \= Diminta
+
+  # **FLOW 2 — Terima Barang**
+
+    Buka Detail PO
+
+    ↓
+
+    Input:
+
+      \- Jumlah Diterima
+
+      \- Harga Diterima
+
+      \- Jumlah Ditolak
+
+      \- Alasan
+
+      \- Upload Foto
+
+    ↓
+
+    Klik Terima Barang
+
+    ↓
+
+    System:
+
+      \- Generate nomor GR
+
+      \- Tambah stok
+
+      \- Update harga beli terakhir
+
+      \- Status \= Selesai
+
+      \- Catat arus stok pembelian
+
+# **2.5.3 STATUS FLOW**
+
+| Status | Artinya |
+| ----- | ----- |
+| Diminta | PO dibuat, belum diterima |
+| Selesai | Barang sudah diterima & stok masuk |
+
+# **2.5.4 SOURCE OF VALUE (SUMBER DATA)**
+
+## **A. Header PO**
+
+| Field | Source |
+| ----- | ----- |
+| Nomor PO | Auto generate backend |
+| Supplier | Master Supplier |
+| Outlet | Outlet aktif di header |
+| User | Logged in user |
+| Tanggal | created\_at |
+| Total Bahan | count detail |
+| Total Harga | sum harga diterima |
+
+## **B. Detail PO**
+
+| Field | Source |
+| ----- | ----- |
+| Nama Bahan | master\_bahan |
+| Kategori | master\_kategori |
+| Jumlah Diminta | user input |
+| Harga Diminta | default 0 |
+| Jumlah Diterima | user input |
+| Harga Diterima | user input |
+| Jumlah Ditolak | system calc / user input |
+| Alasan Ditolak | master alasan |
+
+## **C. Update Stok**
+
+Saat Selesai:
+
+stok.qty \= stok.qty \+ jumlah\_diterima  
+stok.harga\_terakhir \= harga\_diterima
+
+# **2.5.5 Gambaran Database Design**
+
+## **Tabel purchase\_orders**
+
+id  
+po\_number  
+supplier\_id  
+outlet\_id  
+status (diminta/selesai)  
+total\_item  
+total\_price  
+created\_by  
+Created\_at
+
+## **Tabel purchase\_order\_details**
+
+id  
+po\_id  
+bahan\_id  
+qty\_requested  
+price\_requested  
+qty\_received  
+price\_received  
+qty\_rejected  
+Reject\_reason
+
+## **Tabel goods\_receipt**
+
+id  
+gr\_number  
+po\_id  
+received\_by  
+Received\_at
+
+## **Tabel stok**
+
+id  
+bahan\_id  
+outlet\_id  
+qty  
+Last\_price
+
+# **2.5.6 Impact ke Laporan**
+
+Purchase Order mempengaruhi:
+
+* Laporan Arus Stok → Pembelian  
+* Nilai Persediaan  
+* Harga Pokok Produksi (HPP)  
+* Stok per outlet  
+* Audit pembelian
+
+**2.6 Arus Stock \- Purchase Order (Multi Supplier)**
+
+## **2.6.1 Master Kategori**
+
+### **Requirement**
+
+* **User dapat:**  
+  * Create kategori  
+  * Edit kategori  
+  * Delete kategori  
+  * Set parent–child (opsional jika support sub kategori)  
+* **Field:**  
+  * Nama kategori  
+  * Deskripsi (opsional)  
+  * Status aktif/nonaktif  
+* **Kategori harus bisa di-relasikan ke:**  
+  * Bahan Dasar  
+  * Report Arus Stok
+
+  ### **Flow**
+
+1. User buka Inventory → Kategori  
+2. Klik Tambah Kategori  
+3. Isi nama kategori  
+4. Simpan  
+5. Kategori muncul di dropdown:  
+   * Bahan Dasar  
+   * Purchase Order  
+   * Report stok
+
+   ### **Source of Value**
+
+* Struktur stok lebih rapi  
+* Reporting per kategori  
+* Analisa cost per kategori  
+* Kontrol pembelian berdasarkan grup bahan
+
+## **2.6.2 Assign Kategori ke Bahan Dasar**
+
+### **Requirement**
+
+* Setiap bahan wajib memiliki 1 kategori  
+* Tidak boleh bahan tanpa kategori
+
+  ### **Flow**
+
+1. User buat/edit bahan dasar  
+2. Pilih kategori  
+3. Simpan
+
+   ### **Source of Value**
+
+* PO bisa filter berdasarkan kategori  
+* Dashboard stok bisa aggregasi by kategori  
+* Cegah bahan “nyasar”
+
+## **2.6.3  Filter & Search Kategori**
+
+### **Requirement**
+
+* Search by nama kategori  
+* Filter aktif/nonaktif
+
+  ### **Flow**
+
+1. User ketik di search bar  
+2. Sistem filter real-time
+
+   ### **Source of Value**
+
+* Scaling saat kategori \>50  
+* Cepat saat audit
+
+## **2.6.4 Soft Delete & Validasi**
+
+### **Requirement**
+
+* Tidak boleh delete kategori jika:  
+  * Masih dipakai oleh bahan  
+* Sistem harus tampilkan warning
+
+  ### **Flow**
+
+1. Klik hapus  
+2. Jika dipakai → tampil error  
+3. Jika tidak → nonaktifkan
+
+   ### **Source of Value**
+
+* Data integrity  
+* Tidak merusak histori transaksi
+
+## **2.6.5 Integrasi dengan PO & Stock Movement**
+
+### **Requirement**
+
+* Saat buat PO:  
+  * Kategori otomatis muncul berdasarkan bahan  
+* Tidak bisa ubah kategori di PO (read-only)
+
+  ### **Flow**
+
+1. Pilih bahan  
+2. Sistem auto-fetch kategori dari master
+
+   ### **Source of Value**
+
+* Konsistensi data  
+* Hindari manipulasi klasifikasi biaya
+
+# **2.6.6 ARUS STOK → PURCHASE ORDER (MULTI SUPPLIER)**
+
+# **2.6.6.1 FUNCTIONAL REQUIREMENT**
+
+## **Create PO Multi Supplier**
+
+### Field Header:
+
+* Outlet (aktif)  
+* Tanggal Pengiriman  
+* Auto Generate PO Number
+
+  ### Field Detail (Grid):
+
+* Nama Bahan Dasar (dropdown)  
+* Kategori (auto)  
+* Nama Supplier (dropdown)  
+* Kuantitas  
+* Satuan  
+* Harga per satuan  
+* Subtotal (auto)
+
+  ### Summary:
+
+* Total Supplier (distinct count)  
+* Total PO (jumlah supplier unik)  
+* Total Belanja (sum subtotal)
+
+# **2.6.6.2 FLOW (END-TO-END)**
+
+## **Step 1 — Input Item**
+
+1. User pilih bahan  
+2. Sistem auto:  
+   * Kategori  
+   * Default supplier (jika ada)  
+   * Harga terakhir  
+3. User isi:  
+   * Supplier (boleh beda untuk tiap baris)  
+   * Qty  
+   * Harga
+
+   Sistem hitung:  
+     subtotal \= qty × harga
+
+   ## **Step 2 — Multi Supplier Split Logic**
+
+   Jika dalam 1 halaman terdapat:
+
+| Bahan | Supplier |
+| ----- | ----- |
+| A | S1 |
+| B | S1 |
+| C | S2 |
+
+   Maka sistem akan generate:
+
+* PO-001 → Supplier S1 (A \+ B)  
+* PO-002 → Supplier S2 (C)
+
+  ## **Step 3 — Simpan**
+
+  Saat klik Simpan:  
+1. Sistem group by supplier  
+2. Generate 1 PO per supplier  
+3. Status default: "Diminta"  
+4. Buat record:  
+   * purchase\_orders  
+   * purchase\_order\_items  
+5. Buat arus stok type: PURCHASE\_ORDER (pending)
+
+   ## **Step 4 — Optional Action (Modal)**
+
+   User bisa:  
+* Unduh Purchase Order (.xlsx)  
+  (Sesuai request → WA tidak dibahas)
+
+# **2.6.6.3 UNDuh PURCHASE ORDER (Multi Supplier)**
+
+**Jika ada 2 supplier:**  
+→ Generate 2 file  
+atau  
+→ 1 file dengan multi sheet per supplier
+
+### **Format minimal:**
+
+**Header:**
+
+* PO Number  
+* Supplier  
+* Outlet  
+* Tanggal Pengiriman  
+  **Body:**  
+* Bahan  
+* Qty  
+* Harga  
+* Subtotal  
+  **Footer:**  
+* Total
+
+# **2.6.6.4 SOURCE OF VALUE (PO MULTI SUPPLIER)**
+
+## **Efisiensi Operasional**
+
+* Tidak perlu buat PO satu per satu  
+* Satu halaman bisa handle banyak supplier
+
+  ## **Kontrol Cost**
+
+* Real-time total belanja  
+* Bisa compare harga antar supplier
+
+  ## **Data Driven Procurement**
+
+* Bisa track:  
+  * Supplier mana paling sering dipakai  
+  * Harga fluktuasi  
+  * Cost per kategori
+
+  ## **Audit & Compliance**
+
+* PO number auto generate  
+* Tidak bisa edit kategori manual  
+* Harga tercatat per transaksi
+
+  ## **Scalability untuk Chain**
+
+  Karena ada:  
+* Outlet selector  
+* Multi supplier split  
+  **Fitur ini scalable untuk:**  
+* Multi cabang  
+* Central purchasing
+
+# **2.6.6.5 DATABASE SOURCE OF VALUE (Mapping Teknis)**
+
+| Field UI | Source |
+| ----- | ----- |
+| Nama Bahan | master\_bahan\_dasar |
+| Kategori | master\_kategori |
+| Supplier | master\_supplier |
+| Harga default | last\_purchase\_price |
+| Qty | user input |
+| Subtotal | computed |
+| Total Belanja | SUM(subtotal) |
+| Total Supplier | COUNT(DISTINCT supplier\_id) |
+| Total PO | COUNT(DISTINCT supplier\_id) |
+
 3. **Supplier**  
    Supplier tidak menyimpan stok, tetapi terhubung langsung ke:  
 * Bahan Dasar  
@@ -3198,6 +4657,502 @@ Sistem wajib validasi:
 * Konversi tidak konsisten (0 atau negatif)  
 * Multiple bahan pakai konversi yang sama
 
-**D. Pelanggan**  
+**D. Pelanggan**
+
+1. **Pelanggan**
+
+   # **1.1 REQUIREMENT FITUR**
+
+   ## **A. Halaman List Pelanggan**
+
+   ### **1\. Header Section**
+
+* Title: Pelanggan  
+* Tombol: Ekspor (Export to Excel)
+
+  ### **2\. Search & Filter Bar**
+
+  #### **Search**
+
+  Field: `Cari nama atau nomor telepon`  
+* Search by:  
+  * Nama pelanggan  
+  * Nomor telepon  
+* Real-time filtering
+
+#### **Filter Chips**
+
+| Filter | Fungsi |
+| ----- | ----- |
+| Tipe | Segmentasi pelanggan (Boil, Hot, Warm) |
+| Terakhir Datang | Filter berdasarkan last visit |
+| Ulang Tahun | Filter berdasarkan tanggal ulang tahun |
+| Total Belanja | Filter berdasarkan nominal transaksi |
+| Produk | Filter berdasarkan produk yang pernah dibeli |
+
+## **B. Tabel Data Pelanggan**
+
+### **Kolom:**
+
+| Kolom | Deskripsi |
+| ----- | ----- |
+| Tipe | Badge segment (Hot / Warm / Boil) |
+| Nama Pelanggan | Nama \+ nomor HP |
+| Total Reservasi | Jumlah reservasi |
+| Transaksi Sukses | Jumlah transaksi sukses |
+| Nilai Transaksi | Total belanja |
+| Ulang Tahun | Tanggal ulang tahun |
+| Produk Disukai | Jumlah favorit |
+| Jumlah Koin | Loyalty coin |
+| Terakhir Datang | Last visit date |
+| Aksi | View detail \+ WhatsApp |
+
+## **C. Detail Pelanggan**
+
+Ketika klik icon 👁
+
+### **Section Ringkasan**
+
+* Ulang Tahun  
+* Total Belanja  
+* Reservasi  
+* Produk Favorit  
+* Ulasan  
+* Sisa Koin
+
+  ### **Tab:**
+
+* Ringkasan  
+* Pesanan  
+* Reservasi  
+* Ulasan
+
+  ## **D. Export Excel**
+
+  File Excel berisi:
+
+| Field | Mapping |
+| ----- | ----- |
+| Outlet | Nama outlet |
+| Tipe | Segment |
+| Nama | customer.name |
+| Nomor Telepon | customer.phone |
+| Terakhir Datang | last\_transaction\_date |
+| Reservasi | count(reservations) |
+| Order Total | count(orders) |
+| Order Berhasil | count(success\_orders) |
+| Total Belanja | sum(order.amount) |
+| Ulang Tahun | customer.birthdate |
+| Produk Disukai | count(favorite\_products) |
+| Jumlah Koin | loyalty\_coin |
+
+# **1.2 FLOW SISTEM**
+
+## **FLOW 1 — Load Halaman Pelanggan**
+
+User buka Menu → Pelanggan  
+↓  
+System ambil outlet\_id aktif  
+↓  
+Query semua customer berdasarkan outlet\_id  
+↓  
+Hitung agregasi:  
+   \- total transaksi  
+   \- total reservasi  
+   \- total belanja  
+   \- last visit  
+↓  
+Render tabel
+
+## **FLOW 2 — Filter Tipe**
+
+User klik "Tipe"  
+↓  
+Pilih Boil / Hot / Warm  
+↓  
+System filter berdasarkan field segment  
+↓  
+Reload tabel
+
+## **FLOW 3 — Filter Terakhir Datang**
+
+Filter options:
+
+* Diantara  
+* Sebelum tanggal  
+* Sesudah tanggal  
+  Query:  
+  WHERE last\_transaction\_date BETWEEN X AND Y
+
+  ## **FLOW 4 — Filter Ulang Tahun**
+
+  User pilih:  
+* Tanggal  
+* Bulan  
+* Tahun  
+  Query:  
+  WHERE DAY(birthdate) \= X  
+  AND MONTH(birthdate) \= Y  
+    
+  Use case:  
+  → Campaign birthday promo
+
+  ## **FLOW 5 — Filter Total Belanja**
+
+  User pilih operator:  
+* \<  
+* \=  
+  Query:  
+  HAVING SUM(order.amount) \> X
+
+  ## **FLOW 6 — Filter Produk**
+
+  User buka modal produk  
+  ↓  
+  Pilih kategori  
+  ↓  
+  Pilih produk  
+  ↓  
+  System filter customer yang pernah beli produk tsb  
+  Query logic:  
+  JOIN order\_items  
+  JOIN products  
+  WHERE products.id IN (...)  
+  GROUP BY customer\_id
+
+  ## **FLOW 7 — Detail Pelanggan**
+
+  Klik icon View  
+  ↓  
+  Ambil detail berdasarkan customer\_id  
+  ↓  
+  Query:  
+     \- Order history  
+     \- Reservasi  
+     \- Review  
+     \- Loyalty  
+  ↓  
+  Render tabs
+
+  ## **FLOW 8 — Export Excel**
+
+  User klik Export  
+  ↓  
+  System generate file .xlsx  
+  ↓  
+  Data sesuai filter aktif  
+  ↓  
+  Download file
+
+  # **1.3 SOURCE VALUE (ASAL DATA)**
+
+  Berikut mapping data dari database:
+
+## **customers**
+
+| Field | Digunakan untuk |
+| ----- | ----- |
+| id | primary key |
+| outlet\_id | filter outlet |
+| name | nama pelanggan |
+| phone | nomor |
+| birthdate | ulang tahun |
+| segment | tipe (Hot/Warm/Boil) |
+| created\_at | first visit |
+
+## **orders**
+
+| Field | Digunakan untuk |
+| ----- | ----- |
+| id | order id |
+| customer\_id | relasi |
+| outlet\_id | filter outlet |
+| status | sukses / batal |
+| total\_amount | nilai transaksi |
+| created\_at | last visit |
+
+## **reservations**
+
+| Field | Digunakan untuk |
+| ----- | ----- |
+| id | reservasi id |
+| customer\_id | relasi |
+| outlet\_id | filter |
+| status | valid |
+| reservation\_date | tanggal reservasi |
+
+## **order\_items**
+
+Digunakan untuk:
+
+* Produk yang dibeli  
+* Filter produk
+
+  ## **favorite\_products**
+
+  Digunakan untuk:  
+* Produk disukai  
+* Summary detail
+
+  ## **loyalty\_transactions**
+
+  Digunakan untuk:  
+* Hitung sisa koin
+
+  # **1.4 LOGIC SEGMENTASI (Tipe Pelanggan)**
+
+  Contoh rule (asumsi umum CRM):
+
+| Segment | Rule |
+| ----- | ----- |
+| Hot | ≥ 3 transaksi dalam 30 hari |
+| Warm | 1–2 transaksi dalam 30 hari |
+| Boil | Tidak transaksi \> 30 hari |
+
+  Bisa juga berdasarkan:
+
+* Recency  
+* Frequency  
+* Monetary (RFM model)
+
+  # **1.5 BUSINESS VALUE FITUR**
+
+  Fitur ini dipakai untuk:  
+* Campaign targeting  
+* Birthday promo automation  
+* High spender detection  
+* Identify loyal customer  
+* Identify churn customer  
+* Marketing performance analysis  
+* Export untuk Meta Ads Custom Audience
+
+# **1.6 VALIDATION RULES**
+
+| Field | Validation |
+| ----- | ----- |
+| Phone | Unique per outlet |
+| Birthdate | Optional |
+| Segment | Auto calculated |
+| Total Belanja | SUM only transaksi sukses |
+| Last Visit | MAX(order.created\_at) |
+
+# **1.7 Notes**
+
+* Customer tanpa transaksi → tetap muncul  
+* Customer tanpa birthdate → tidak masuk filter ulang tahun  
+* Customer dengan transaksi gagal → tidak masuk nilai transaksi  
+* Multi outlet → filter by outlet\_id aktif
+
+2. **Reviews**
+
+   # **2.1 REQUIREMENT SISTEM**
+
+   ## **A. Admin Side (Dashboard)**
+
+   ### **1\. Halaman List Reviews**
+
+   Admin dapat:  
+* Melihat daftar review  
+* Melihat:  
+  * Nama pelanggan  
+  * Tanggal review  
+  * Komentar  
+  * Produk yang dibeli  
+* Melihat rating (jika ada)  
+* Filter berdasarkan outlet (auto dari outlet aktif)  
+  Tidak ada:  
+* Edit review  
+* Hapus review (seharusnya read-only)
+
+  ### **2\. Pengaturan Ulasan**
+
+  Admin dapat:  
+* Menambahkan pertanyaan custom  
+* Menghapus pertanyaan  
+* Mengubah pertanyaan  
+* Maksimal rating: 1–5 bintang  
+  Contoh pertanyaan:  
+* Bagaimana rasa makanan kami?  
+* Bagaimana pelayanan kami?  
+* Bagaimana pengalaman order?  
+  Constraint:  
+* Pertanyaan berlaku per outlet  
+* Maksimal misalnya 5 pertanyaan aktif  
+* Tidak boleh kosong
+
+  ## **B. Customer Side (Frontend)**
+
+  Review hanya muncul jika:  
+* Order status \= sukses  
+* Order belum pernah direview  
+  Customer dapat:  
+* Memberi rating bintang 1–5  
+* Mengisi komentar (optional)  
+* Menjawab pertanyaan rating tambahan
+
+  # **2.2 FLOW SISTEM**
+
+  ## **FLOW 1 — Generate Request Review**
+
+  Customer melakukan transaksi  
+  ↓  
+  Order status \= SUCCESS  
+  ↓  
+  System cek:  
+    apakah review sudah ada?  
+  ↓  
+  Jika belum:  
+    tampilkan tombol "Beri Ulasan"  
+    atau kirim link review via WA/email  
+  Trigger bisa dari:  
+* Halaman struk digital  
+* Halaman success checkout
+
+  ## **FLOW 2 — Customer Submit Review**
+
+  Customer buka halaman review  
+  ↓  
+  System load:  
+    \- order\_id  
+    \- produk yang dibeli  
+    \- pertanyaan aktif dari outlet  
+  ↓  
+  Customer isi:  
+    \- rating utama (1–5)  
+    \- jawaban rating per pertanyaan  
+    \- komentar  
+  ↓  
+  Klik submit  
+  ↓  
+  System simpan review  
+  ↓  
+  Order.is\_reviewed \= true
+
+  ## **FLOW 3 — Admin Melihat Review**
+
+  Admin buka Dashboard → Reviews  
+  ↓  
+  System query review berdasarkan outlet\_id  
+  ↓  
+  Join:  
+    \- customers  
+    \- orders  
+    \- order\_items  
+  ↓  
+  Render list review
+
+  ## **FLOW 4 — Admin Atur Pertanyaan**
+
+  Admin buka Pengaturan Ulasan  
+  ↓  
+  Tambah / edit pertanyaan  
+  ↓  
+  Klik Simpan  
+  ↓  
+  System update review\_questions  
+    
+  Perubahan hanya berlaku untuk review berikutnya.
+
+  # **2.3 SOURCE VALUE (SUMBER DATA)**
+
+  ## **orders**
+
+| Field | Digunakan untuk |
+| ----- | ----- |
+| id | relasi review |
+| customer\_id | relasi customer |
+| outlet\_id | filter outlet |
+| status | hanya SUCCESS |
+| created\_at | tanggal transaksi |
+
+## **customers**
+
+| Field | Digunakan untuk |
+| ----- | ----- |
+| id | relasi |
+| name | nama reviewer |
+| phone | kontak |
+
+## **order\_items**
+
+Digunakan untuk:
+
+* Menampilkan produk yang dibeli pada review
+
+## **review\_questions**
+
+| Field | Fungsi |
+| ----- | ----- |
+| id | question id |
+| outlet\_id | scope outlet |
+| question\_text | pertanyaan |
+| is\_active | aktif/tidak |
+
+## **reviews**
+
+| Field | Fungsi |
+| ----- | ----- |
+| id | review id |
+| outlet\_id | filter |
+| customer\_id | relasi |
+| order\_id | relasi transaksi |
+| rating | rating utama |
+| comment | komentar |
+| created\_at | tanggal review |
+
+## **Review\_answers**
+
+Digunakan jika ada multi pertanyaan:
+
+| Field | Fungsi |
+| ----- | ----- |
+| review\_id | relasi |
+| question\_id | pertanyaan |
+| rating\_value | 1–5 |
+
+# **2.4 VALIDATION RULES**
+
+| Rule | Penjelasan |
+| ----- | ----- |
+| 1 order \= 1 review | Tidak boleh double review |
+| Order harus SUCCESS | Tidak boleh review order batal |
+| Rating wajib 1–5 | Tidak boleh kosong |
+| Komentar optional | Boleh kosong |
+| Review immutable | Tidak bisa diubah setelah submit |
+
+# 
+
+# **2.5 Notes**
+
+* Customer tidak isi komentar → tetap valid  
+* Customer buka link review setelah lama → tetap bisa selama order valid  
+* Customer coba submit dua kali → ditolak  
+* Pertanyaan dihapus → review lama tetap tampil
+
+  # **Flow Sederhana**
+
+  Orders (SUCCESS)  
+     ↓  
+  Trigger Review Request  
+     ↓  
+  Customer Submit Review  
+     ↓  
+  Stored in reviews \+ review\_answers  
+     ↓  
+  Dashboard Aggregation
+
+  # **Ringkasan**
+
+| Layer | Fungsi |
+| ----- | ----- |
+| Customer Side | Submit review |
+| Review Engine | Validasi & simpan |
+| CRM Dashboard | Monitoring |
+| Settings Layer | Custom pertanyaan |
+
+3. **Pesan Massal**  
+4. **Voucher**  
+5. **Koin**
+
 **E. Manajemen Meja**  
 **F. Integrasi**

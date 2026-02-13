@@ -11,6 +11,10 @@ import {
   Recipe,
   RecipeFilters,
   RecipeIngredient,
+  StockFlowRecord,
+  StockFlowDetailRecord,
+  StockFlowFilters,
+  ExpenseReason,
 } from './types';
 
 // === INVENTORY CATEGORIES ===
@@ -359,4 +363,142 @@ export function getStockLogsForMaterial(materialId: number): StockLog[] {
 
 export function getSupplierMaterials(supplierId: number): SupplierMaterial[] {
   return mockSupplierMaterials.filter((sm) => sm.supplierId === supplierId);
+}
+
+// === STOCK FLOW (ARUS STOK) ===
+export const mockStockFlowRecords: StockFlowRecord[] = [
+  {
+    id: 1, type: 'pembelian', referenceNumber: 'PB/K56432/2026/02/11/1',
+    outletOrSupplier: 'UD Makmur Jaya', totalItems: 3, totalPrice: 450000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-11T08:30:00Z',
+  },
+  {
+    id: 2, type: 'pembelian', referenceNumber: 'PB/K56432/2026/02/10/1',
+    outletOrSupplier: 'PT Sumber Protein', totalItems: 2, totalPrice: 280000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-10T09:15:00Z',
+  },
+  {
+    id: 3, type: 'pengeluaran', referenceNumber: 'EX/K56432/2026/02/11/1',
+    outletOrSupplier: '-', totalItems: 2, totalPrice: null,
+    status: 'selesai', createdBy: 'Staff A', createdAt: '2026-02-11T10:00:00Z',
+  },
+  {
+    id: 4, type: 'pengeluaran', referenceNumber: 'EX/K56432/2026/02/09/1',
+    outletOrSupplier: '-', totalItems: 1, totalPrice: null,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-09T14:30:00Z',
+  },
+  {
+    id: 5, type: 'stok_opname', referenceNumber: 'SO/K56432/2026/02/11/1',
+    outletOrSupplier: '-', totalItems: 5, totalPrice: -9000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-11T07:00:00Z',
+  },
+  {
+    id: 6, type: 'transfer', referenceNumber: 'TR/K56432/2026/02/10/1',
+    outletOrSupplier: 'Outlet Cabang 2', totalItems: 3, totalPrice: 150000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-10T11:00:00Z',
+  },
+  {
+    id: 7, type: 'transfer', referenceNumber: 'TR/K56432/2026/02/08/1',
+    outletOrSupplier: 'Outlet Cabang 3', totalItems: 2, totalPrice: 85000,
+    status: 'dikirim', createdBy: 'Staff B', createdAt: '2026-02-08T15:00:00Z',
+  },
+  {
+    id: 8, type: 'purchase_order', referenceNumber: 'PO/K56432/2026/02/11/1',
+    outletOrSupplier: 'UD Makmur Jaya', totalItems: 4, totalPrice: 0,
+    status: 'diminta', createdBy: 'Admin', createdAt: '2026-02-11T09:00:00Z',
+  },
+  {
+    id: 9, type: 'purchase_order', referenceNumber: 'PO/K56432/2026/02/07/1',
+    outletOrSupplier: 'CV Bumbu Nusantara', totalItems: 3, totalPrice: 320000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-07T08:00:00Z',
+  },
+  {
+    id: 10, type: 'pembelian', referenceNumber: 'PB/K56432/2026/02/05/1',
+    outletOrSupplier: 'CV Bumbu Nusantara', totalItems: 5, totalPrice: 675000,
+    status: 'selesai', createdBy: 'Staff A', createdAt: '2026-02-05T10:30:00Z',
+  },
+];
+
+export const mockStockFlowDetails: StockFlowDetailRecord[] = [
+  {
+    id: 1, type: 'pembelian', referenceNumber: 'PB/K56432/2026/02/11/1',
+    outletOrSupplier: 'UD Makmur Jaya', totalItems: 3, totalPrice: 450000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-11T08:30:00Z',
+    supplierName: 'UD Makmur Jaya',
+    items: [
+      { id: 1, materialId: 1, materialName: 'Beras Premium', categoryName: 'Bahan Kering', materialType: 'raw', qty: 25, unit: 'kg', price: 300000 },
+      { id: 2, materialId: 3, materialName: 'Gula Pasir', categoryName: 'Bahan Kering', materialType: 'raw', qty: 10, unit: 'kg', price: 120000 },
+      { id: 3, materialId: 4, materialName: 'Minyak Goreng', categoryName: 'Bahan Kering', materialType: 'raw', qty: 5, unit: 'liter', price: 30000 },
+    ],
+  },
+  {
+    id: 3, type: 'pengeluaran', referenceNumber: 'EX/K56432/2026/02/11/1',
+    outletOrSupplier: '-', totalItems: 2, totalPrice: null,
+    status: 'selesai', createdBy: 'Staff A', createdAt: '2026-02-11T10:00:00Z',
+    items: [
+      { id: 4, materialId: 2, materialName: 'Telur Ayam', categoryName: 'Bahan Segar', materialType: 'raw', qty: 30, unit: 'butir', price: 0, reason: 'Kadaluarsa' },
+      { id: 5, materialId: 7, materialName: 'Bumbu Racik', categoryName: 'Bumbu', materialType: 'semi_finished', qty: 200, unit: 'gram', price: 0, reason: 'Rusak' },
+    ],
+  },
+  {
+    id: 5, type: 'stok_opname', referenceNumber: 'SO/K56432/2026/02/11/1',
+    outletOrSupplier: '-', totalItems: 5, totalPrice: -9000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-11T07:00:00Z',
+    items: [
+      { id: 6, materialId: 1, materialName: 'Beras Premium', categoryName: 'Bahan Kering', materialType: 'raw', qty: -500, unit: 'gram', price: -6000, finalStock: 49500 },
+      { id: 7, materialId: 9, materialName: 'Susu UHT', categoryName: 'Minuman', materialType: 'raw', qty: -200, unit: 'ml', price: -3000, finalStock: 11800 },
+    ],
+  },
+  {
+    id: 6, type: 'transfer', referenceNumber: 'TR/K56432/2026/02/10/1',
+    outletOrSupplier: 'Outlet Cabang 2', totalItems: 3, totalPrice: 150000,
+    status: 'selesai', createdBy: 'Admin', createdAt: '2026-02-10T11:00:00Z',
+    outletFrom: 'Outlet Utama', outletTo: 'Outlet Cabang 2',
+    items: [
+      { id: 8, materialId: 1, materialName: 'Beras Premium', categoryName: 'Bahan Kering', materialType: 'raw', qty: 5000, unit: 'gram', price: 60000 },
+      { id: 9, materialId: 3, materialName: 'Gula Pasir', categoryName: 'Bahan Kering', materialType: 'raw', qty: 2000, unit: 'gram', price: 40000 },
+      { id: 10, materialId: 9, materialName: 'Susu UHT', categoryName: 'Minuman', materialType: 'raw', qty: 2000, unit: 'ml', price: 50000 },
+    ],
+  },
+  {
+    id: 8, type: 'purchase_order', referenceNumber: 'PO/K56432/2026/02/11/1',
+    outletOrSupplier: 'UD Makmur Jaya', totalItems: 4, totalPrice: 0,
+    status: 'diminta', createdBy: 'Admin', createdAt: '2026-02-11T09:00:00Z',
+    supplierName: 'UD Makmur Jaya', deliveryDate: '2026-02-14',
+    items: [
+      { id: 11, materialId: 1, materialName: 'Beras Premium', categoryName: 'Bahan Kering', materialType: 'raw', qty: 50, unit: 'kg', price: 0 },
+      { id: 12, materialId: 3, materialName: 'Gula Pasir', categoryName: 'Bahan Kering', materialType: 'raw', qty: 20, unit: 'kg', price: 0 },
+    ],
+  },
+];
+
+export const expenseReasonOptions: { value: ExpenseReason; label: string }[] = [
+  { value: 'rusak', label: 'Rusak' },
+  { value: 'hilang', label: 'Hilang' },
+  { value: 'kadaluarsa', label: 'Kadaluarsa' },
+  { value: 'uji_coba', label: 'Uji Coba' },
+  { value: 'sampling', label: 'Sampling' },
+  { value: 'lainnya', label: 'Lainnya' },
+];
+
+export function filterStockFlowRecords(
+  records: StockFlowRecord[],
+  filters: StockFlowFilters
+): StockFlowRecord[] {
+  return records.filter((record) => {
+    if (filters.type !== 'all' && record.type !== filters.type) return false;
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      if (
+        !record.referenceNumber.toLowerCase().includes(q) &&
+        !record.outletOrSupplier.toLowerCase().includes(q) &&
+        !record.createdBy.toLowerCase().includes(q)
+      ) return false;
+    }
+    return true;
+  });
+}
+
+export function getStockFlowDetail(id: number): StockFlowDetailRecord | undefined {
+  return mockStockFlowDetails.find((d) => d.id === id);
 }

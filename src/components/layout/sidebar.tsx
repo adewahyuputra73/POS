@@ -25,6 +25,8 @@ import {
   FolderOpen,
   Truck,
   BookOpen,
+  TrendingUp,
+  Star,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -66,11 +68,6 @@ const navItems: NavItem[] = [
     icon: <ShoppingCart className="h-5 w-5" />,
   },
   {
-    label: "Pelanggan",
-    href: "/customers",
-    icon: <Users className="h-5 w-5" />,
-  },
-  {
     label: "Pembayaran",
     href: "/payments",
     icon: <Wallet className="h-5 w-5" />,
@@ -96,8 +93,27 @@ const masterNavItems: NavItem[] = [
   },
 ];
 
+// Pelanggan menu items
+const pelangganNavItems: NavItem[] = [
+  {
+    label: "Pelanggan",
+    href: "/customers",
+    icon: <Users className="h-5 w-5" />,
+  },
+  {
+    label: "Ulasan",
+    href: "/customers/reviews",
+    icon: <Star className="h-5 w-5" />,
+  },
+];
+
 // Inventory menu items
 const inventoryNavItems: NavItem[] = [
+  {
+    label: "Arus Stok",
+    href: "/inventory/stock-flow",
+    icon: <TrendingUp className="h-5 w-5" />,
+  },
   {
     label: "Bahan Dasar",
     href: "/inventory/raw-materials",
@@ -149,6 +165,11 @@ export function Sidebar() {
     // For /products, only match exact path, not /products/variants
     if (href === "/products") {
       return pathname === "/products";
+    }
+
+    // For /customers, only match exact path, not /customers/reviews
+    if (href === "/customers") {
+      return pathname === "/customers";
     }
     
     return pathname.startsWith(href);
@@ -221,6 +242,15 @@ export function Sidebar() {
           sidebarCollapsed && "hidden"
         )}>Inventory</p>
         {inventoryNavItems.map((item) => (
+          <NavLink key={item.href} item={item} />
+        ))}
+
+        {/* Pelanggan Section */}
+        <p className={cn(
+          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+          sidebarCollapsed && "hidden"
+        )}>Pelanggan</p>
+        {pelangganNavItems.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
       </nav>
