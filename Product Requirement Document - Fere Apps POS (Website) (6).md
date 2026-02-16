@@ -5150,9 +5150,1329 @@ Digunakan jika ada multi pertanyaan:
 | CRM Dashboard | Monitoring |
 | Settings Layer | Custom pertanyaan |
 
-3. **Pesan Massal**  
-4. **Voucher**  
-5. **Koin**
+3. **Voucher**
 
-**E. Manajemen Meja**  
+   # **3.1 REQUIREMENT (Fungsional & Non-Fungsional)**
+
+   ## **A. HALAMAN LIST VOUCHER**
+
+   ### Fitur:
+
+1. Search voucher (berdasarkan kode / informasi diskon)  
+2. Tab status:  
+   * Berjalan  
+   * Akan Datang  
+   * Selesai  
+3. Tabel menampilkan:  
+   * Kode & Tipe Diskon  
+   * Detail Voucher  
+   * Durasi  
+   * Kuota Diskon (terpakai / total)  
+   * Status (badge)
+
+### **Status Logic:**
+
+| Status | Kondisi |
+| ----- | ----- |
+| Akan Datang | now \< tanggal\_mulai |
+| Berjalan | tanggal\_mulai ≤ now ≤ tanggal\_berakhir |
+| Selesai | now \> tanggal\_berakhir ATAU kuota habis |
+
+## **B. TAMBAH / EDIT VOUCHER**
+
+### **Informasi Diskon**
+
+| Field | Required | Keterangan |
+| ----- | ----- | ----- |
+| Tipe Diskon | ✔ | Ongkos Kirim / Produk |
+| Kode Diskon | ✔ | Unique per outlet |
+| Informasi Diskon | ✔ | Deskripsi max 100 char |
+| Bisa Digunakan Bersama Voucher Lain | ❌ | Boolean |
+
+Validasi:
+
+* Kode diskon tidak boleh duplicate (per outlet)  
+* Informasi diskon tidak boleh kosong
+
+### **Potongan & Kuota Diskon**
+
+| Field | Required | Keterangan |
+| ----- | ----- | ----- |
+| Jumlah Potongan Diskon | ✔ | % atau nominal |
+| Budget Promosi Per Transaksi | ❌ | Maks diskon per transaksi |
+| Kuota Diskon | ❌ | Maks jumlah pemakaian |
+
+Validasi:
+
+* Jika % → maksimal 100%  
+* Jika nominal → tidak boleh negatif  
+* Jika kuota diisi → tidak boleh \< 0
+
+### **Produk Diskon (Jika Tipe \= Produk)**
+
+| Field | Required | Keterangan |
+| ----- | ----- | ----- |
+| Tipe | Auto | Produk |
+| Potongan Diskon | ✔ | Semua Produk / Sebagian Produk |
+
+Jika:
+
+* Semua Produk → apply ke seluruh produk outlet  
+* Sebagian Produk → wajib pilih produk tertentu
+
+### **Kriteria Voucher (Optional)**
+
+| Field | Fungsi |
+| ----- | ----- |
+| Minimum Total Order | Minimal pembelian |
+| Pengiriman Tertentu | Filter metode pengiriman |
+| Pembayaran Tertentu | Filter metode pembayaran |
+| Pelanggan Tertentu | Segmentasi customer |
+
+Jika toggle ON → sistem harus menampilkan pilihan value.
+
+### **Durasi Diskon**
+
+| Field | Required |
+| ----- | ----- |
+| Tanggal & Jam Mulai | ✔ |
+| Tanggal & Jam Berakhir | ✔ |
+
+Validasi:
+
+* End \> Start  
+* Tidak boleh kosong
+
+# **3.2 FLOW SISTEM**
+
+## **Flow 1 — Admin Membuat Voucher**
+
+1. Admin buka menu Pelanggan → Voucher  
+2. Klik Tambah Voucher  
+3. Isi semua field required  
+4. Klik Simpan  
+5. Sistem:  
+   * Validasi semua data  
+   * Simpan ke database  
+   * Hitung status berdasarkan tanggal  
+6. Redirect ke halaman list
+
+## **Flow 2 — Status Voucher Otomatis**
+
+Saat halaman dibuka atau transaksi terjadi:
+
+IF now \< start\_date → Akan Datang  
+IF start\_date ≤ now ≤ end\_date → Berjalan  
+IF now \> end\_date → Selesai  
+IF kuota\_used ≥ kuota\_total → Selesai
+
+## **Flow 3 — Customer Menggunakan Voucher**
+
+1. Customer checkout  
+2. Input kode voucher  
+3. Sistem cek:  
+   * Voucher aktif?  
+   * Belum expired?  
+   * Kuota masih tersedia?  
+   * Minimum order terpenuhi?  
+   * Customer sesuai kriteria?  
+   * Metode pembayaran sesuai?  
+4. Jika valid:  
+   * Hitung diskon  
+   * Tambah kuota\_used \+1  
+5. Jika tidak valid:  
+   * Tampilkan error reason
+
+   ## **Flow 4 — Perhitungan Diskon**
+
+   ### Jika Persentase:
+
+   diskon \= total\_order × persen
+
+   
+
+   Jika ada budget per transaksi:
+
+   diskon\_final \= min(diskon, budget\_per\_transaksi)
+
+   
+
+   ### Jika Nominal:
+
+   diskon \= nominal
+
+   
+
+   Jika diskon \> total\_order:  
+     → diskon \= total\_order
+
+   # **3.3 SOURCE OF VALUE (Sumber Nilai Bisnis)**
+
+   ## **Revenue Growth**
+
+   Voucher:
+
+* Meningkatkan conversion rate  
+* Meningkatkan average order value (AOV)  
+* Meningkatkan repeat purchase
+
+## **Customer Retention**
+
+Dengan:
+
+* Voucher pelanggan tertentu  
+* Voucher minimum order  
+* Voucher periode tertentu  
+  Bisa:  
+* Retargeting  
+* Loyalty program  
+* Flash promo
+
+## **Marketing Control**
+
+Admin bisa kontrol:
+
+* Durasi  
+* Kuota  
+* Segmentasi  
+* Channel pembayaran  
+  Artinya:  
+  Promo tidak liar → tetap profitable.
+
+## **Budget Protection**
+
+Dengan:
+
+* Budget per transaksi  
+* Kuota  
+* Minimum order  
+  System memastikan:  
+  Promo ≠ rugi
+
+# **3.4 DATA MODEL (STRUKTUR DATABASE YANG IDEAL)**
+
+### **Table: vouchers**
+
+| Field | Tipe |
+| ----- | ----- |
+| id | uuid |
+| outlet\_id | uuid |
+| type | enum (produk/ongkir) |
+| code | string |
+| description | string |
+| discount\_type | enum (percent/fixed) |
+| discount\_value | decimal |
+| budget\_per\_tx | decimal |
+| quota\_total | integer |
+| quota\_used | integer |
+| is\_stackable | boolean |
+| min\_order | decimal |
+| start\_date | datetime |
+| end\_date | datetime |
+| status | enum |
+| created\_at | datetime |
+
+4. **Koin**
+
+   # **4.1 REQUIREMENT (Fungsional & Non-Fungsional)**
+
+   ## **A. HALAMAN UTAMA – LIST KOIN PELANGGAN**
+
+   ### Fitur:
+
+1. Search pelanggan (nama / nomor telepon)  
+2. Tampilkan:  
+   * Nama Pelanggan  
+   * Nomor Telepon  
+   * Total Koin  
+   * Nilai Koin (Rp)  
+3. Action:  
+   * Adjust  
+   * Transfer  
+4. Bulk select (checkbox)  
+5. Pagination  
+6. Approval Koin (button dengan counter pending)
+
+   ### Data yang ditampilkan:
+
+| Field | Keterangan |
+| ----- | ----- |
+| Nama Pelanggan | dari master pelanggan |
+| Nomor Telepon | dari master pelanggan |
+| Total Koin | saldo terkini |
+| Nilai Koin | total\_koin × conversion\_rate |
+
+## **B. TAMBAH PELANGGAN (Manual Enrollment Loyalty)**
+
+### Input:
+
+* Nama Pelanggan  
+* Nomor Telepon  
+* Koin Awal  
+* Nilai Koin (auto kalkulasi)
+
+  ### Validasi:
+
+* Nomor telepon unik  
+* Koin tidak boleh negatif  
+* Nama wajib diisi
+
+  ## **C. ADJUST KOIN**
+
+  Digunakan untuk:  
+* Penambahan koin (reward manual)  
+* Pengurangan koin (penalty / koreksi)
+
+  ### Input:
+
+* Tipe Adjustment (Penambahan / Pengurangan)  
+* Nominal Koin  
+* Nilai Koin (auto)
+
+  ### Logic:
+
+  Jika:  
+* Penambahan → saldo \+ nominal  
+* Pengurangan → saldo \- nominal  
+* Tidak boleh minus (kecuali sistem mengizinkan overdraft)
+
+## **D. TRANSFER KOIN**
+
+Digunakan untuk:
+
+* Transfer koin antar pelanggan
+
+  ### Input:
+
+* Nomor Telepon penerima  
+* Jumlah koin  
+* Nilai koin (auto)
+
+  ### Validasi:
+
+* Saldo cukup  
+* Nomor penerima valid  
+* Tidak boleh transfer ke diri sendiri
+
+## **E. APPROVAL KOIN**
+
+Sistem approval untuk:
+
+* Adjust  
+* Transfer  
+* Topup manual
+
+  ### Flow:
+
+1. Request dibuat → status: PENDING  
+2. Masuk ke Approval Koin  
+3. Admin bisa:  
+   * Setujui  
+   * Tolak
+
+   Jika disetujui:
+
+* Saldo berubah  
+* Masuk ke log transaksi
+
+# **4.2 FLOW SISTEM (END TO END)**
+
+## **FLOW 1 — Tambah Pelanggan**
+
+Admin → Tambah Pelanggan →  
+Validasi →  
+Insert master\_customer →  
+Insert wallet\_koin →  
+Selesai
+
+## **FLOW 2 — Adjust Koin**
+
+### Jika TANPA approval:
+
+Admin → Adjust →  
+Update saldo →  
+Insert koin\_transaction →  
+Selesai
+
+### Jika DENGAN approval:
+
+Admin → Adjust →  
+Insert approval\_request (pending) →  
+Supervisor →  
+\[Setujui\]  
+→ Update saldo →  
+→ Insert koin\_transaction
+
+## **FLOW 3 — Transfer Koin**
+
+### Jika TANPA approval:
+
+Admin →  
+Cek saldo →  
+Kurangi sender →  
+Tambah receiver →  
+Insert 2 transaksi →  
+Selesai
+
+### Jika DENGAN approval:
+
+Admin →  
+Insert approval\_request →  
+Supervisor →  
+Setujui →  
+Eksekusi transfer →  
+Insert transaksi debit & credit
+
+# **4.3 SOURCE VALUE (ASAL DATA)**
+
+## **Master Pelanggan**
+
+Sumber:
+
+customers  
+\- id  
+\- name  
+\- phone  
+\- outlet\_id  
+\- created\_at
+
+Digunakan untuk:
+
+* Nama  
+* Nomor Telepon  
+* Relasi koin
+
+## **Wallet Koin (Saldo)**
+
+Tabel:
+
+customer\_wallet  
+\- id  
+\- customer\_id  
+\- total\_koin  
+\- updated\_at
+
+Nilai total koin ditampilkan di halaman utama.
+
+## **Koin Conversion Rate**
+
+Di UI tertulis:
+
+Satu koin setara dengan Rp0
+
+Berarti ada konfigurasi global:
+
+koin\_settings  
+\- conversion\_rate  
+\- approval\_required (boolean)
+
+Nilai Koin dihitung:
+
+nilai\_koin \= total\_koin × conversion\_rate
+
+## **Log Transaksi Koin**
+
+Untuk histori:
+
+koin\_transactions  
+\- id  
+\- customer\_id  
+\- type (adjust / transfer / earn / redeem)  
+\- direction (credit/debit)  
+\- amount  
+\- balance\_before  
+\- balance\_after  
+\- created\_by  
+\- created\_at
+
+## **Approval Request**
+
+koin\_approvals  
+\- id  
+\- customer\_id  
+\- type (adjust / transfer)  
+\- amount  
+\- status (pending/approved/rejected)  
+\- requested\_by  
+\- approved\_by  
+\- created\_at  
+\- approved\_at
+
+# **4.4  RULES & BUSINESS LOGIC**
+
+### **Rule 1 — Saldo Tidak Boleh Minus**
+
+Saldo minimal \= 0
+
+### **Rule 2 — Atomic Transaction**
+
+Semua update saldo harus dalam DB transaction:
+
+BEGIN  
+Update sender  
+Update receiver  
+Insert logs  
+COMMIT
+
+### **Rule 3 — Approval Tidak Boleh Double**
+
+Approval hanya bisa diproses sekali.
+
+### **Rule 4 — Audit Trail**
+
+Semua:
+
+* Adjust  
+* Transfer  
+* Approval  
+  harus tercatat.
+
+# **4.5 NON-FUNCTIONAL REQUIREMENT**
+
+* Semua operasi harus transactional  
+* Semua perubahan saldo tercatat  
+* Sistem harus cepat (query index customer\_id)  
+* Role-based access:  
+  * Admin bisa request  
+  * Supervisor bisa approve
+
+# **4.6 HUBUNGAN DENGAN MODULE LAIN**
+
+| Module | Koneksi |
+| ----- | ----- |
+| Pelanggan | sumber data |
+| Voucher | bisa tukar koin |
+| POS | earn koin dari transaksi |
+| Approval | validasi perubahan saldo |
+
+**E. Manajemen Meja**
+
+1. **Tata Letak**
+
+   # **1.1 TUJUAN FITUR**
+
+   Fitur Tata Letak digunakan untuk:  
+* Mendesain layout meja restoran secara visual (drag & drop style).  
+* Mengelola meja berdasarkan area.  
+* Mengatur posisi, bentuk, dan kapasitas meja.  
+* Mengelola elemen non-meja (Bar / Dapur / Tembok).  
+* Menjadi referensi tampilan meja di POS (kasir & operasional).
+
+  # **1.2 REQUIREMENT**
+
+  ## **A. Functional Requirement**
+
+  ## **Area Management (Dropdown Area)**
+
+  ### Fitur:
+
+* Dropdown: Pilih Area  
+* Option:  
+  * List area existing (contoh: Lt.1)  
+  * Button “Tambah Area”  
+* Modal tambah area
+
+### Field Tambah Area:
+
+| Field | Tipe | Required | Rule |
+| ----- | ----- | ----- | ----- |
+| Nama Area | Text | Yes | Max 20 karakter |
+| Outlet ID | Hidden | Yes | Auto from selected outlet |
+
+### Behavior:
+
+* Area baru langsung muncul di dropdown  
+* Layout bersifat per-area (layout berbeda tiap area)
+
+  ## **Canvas Layout Editor**
+
+  ### Elemen:
+
+* Grid background (visual helper)  
+* Draggable object
+
+  ### Object Types:
+
+1. Meja  
+2. Bar  
+3. Dapur  
+4. Tembok
+
+   ## **Tambah Meja**
+
+   ### Tombol:
+
+   Dropdown "Meja" → pilih:  
+* Bundar  
+* Persegi
+
+  ### Saat klik:
+
+* Object muncul di canvas  
+* Default posisi tengah
+
+  ## **Detail Meja (Sidebar Kanan)**
+
+  Ketika meja dipilih:
+
+### Field:
+
+| Field | Tipe | Required | Rule |
+| ----- | ----- | ----- | ----- |
+| Area | Dropdown | Yes | Readonly sesuai area aktif |
+| Nama Meja | Text / Select | Yes | Unique per area |
+| Kapasitas | Number | Optional | \> 0 |
+
+### Action:
+
+* Hapus Meja
+
+  ## **Tambah Bar / Dapur / Tembok**
+
+  Tombol:  
+  “Bar / Dapur / Tembok”  
+  Behavior:  
+* Object non-meja ditambahkan  
+* Bisa dipindah  
+* Tidak punya kapasitas  
+  Detail panel:  
+* Nama (optional)  
+* Type (Bar / Dapur / Tembok)  
+* Delete
+
+  ## **Drag & Resize**
+
+  Setiap object:  
+* Bisa drag (update X,Y)  
+* Bisa resize (update width,height)  
+* Bisa rotate (opsional future enhancement)
+
+  ## **Delete**
+
+  Jika object dipilih:  
+* Tombol “Hapus Meja”  
+* Tombol “Hapus” untuk non-meja  
+  Confirm dialog required.
+
+  ## **Persist Layout**
+
+  Layout disimpan per:  
+* Outlet  
+* Area
+
+  # **1.3 FLOW SISTEM**
+
+  ## **FLOW 1 – Tambah Area**
+
+1. Klik dropdown Area  
+2. Klik “Tambah Area”  
+3. Input nama area  
+4. Klik Simpan  
+5. Insert ke DB  
+6. Auto reload dropdown
+
+   ## **FLOW 2 – Tambah Meja**
+
+1. Pilih area  
+2. Klik tombol Meja  
+3. Pilih Bundar / Persegi  
+4. Object muncul di canvas  
+5. Auto generate nama meja (misal: 1,2,3)  
+6. User bisa edit detail  
+7. Save layout
+
+   ## **FLOW 3 – Edit Meja**
+
+1. Klik meja di canvas  
+2. Detail muncul di sidebar  
+3. Edit kapasitas / nama  
+4. Auto save atau klik simpan
+
+   ## **FLOW 4 – Drag Meja**
+
+1. User drag meja  
+2. Update posisi (x,y)  
+3. Auto save ke DB
+
+   ## **FLOW 5 – Hapus Meja**
+
+1. Klik meja  
+2. Klik Hapus  
+3. Confirm  
+4. Delete dari DB  
+5. Remove dari canvas
+
+   ## **FLOW 6 – Tambah Bar/Dapur/Tembok**
+
+1. Klik tombol Bar/Dapur/Tembok  
+2. Object muncul  
+3. Drag ke posisi  
+4. Save
+
+   # **1.4 SOURCE VALUE (DATABASE STRUCTURE)**
+
+## **Table: outlets**
+
+| Field | Type |
+| ----- | ----- |
+| id | uuid |
+| name | string |
+
+## **Table: areas**
+
+| Field | Type |
+| ----- | ----- |
+| id | uuid |
+| outlet\_id | uuid |
+| name | string |
+| created\_at | timestamp |
+
+**Relasi:**
+
+* 1 outlet → banyak area
+
+## **Table: tables (meja)**
+
+| Field | Type |
+| ----- | ----- |
+| **id** | **uuid** |
+| **outlet\_id** | **uuid** |
+| **area\_id** | **uuid** |
+| **name** | **string** |
+| **shape** | **enum('bundar','persegi')** |
+| **capacity** | **integer** |
+| **position\_x** | **float** |
+| **position\_y** | **float** |
+| **width** | **float** |
+| **height** | **float** |
+| **rotation** | **float** |
+| **created\_at** | **timestamp** |
+
+## **Table: layout\_objects**
+
+Untuk bar/dapur/tembok (generic object)
+
+| Field | Type |
+| ----- | ----- |
+| id | uuid |
+| outlet\_id | uuid |
+| area\_id | uuid |
+| type | enum('bar','dapur','tembok') |
+| name | string |
+| position\_x | float |
+| position\_y | float |
+| width | float |
+| height | float |
+| rotation | float |
+
+# **1.5 BUSINESS RULES**
+
+1. Nama meja unik dalam 1 area  
+2. 1 meja tidak boleh punya order aktif saat dihapus  
+3. Layout terpisah per area  
+4. Layout terpisah per outlet  
+5. Area tidak bisa dihapus jika masih ada meja  
+6. Delete meja harus soft delete jika sudah pernah dipakai transaksi
+
+   # **1.6 SOURCE VALUE UNTUK POS**
+
+   Data layout ini akan dipakai untuk:
+
+   ### POS (Kasir):
+
+* Menampilkan visual meja  
+* Status meja (kosong, terisi, reserved)  
+* Kapasitas meja  
+* Filtering per area
+
+### **Source status meja:**
+
+| Status | Source |
+| ----- | ----- |
+| Kosong | tidak ada transaksi aktif |
+| Terisi | ada transaksi open |
+| Reserved | ada booking |
+
+# **1.7 DATA YANG DIGUNAKAN DI FRONTEND**
+
+Saat load area:
+
+API:
+
+GET /outlets/:id/areas/:area\_id/layout
+
+Return:
+
+{  
+  tables: \[\],  
+  objects: \[\]  
+}
+
+Frontend render ulang canvas berdasarkan data ini.
+
+# **1.8 NON-FUNCTIONAL REQUIREMENT**
+
+* Harus smooth drag  
+* Auto-save minimal delay  
+* Tidak boleh hilang layout saat refresh  
+* Responsive minimal desktop optimized  
+* Grid snapping (opsional enhancement)
+
+  # **1.9  Notes**
+
+* Area kosong → tampilkan canvas kosong  
+* Nama meja duplikat → error  
+* Meja dihapus saat ada transaksi → blocked  
+* Layout corrupt → fallback reset
+
+2. **Area**
+
+# **2.1 TUJUAN FITUR AREA**
+
+Area adalah pengelompokan meja berdasarkan zona fisik outlet.
+
+Contoh:
+
+* Lt.1 Indoor  
+* Lt.2 Outdoor  
+* VIP Room  
+* Smoking Area  
+* Rooftop  
+* Garden  
+  Area digunakan untuk:  
+* Mengelompokkan meja  
+* Mengatur harga per area  
+* Mengatur batas maksimal pengunjung  
+* Mengatur fasilitas area  
+* Digunakan di POS & reservasi
+
+  # **2.2 FUNCTIONAL REQUIREMENTS**
+
+  ## **A. Halaman List Area**
+
+  ### **Menampilkan:**
+
+| Field | Source | Keterangan |
+| ----- | ----- | ----- |
+| Nama Area | areas.name | Nama zona |
+| Jumlah Meja | count(tables where area\_id) | Auto calculated |
+| Kapasitas | sum(tables.capacity) | Total kapasitas meja |
+| Layanan & Fasilitas | count(area\_services) | Jumlah fasilitas |
+| Ubah | action | Edit area |
+| Hapus | action | Soft delete area |
+
+  ### **Validasi Hapus:**
+
+* Tidak bisa hapus jika:  
+  * Masih ada meja aktif  
+  * Ada reservasi aktif  
+* Jika dihapus → status \= inactive (soft delete)
+
+  ## **B. Tambah Area / Ubah Area**
+
+  Field sama.
+
+### **1\. Informasi Area**
+
+| Field | Type | Required | Source |
+| ----- | ----- | ----- | ----- |
+| Nama Area | string (max 20\) | ✅ | user input |
+| Deskripsi Area | text | ❌ | user input |
+| Harga | decimal | default 0 | user input |
+| / pax | integer | default 1 | user input |
+
+### **2\. Sesuaikan Harga Tambahan**
+
+Toggle: ON/OFF
+
+Jika ON:
+
+* Bisa set harga tambahan per pax di atas batas tertentu  
+  Digunakan untuk:  
+  Area VIP atau area premium
+
+  ### **3\. Terapkan Batas Maksimal Pengunjung**
+
+  Toggle: ON/OFF  
+  Jika ON:  
+* Area memiliki max capacity  
+* Tidak bisa menerima reservasi jika over limit
+
+  ### **4\. Layanan & Fasilitas**
+
+  Max 20 karakter per item.  
+  Contoh:  
+* AC  
+* Smoking  
+* Live Music  
+* Private Room  
+* WiFi  
+* Outdoor
+
+Bisa multiple.
+
+### **5\. Akses Anak**
+
+Toggle ON/OFF
+
+Jika OFF:
+
+* Area tidak bisa dipilih untuk reservasi anak  
+* Digunakan untuk bar area
+
+  ### **6\. Foto Pendukung**
+
+  Max:  
+* 5 foto  
+* 5MB per foto  
+  Digunakan untuk:  
+* Halaman reservasi online  
+* Preview area customer
+
+# **2.3 FLOW SISTEM**
+
+# **FLOW A – Tambah Area**
+
+1. User klik → Tambah Area  
+2. Isi form  
+3. Klik Simpan  
+4. Validasi:  
+   * Nama tidak boleh kosong  
+   * Nama unik per outlet  
+5. Save ke database  
+6. Status \= active  
+7. Redirect ke list area
+
+   # **FLOW B – Ubah Area**
+
+1. Klik icon edit  
+2. Form terisi dari database  
+3. Ubah data  
+4. Klik Ubah Area  
+5. Update record
+
+   # **FLOW C – Hapus Area**
+
+1. Klik hapus  
+2. Validasi:  
+   * Tidak boleh ada meja  
+   * Tidak ada reservasi aktif  
+3. Jika lolos → set is\_active \= false
+
+   # **FLOW D – Digunakan di Tata Letak**
+
+   Area menjadi dropdown filter di:  
+   Manajemen Meja → Tata Letak  
+   Flow:  
+1. User pilih Area  
+2. Load semua meja where area\_id \= selected  
+3. Render meja di canvas
+
+   # **FLOW E – Digunakan di Reservasi**
+
+   Saat customer pilih meja:  
+1. Sistem cek area:  
+   * Apakah allow child?  
+   * Apakah max capacity exceeded?  
+   * Apakah ada harga tambahan?  
+2. Hitung pricing
+
+   # **2.4 SOURCE VALUE (DATABASE DESIGN)**
+
+   ## **Table: areas**
+
+| Field | Type |
+| ----- | ----- |
+| id | uuid |
+| outlet\_id | uuid |
+| name | varchar(20) |
+| description | text |
+| base\_price | decimal |
+| pax\_divider | int |
+| enable\_extra\_price | boolean |
+| enable\_max\_capacity | boolean |
+| allow\_children | boolean |
+| is\_active | boolean |
+| created\_at | timestamp |
+| updated\_at | timestamp |
+
+## **Table: area\_services**
+
+| Field | Type |
+| ----- | ----- |
+| id | uuid |
+| area\_id | uuid |
+| name | varchar(20) |
+
+## **Table: area\_photos**
+
+| Field | Type |
+| ----- | ----- |
+| id | uuid |
+| area\_id | uuid |
+| image\_url | text |
+
+## **Table: tables**
+
+| Field | Type |
+| ----- | ----- |
+| id | uuid |
+| area\_id | uuid |
+| name | varchar |
+| capacity | int |
+| shape | enum (circle, rectangle) |
+| position\_x | float |
+| position\_y | float |
+| width | float |
+| height | float |
+
+# **2.5 BUSINESS LOGIC SUMMARY**
+
+| Logic | Penjelasan |
+| ----- | ----- |
+| Area wajib punya nama unik | per outlet |
+| Harga default \= 0 | jika tidak diisi |
+| Jika max capacity ON | sistem hitung total kapasitas meja |
+| Jika allow\_children OFF | tidak muncul di reservasi anak |
+| Jika area non-active | tidak muncul di POS & reservasi |
+
+# **2.6 RELATIONSHIP DENGAN MODUL LAIN**
+
+Area digunakan oleh:
+
+* Tata Letak  
+* Meja  
+* Reservasi  
+* POS Dine In  
+* Laporan kapasitas  
+* Online Booking
+
+# **2.7 Notes**
+
+* Area tanpa meja → boleh  
+* Area dengan meja → tidak bisa dihapus  
+* Ganti harga area → tidak mengubah transaksi lama  
+* Hapus foto → hanya delete record, tidak mempengaruhi area
+
+  # **UI BEHAVIOR RULES**
+
+* Toggle disable field jika OFF  
+* Validasi real-time character limit  
+* Button submit disabled jika nama kosong  
+* Foto preview sebelum upload
+
+3. **Meja**
+
+   # **3.1 Requirements**
+
+   ## **A. FUNCTIONAL REQUIREMENTS**
+
+   ### **1\. List Area**
+
+   Menampilkan daftar area dalam 1 outlet.  
+   **Kolom:**  
+* Nama Area  
+* Jumlah Meja (auto count dari tabel meja)  
+* Kapasitas (akumulasi kapasitas meja dalam area)  
+* Layanan & Fasilitas (jumlah item)  
+* Aksi: Ubah, Hapus  
+  **Rules:**  
+* Scope by Outlet (multi-outlet ready)  
+* Pagination jika data banyak  
+* Tidak bisa hapus area jika masih ada meja (recommended constraint)
+
+  ### **2\. Tambah Area / Ubah Area**
+
+  Layout dan field sama.
+
+  #### **Field:**
+
+  ### **1\. Nama Area (Required)**
+
+* String  
+* Unik dalam 1 outlet  
+* Case insensitive  
+* Maks 50–100 karakter
+
+  ### **2\. Deskripsi Area (Optional)**
+
+* Text  
+* Free input
+
+  ### **3\. Harga**
+
+  Format:  
+  `Rp [nominal] / [pax]`  
+  Field:  
+* Harga per pax  
+* Default pax \= 1  
+* Numeric only  
+* \= 0  
+  Digunakan jika:  
+* Area dijadikan reservable area  
+* Pricing berbasis jumlah tamu
+
+  ### **4\. Sesuaikan Harga Tambahan (Toggle)**
+
+  Jika aktif:  
+* Sistem akan menghitung biaya tambahan jika jumlah pengunjung \> batas paket utama  
+  Dependensi:  
+* Butuh field kapasitas atau paket utama
+
+  ### **5\. Terapkan Batas Maksimal Pengunjung (Toggle)**
+
+  Jika aktif:  
+* Harus isi batas maksimal  
+* Sistem akan validasi booking/order tidak melebihi batas
+
+### **6\. Layanan & Fasilitas**
+
+* Multiple entries  
+* Maks 20 karakter per item  
+* Disimpan sebagai list (relasi table area\_facilities)  
+  Contoh:  
+* AC  
+* Smoking  
+* VIP  
+* Outdoor
+
+  ### **7\. Akses Anak (Toggle)**
+
+  Boolean:  
+* true \= area child friendly  
+* false \= tidak
+
+  ### **8\. Foto Pendukung**
+
+* Max 5 foto  
+* Max 5MB/foto  
+* Disimpan sebagai:  
+  area\_photos table / storage link
+
+  ## **B. NON-FUNCTIONAL REQUIREMENTS**
+
+* Multi outlet support  
+* Soft delete recommended  
+* Audit log: created\_by, updated\_by  
+* Semua data scoped by outlet\_id
+
+  ## **C. FLOW – AREA**
+
+  ### **Tambah Area**
+
+1. Klik Tambah Area  
+2. Isi form  
+3. Validasi:  
+   * Nama area unique  
+   * Numeric field valid  
+4. Save  
+5. Insert ke:  
+   * areas  
+   * area\_facilities  
+   * area\_photos  
+6. Refresh list
+
+   ### **Ubah Area**
+
+1. Klik icon edit  
+2. Load existing data  
+3. Edit  
+4. Save  
+5. Update tabel
+
+   ### **Hapus Area**
+
+1. Klik hapus  
+2. Cek:  
+   * Ada meja?  
+     * Ya → block  
+     * Tidak → delete/soft delete
+
+## **D. SOURCE OF VALUE – AREA**
+
+| Field | Source |
+| ----- | ----- |
+| Jumlah Meja | COUNT(meja WHERE area\_id \= x) |
+| Kapasitas | SUM(meja.kapasitas) |
+| Layanan & Fasilitas | COUNT(area\_facilities) |
+| Harga | Input manual |
+| Akses Anak | Toggle boolean |
+| Foto | Storage URL |
+
+**3.2 MODULE: MEJA**
+
+## **A. FUNCTIONAL REQUIREMENTS**
+
+### **1\. List Meja**
+
+Kolom:
+
+* Nama Meja  
+* Area  
+* Kapasitas  
+* Unduh (QR)  
+* Ubah  
+* Hapus  
+  Rules:  
+* Scope by outlet  
+* Area join  
+* Checkbox for bulk action (future ready)
+
+## **B. Tambah Meja**
+
+Ada 2 opsi:
+
+### **Tambah Satuan**
+
+Field:
+
+* Nama Meja (Required)  
+* Area (Required)  
+* Jumlah Kapasitas (Optional)  
+  Validation:  
+* Alphanumeric  
+* Maks 5 karakter  
+* Unik dalam area yang sama  
+* Case insensitive  
+* Kapasitas max 99  
+  Insert:  
+* meja table
+
+  ### **Tambah Sekaligus (Bulk Upload)**
+
+  Step 1: Download Template  
+  Template columns:  
+* nama meja  
+* area  
+* kapasitas  
+  Step 2: Upload Template  
+  Format:  
+* .xlsx  
+* Max 2MB  
+  Validasi:  
+* Nama meja max 5 karakter  
+* Tidak boleh duplicate dalam area yang sama  
+* Area:  
+  * Case insensitive  
+  * Jika belum ada → auto create area  
+* Kapasitas max 99  
+  Jika error:  
+* Tampilkan baris error  
+  Jika valid:  
+* Bulk insert  
+* Auto generate QR per meja
+
+  ## **C. Ubah Meja**
+
+  Field:  
+* Nama Meja  
+* Area  
+* Kapasitas  
+  Validasi:  
+* Unique dalam area  
+* Max 5 karakter  
+  Update record
+
+  ## **D. Hapus Meja**
+
+  Hard delete atau soft delete.  
+  Constraint recommended:  
+* Tidak bisa hapus jika ada transaksi aktif.
+
+## **E. Unduh QR**
+
+Klik icon download → buka preview modal.
+
+QR berisi:
+
+opaper.app/{slug\_outlet}?meja={nama\_meja}
+
+Customization:
+
+* Logo  
+* Warna font  
+* Warna background  
+* Bahasa  
+  Button:  
+* Unduh 1 QR (PDF/PNG)
+
+  ## **F. FLOW – MEJA**
+
+  ### **Tambah Satuan**
+
+  Tambah Meja → Isi form → Validasi → Insert → Generate QR → Done
+
+  ### **Tambah Sekaligus**
+
+  Download template → Isi → Upload → Validasi → Insert batch → Generate QR → Done
+
+  ### **Scan QR (Customer Side)**
+
+1. Customer scan QR  
+2. Masuk ke landing outlet  
+3. System detect:  
+   * outlet  
+   * meja  
+4. Session meja disimpan  
+5. Order attached ke meja\_id
+
+   ## **G. DATABASE DESIGN (SIMPLE)**
+
+   ### **areas**
+
+* id  
+* outlet\_id  
+* name  
+* description  
+* price  
+* is\_price\_adjustment  
+* max\_visitors  
+* is\_child\_allowed  
+* created\_at  
+* Updated\_at
+
+  ### **area\_facilities**
+
+* id  
+* area\_id  
+* name
+
+  ### **area\_photos**
+
+* id  
+* area\_id  
+* file\_url
+
+  ### **tables (meja)**
+
+* id  
+* outlet\_id  
+* area\_id  
+* name  
+* capacity  
+* qr\_code  
+* is\_active  
+* Created\_at
+
+  # **3.3 EDGE CASES YANG HARUS DIHANDLE**
+
+* Duplicate meja dalam area  
+* Area dihapus tapi masih ada meja  
+* Bulk upload dengan 100+ rows  
+* QR invalid  
+* Meja dipindah area  
+* Rename meja (QR harus update?)
+
+  # **3.4 NOTES**
+
+  Area \= grouping layer  
+  Meja \= transaction anchor  
+  QR \= entry point customer  
+  Outlet \= scope utama  
+  Semua data:  
+  Outlet  
+   └── Area  
+        └── Meja  
+             └── Order
+
 **F. Integrasi**

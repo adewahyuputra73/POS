@@ -81,23 +81,17 @@ SelectTrigger.displayName = "SelectTrigger";
 // SelectValue
 interface SelectValueProps {
   placeholder?: string;
+  children?: React.ReactNode;
 }
 
-export function SelectValue({ placeholder }: SelectValueProps) {
-  const { value, open } = useSelectContext();
-  // We store the display text in a data attribute on the selected item
-  const [displayText, setDisplayText] = React.useState('');
-  const selectCtx = useSelectContext();
-
-  // Find the matching option text by searching DOM after render
-  React.useEffect(() => {
-    if (!value) { setDisplayText(''); return; }
-    // This is handled by SelectItem setting data attributes
-  }, [value]);
-
+export function SelectValue({ placeholder, children }: SelectValueProps) {
+  const { value } = useSelectContext();
+  // Simplified: If children provided (explicit label), use it. 
+  // Otherwise try to show value (fallback).
+  
   return (
     <span className={cn("truncate", !value && "text-gray-400")}>
-      {value ? (displayText || value) : placeholder}
+      {children ? children : (value || placeholder)}
     </span>
   );
 }

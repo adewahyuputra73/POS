@@ -16,6 +16,15 @@ interface CustomerFilterBarProps {
 }
 
 export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: CustomerFilterBarProps) {
+  const segmentLabels: Record<string, string> = { all: "Semua Tipe", hot: "🔥 Hot", warm: "🌤 Warm", boil: "❄️ Boil" };
+  const lastVisitLabels: Record<string, string> = { all: "Semua Waktu", today: "Hari Ini", this_week: "Minggu Ini", this_month: "Bulan Ini" };
+  const totalSpentLabels: Record<string, string> = { all: "Semua", gt: "> Rp 1.000.000", lt: "< Rp 500.000" };
+
+  const getBirthdayLabel = (val: number | null) => {
+    if (val === null) return "Semua Bulan";
+    return monthOptions.find(m => m.value === val)?.label || String(val);
+  };
+
   const hasActiveFilters = filters.segment !== 'all' || filters.birthdayMonth !== null ||
     filters.totalSpent !== 'all' || filters.lastVisit !== 'all';
 
@@ -41,8 +50,8 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
           value={filters.segment}
           onValueChange={(v: string) => onFiltersChange({ ...filters, segment: v as CustomerSegment | 'all' })}
         >
-          <SelectTrigger className={`w-32 h-9 text-xs ${filters.segment !== 'all' ? 'border-primary bg-primary/5' : ''}`}>
-            <SelectValue placeholder="Tipe" />
+          <SelectTrigger className={`w-36 h-9 text-xs ${filters.segment !== 'all' ? 'border-primary bg-primary/5' : ''}`}>
+            <SelectValue>{segmentLabels[filters.segment]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua Tipe</SelectItem>
@@ -58,7 +67,7 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
           onValueChange={(v: string) => onFiltersChange({ ...filters, lastVisit: v as LastVisitFilter })}
         >
           <SelectTrigger className={`w-40 h-9 text-xs ${filters.lastVisit !== 'all' ? 'border-primary bg-primary/5' : ''}`}>
-            <SelectValue placeholder="Terakhir Datang" />
+            <SelectValue>{lastVisitLabels[filters.lastVisit]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua Waktu</SelectItem>
@@ -74,7 +83,7 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
           onValueChange={(v: string) => onFiltersChange({ ...filters, birthdayMonth: v === 'all' ? null : parseInt(v) })}
         >
           <SelectTrigger className={`w-36 h-9 text-xs ${filters.birthdayMonth !== null ? 'border-primary bg-primary/5' : ''}`}>
-            <SelectValue placeholder="Ulang Tahun" />
+            <SelectValue>{getBirthdayLabel(filters.birthdayMonth)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua Bulan</SelectItem>
@@ -90,7 +99,7 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
           onValueChange={(v: string) => onFiltersChange({ ...filters, totalSpent: v as TotalSpentFilter, totalSpentMin: v === 'gt' ? 1000000 : undefined, totalSpentMax: v === 'lt' ? 500000 : undefined })}
         >
           <SelectTrigger className={`w-36 h-9 text-xs ${filters.totalSpent !== 'all' ? 'border-primary bg-primary/5' : ''}`}>
-            <SelectValue placeholder="Total Belanja" />
+            <SelectValue>{totalSpentLabels[filters.totalSpent]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua</SelectItem>

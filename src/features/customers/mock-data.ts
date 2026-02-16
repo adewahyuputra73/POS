@@ -6,6 +6,13 @@ import {
   Review,
   ReviewQuestion,
   ReviewFilters,
+  Voucher,
+  VoucherStatus,
+  VoucherFilters,
+  CoinCustomer,
+  CoinApproval,
+  CoinSettings,
+  CoinFilters,
 } from './types';
 
 // ========================
@@ -314,3 +321,171 @@ export function getReviewStats(reviews: Review[]) {
   reviews.forEach(r => dist[r.rating - 1]++);
   return { avgRating: Math.round(avg * 10) / 10, totalReviews: reviews.length, ratingDistribution: dist };
 }
+
+// ========================
+// VOUCHER MOCK DATA
+// ========================
+
+export const mockVouchers: Voucher[] = [
+  {
+    id: 1, code: 'HEMAT20', type: 'produk', description: 'Diskon 20% semua produk',
+    discountType: 'percent', discountValue: 20, budgetPerTransaction: 50000,
+    quotaTotal: 100, quotaUsed: 45, isStackable: false,
+    productScope: 'all', selectedProductIds: [],
+    minOrder: 100000, specificDelivery: null, specificPayment: null, specificCustomerSegment: null,
+    startDate: '2026-02-01T00:00:00Z', endDate: '2026-03-01T23:59:59Z',
+    status: 'active', createdAt: '2026-01-25T10:00:00Z',
+  },
+  {
+    id: 2, code: 'FREEONGKIR', type: 'ongkir', description: 'Gratis ongkir min. Rp75.000',
+    discountType: 'fixed', discountValue: 15000, budgetPerTransaction: null,
+    quotaTotal: 200, quotaUsed: 87, isStackable: true,
+    productScope: 'all', selectedProductIds: [],
+    minOrder: 75000, specificDelivery: ['GoSend', 'GrabExpress'], specificPayment: null, specificCustomerSegment: null,
+    startDate: '2026-02-01T00:00:00Z', endDate: '2026-02-28T23:59:59Z',
+    status: 'active', createdAt: '2026-01-28T14:00:00Z',
+  },
+  {
+    id: 3, code: 'VIP30', type: 'produk', description: 'Diskon 30% khusus pelanggan Hot',
+    discountType: 'percent', discountValue: 30, budgetPerTransaction: 75000,
+    quotaTotal: 50, quotaUsed: 12, isStackable: false,
+    productScope: 'all', selectedProductIds: [],
+    minOrder: 150000, specificDelivery: null, specificPayment: null, specificCustomerSegment: ['hot'],
+    startDate: '2026-02-10T00:00:00Z', endDate: '2026-02-28T23:59:59Z',
+    status: 'active', createdAt: '2026-02-05T09:00:00Z',
+  },
+  {
+    id: 4, code: 'KOPI10K', type: 'produk', description: 'Potongan Rp10.000 menu kopi',
+    discountType: 'fixed', discountValue: 10000, budgetPerTransaction: null,
+    quotaTotal: 300, quotaUsed: 300, isStackable: false,
+    productScope: 'selected', selectedProductIds: [1, 5, 8, 12],
+    minOrder: null, specificDelivery: null, specificPayment: null, specificCustomerSegment: null,
+    startDate: '2026-01-15T00:00:00Z', endDate: '2026-02-15T23:59:59Z',
+    status: 'ended', createdAt: '2026-01-10T11:00:00Z',
+  },
+  {
+    id: 5, code: 'OPENING50', type: 'produk', description: 'Grand Opening 50% OFF',
+    discountType: 'percent', discountValue: 50, budgetPerTransaction: 100000,
+    quotaTotal: 500, quotaUsed: 500, isStackable: false,
+    productScope: 'all', selectedProductIds: [],
+    minOrder: null, specificDelivery: null, specificPayment: null, specificCustomerSegment: null,
+    startDate: '2025-12-01T00:00:00Z', endDate: '2025-12-31T23:59:59Z',
+    status: 'ended', createdAt: '2025-11-25T10:00:00Z',
+  },
+  {
+    id: 6, code: 'RAMADAN25', type: 'produk', description: 'Diskon Ramadan 25%',
+    discountType: 'percent', discountValue: 25, budgetPerTransaction: 60000,
+    quotaTotal: 200, quotaUsed: 0, isStackable: true,
+    productScope: 'all', selectedProductIds: [],
+    minOrder: 80000, specificDelivery: null, specificPayment: ['QRIS', 'E-Wallet'], specificCustomerSegment: null,
+    startDate: '2026-03-01T00:00:00Z', endDate: '2026-03-31T23:59:59Z',
+    status: 'upcoming', createdAt: '2026-02-10T08:00:00Z',
+  },
+  {
+    id: 7, code: 'PAYDAY15', type: 'produk', description: 'Payday Sale 15% OFF',
+    discountType: 'percent', discountValue: 15, budgetPerTransaction: 40000,
+    quotaTotal: 150, quotaUsed: 0, isStackable: false,
+    productScope: 'all', selectedProductIds: [],
+    minOrder: 50000, specificDelivery: null, specificPayment: null, specificCustomerSegment: null,
+    startDate: '2026-02-25T00:00:00Z', endDate: '2026-02-28T23:59:59Z',
+    status: 'upcoming', createdAt: '2026-02-12T15:00:00Z',
+  },
+  {
+    id: 8, code: 'QRIS5K', type: 'produk', description: 'Cashback Rp5.000 bayar QRIS',
+    discountType: 'fixed', discountValue: 5000, budgetPerTransaction: null,
+    quotaTotal: null, quotaUsed: 234, isStackable: true,
+    productScope: 'all', selectedProductIds: [],
+    minOrder: 30000, specificDelivery: null, specificPayment: ['QRIS'], specificCustomerSegment: null,
+    startDate: '2026-01-01T00:00:00Z', endDate: '2026-06-30T23:59:59Z',
+    status: 'active', createdAt: '2025-12-20T10:00:00Z',
+  },
+];
+
+export function getVoucherStatus(v: Pick<Voucher, 'startDate' | 'endDate' | 'quotaTotal' | 'quotaUsed'>): VoucherStatus {
+  const now = new Date();
+  const start = new Date(v.startDate);
+  const end = new Date(v.endDate);
+  if (now < start) return 'upcoming';
+  if (now > end) return 'ended';
+  if (v.quotaTotal !== null && v.quotaUsed >= v.quotaTotal) return 'ended';
+  return 'active';
+}
+
+export function filterVouchers(vouchers: Voucher[], filters: VoucherFilters): Voucher[] {
+  return vouchers.filter((v) => {
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      if (!v.code.toLowerCase().includes(q) && !v.description.toLowerCase().includes(q)) return false;
+    }
+    if (filters.status !== 'all' && v.status !== filters.status) return false;
+    return true;
+  });
+}
+
+export function getVoucherStats(vouchers: Voucher[]) {
+  return {
+    total: vouchers.length,
+    active: vouchers.filter(v => v.status === 'active').length,
+    upcoming: vouchers.filter(v => v.status === 'upcoming').length,
+    ended: vouchers.filter(v => v.status === 'ended').length,
+  };
+}
+
+// ========================
+// KOIN MOCK DATA
+// ========================
+
+export const coinSettings: CoinSettings = {
+  conversionRate: 100, // 1 coin = Rp100
+  approvalRequired: true,
+};
+
+export const mockCoinCustomers: CoinCustomer[] = [
+  { id: 1, name: 'Budi Santoso', phone: '081234567890', totalCoins: 1200, coinValue: 120000 },
+  { id: 2, name: 'Siti Aminah', phone: '081298765432', totalCoins: 980, coinValue: 98000 },
+  { id: 3, name: 'Andi Wijaya', phone: '082112345678', totalCoins: 450, coinValue: 45000 },
+  { id: 4, name: 'Dewi Lestari', phone: '085678901234', totalCoins: 200, coinValue: 20000 },
+  { id: 5, name: 'Rizky Pratama', phone: '087812345678', totalCoins: 50, coinValue: 5000 },
+  { id: 6, name: 'Nurul Hidayah', phone: '081345678901', totalCoins: 2100, coinValue: 210000 },
+  { id: 7, name: 'Ahmad Fauzi', phone: '082299887766', totalCoins: 180, coinValue: 18000 },
+  { id: 8, name: 'Putri Rahayu', phone: '085511223344', totalCoins: 0, coinValue: 0 },
+  { id: 9, name: 'Hendri Sutanto', phone: '081456789012', totalCoins: 850, coinValue: 85000 },
+  { id: 10, name: 'Maya Sari', phone: '089912345678', totalCoins: 300, coinValue: 30000 },
+  { id: 11, name: 'Joko Widodo', phone: '081567890123', totalCoins: 100, coinValue: 10000 },
+  { id: 12, name: 'Ratna Dewi', phone: '082334556677', totalCoins: 1500, coinValue: 150000 },
+];
+
+export const mockCoinApprovals: CoinApproval[] = [
+  {
+    id: 1, customerId: 3, customerName: 'Andi Wijaya', customerPhone: '082112345678',
+    type: 'adjust', amount: 500, direction: 'credit', status: 'pending',
+    requestedBy: 'Admin Kasir', approvedBy: null, createdAt: '2026-02-13T10:00:00Z', approvedAt: null,
+  },
+  {
+    id: 2, customerId: 1, customerName: 'Budi Santoso', customerPhone: '081234567890',
+    type: 'transfer', amount: 200, direction: 'debit', status: 'pending',
+    requestedBy: 'Admin Kasir', approvedBy: null, createdAt: '2026-02-13T11:00:00Z', approvedAt: null,
+    recipientId: 6, recipientName: 'Nurul Hidayah', recipientPhone: '081345678901',
+  },
+  {
+    id: 3, customerId: 12, customerName: 'Ratna Dewi', customerPhone: '082334556677',
+    type: 'adjust', amount: 100, direction: 'debit', status: 'pending',
+    requestedBy: 'Manager', approvedBy: null, createdAt: '2026-02-12T16:00:00Z', approvedAt: null,
+  },
+  {
+    id: 4, customerId: 9, customerName: 'Hendri Sutanto', customerPhone: '081456789012',
+    type: 'adjust', amount: 300, direction: 'credit', status: 'approved',
+    requestedBy: 'Admin Kasir', approvedBy: 'Manager', createdAt: '2026-02-11T09:00:00Z', approvedAt: '2026-02-11T14:00:00Z',
+  },
+];
+
+export function filterCoinCustomers(customers: CoinCustomer[], filters: CoinFilters): CoinCustomer[] {
+  return customers.filter((c) => {
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      if (!c.name.toLowerCase().includes(q) && !c.phone.includes(q)) return false;
+    }
+    return true;
+  });
+}
+

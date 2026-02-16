@@ -112,3 +112,119 @@ export interface ReviewFilters {
   ratingMax: number | null;
   dateRange?: { start: string; end: string };
 }
+
+// ==========================================
+// Voucher Types (PRD v6 D.3)
+// ==========================================
+
+export type VoucherType = 'produk' | 'ongkir';
+export type VoucherStatus = 'upcoming' | 'active' | 'ended';
+export type DiscountType = 'percent' | 'fixed';
+export type ProductScope = 'all' | 'selected';
+
+export interface Voucher {
+  id: number;
+  code: string;
+  type: VoucherType;
+  description: string;
+  discountType: DiscountType;
+  discountValue: number;
+  budgetPerTransaction: number | null;
+  quotaTotal: number | null;
+  quotaUsed: number;
+  isStackable: boolean;
+  productScope: ProductScope;
+  selectedProductIds: number[];
+  // Criteria
+  minOrder: number | null;
+  specificDelivery: string[] | null;
+  specificPayment: string[] | null;
+  specificCustomerSegment: CustomerSegment[] | null;
+  // Duration
+  startDate: string; // ISO datetime
+  endDate: string; // ISO datetime
+  // Computed
+  status: VoucherStatus;
+  createdAt: string;
+}
+
+export interface VoucherFormData {
+  code: string;
+  type: VoucherType;
+  description: string;
+  discountType: DiscountType;
+  discountValue: number;
+  budgetPerTransaction: number | null;
+  quotaTotal: number | null;
+  isStackable: boolean;
+  productScope: ProductScope;
+  selectedProductIds: number[];
+  minOrder: number | null;
+  specificDelivery: string[] | null;
+  specificPayment: string[] | null;
+  specificCustomerSegment: CustomerSegment[] | null;
+  startDate: string;
+  endDate: string;
+}
+
+export interface VoucherFilters {
+  search: string;
+  status: VoucherStatus | 'all';
+}
+
+// ==========================================
+// Koin Types (PRD v6 D.4)
+// ==========================================
+
+export interface CoinCustomer {
+  id: number;
+  name: string;
+  phone: string;
+  totalCoins: number;
+  coinValue: number; // totalCoins × conversionRate
+}
+
+export type CoinTransactionType = 'adjust' | 'transfer' | 'earn' | 'redeem';
+export type CoinDirection = 'credit' | 'debit';
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
+export interface CoinTransaction {
+  id: number;
+  customerId: number;
+  customerName: string;
+  type: CoinTransactionType;
+  direction: CoinDirection;
+  amount: number;
+  balanceBefore: number;
+  balanceAfter: number;
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface CoinApproval {
+  id: number;
+  customerId: number;
+  customerName: string;
+  customerPhone: string;
+  type: 'adjust' | 'transfer';
+  amount: number;
+  direction: CoinDirection;
+  status: ApprovalStatus;
+  requestedBy: string;
+  approvedBy: string | null;
+  createdAt: string;
+  approvedAt: string | null;
+  // Transfer-specific
+  recipientId?: number;
+  recipientName?: string;
+  recipientPhone?: string;
+}
+
+export interface CoinSettings {
+  conversionRate: number; // 1 coin = X rupiah
+  approvalRequired: boolean;
+}
+
+export interface CoinFilters {
+  search: string;
+}

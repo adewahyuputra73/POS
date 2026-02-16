@@ -27,6 +27,11 @@ import {
   BookOpen,
   TrendingUp,
   Star,
+  Ticket,
+  Coins,
+  MapPin,
+  LayoutGrid,
+  Armchair,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -105,6 +110,35 @@ const pelangganNavItems: NavItem[] = [
     href: "/customers/reviews",
     icon: <Star className="h-5 w-5" />,
   },
+  {
+    label: "Voucher",
+    href: "/customers/vouchers",
+    icon: <Ticket className="h-5 w-5" />,
+  },
+  {
+    label: "Koin",
+    href: "/customers/coins",
+    icon: <Coins className="h-5 w-5" />,
+  },
+];
+
+// Manajemen Meja menu items
+const mejaNavItems: NavItem[] = [
+  {
+    label: "Tata Letak",
+    href: "/table-management/layout",
+    icon: <LayoutGrid className="h-5 w-5" />,
+  },
+  {
+    label: "Area",
+    href: "/table-management/area",
+    icon: <MapPin className="h-5 w-5" />,
+  },
+  {
+    label: "Meja",
+    href: "/table-management/tables",
+    icon: <Armchair className="h-5 w-5" />,
+  },
 ];
 
 // Inventory menu items
@@ -167,7 +201,7 @@ export function Sidebar() {
       return pathname === "/products";
     }
 
-    // For /customers, only match exact path, not /customers/reviews
+    // For /customers, only match exact path, not sub-routes
     if (href === "/customers") {
       return pathname === "/customers";
     }
@@ -251,6 +285,15 @@ export function Sidebar() {
           sidebarCollapsed && "hidden"
         )}>Pelanggan</p>
         {pelangganNavItems.map((item) => (
+          <NavLink key={item.href} item={item} />
+        ))}
+
+        {/* Manajemen Meja Section */}
+        <p className={cn(
+          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+          sidebarCollapsed && "hidden"
+        )}>Manajemen Meja</p>
+        {mejaNavItems.map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
       </nav>

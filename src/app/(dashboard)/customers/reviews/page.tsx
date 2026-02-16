@@ -123,7 +123,7 @@ export default function ReviewsPage() {
             }}
           >
             <SelectTrigger className="w-36">
-              <SelectValue placeholder="Rating" />
+              <SelectValue>{filters.ratingMin === null ? "Semua Rating" : `⭐ ${filters.ratingMin} Bintang`}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Semua Rating</SelectItem>
