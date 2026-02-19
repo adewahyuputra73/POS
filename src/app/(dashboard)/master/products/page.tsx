@@ -8,10 +8,14 @@ import { cn } from "@/lib/utils";
 import { Search, X } from "lucide-react";
 import {
   MasterProductTable,
+  MasterProductForm,
   AddOptionsMenu,
+  ImportProductModal,
 } from "@/features/master";
 import {
   mockMasterProducts,
+  mockMasterCategories,
+  mockMasterVariants,
   mockOutlets,
   filterMasterProducts,
   getMasterProductStats,
@@ -30,6 +34,10 @@ export default function MasterProductsPage() {
     search: '',
   });
   const [activeTab, setActiveTab] = useState<StatusTab>('all');
+  
+  // Modal State
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<MasterProduct | null>(null);
 
   // Computed
   const stats = useMemo(() => getMasterProductStats(products), [products]);
@@ -43,15 +51,16 @@ export default function MasterProductsPage() {
 
   // Handlers
   const handleEdit = (product: MasterProduct) => {
-    // TODO: Open edit modal
-    showToast(`Edit "${product.name}" - Coming soon`, "info");
+    setSelectedProduct(product);
+    setIsFormOpen(true);
   };
 
-  const handleToggleStatus = (productId: number, isActive: boolean) => {
+  const handleToggleStatus = (productId: string, isActive: boolean) => {
+    const newStatus = isActive ? 'ACTIVE' : 'INACTIVE';
     setProducts((prev) =>
       prev.map((p) =>
         p.id === productId
-          ? { ...p, isActive, updatedAt: new Date().toISOString() }
+          ? { ...p, status: newStatus, updatedAt: new Date() }
           : p
       )
     );
@@ -63,11 +72,64 @@ export default function MasterProductsPage() {
   };
 
   const handleAddNew = () => {
-    showToast("Tambah Master Produk - Coming soon", "info");
+    setSelectedProduct(null);
+    setIsFormOpen(true);
+  };
+  
+  const handleFormSubmit = (data: Omit<MasterProduct, "id" | "createdAt" | "updatedAt">) => {
+    if (selectedProduct) {
+      // Edit
+      setProducts((prev) => 
+        prev.map((p) => 
+          p.id === selectedProduct.id 
+            ? { ...p, ...data, updatedAt: new Date() }
+            : p
+        )
+      );
+      showToast(`Master produk "${data.name}" berhasil diperbarui`, "success");
+    } else {
+      // Add
+      const newProduct: MasterProduct = {
+        id: `mp-${Date.now()}`,
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      setProducts((prev) => [newProduct, ...prev]);
+      showToast(`Master produk "${data.name}" berhasil dibuat`, "success");
+    }
+    setIsFormOpen(false);
   };
 
+  // Import State
+  const [isImportOpen, setIsImportOpen] = useState(false);
+
   const handleImport = () => {
-    showToast(`Impor dari Outlet - Coming soon`, "info");
+    setIsImportOpen(true);
+  };
+
+  const handleImportSubmit = (newProducts: Partial<MasterProduct>[]) => {
+    const imported: MasterProduct[] = newProducts.map((p, index) => ({
+      id: `mp-imp-${Date.now()}-${index}`,
+      name: p.name || "Imported Product",
+      categoryId: "mc-1",
+      basePrice: p.basePrice || 0,
+      costPrice: 0,
+       channelPrices: { goFood: 0, grabFood: 0, shopeeFood: 0 },
+      trackStock: true,
+      stock: 0,
+      hasTax: false,
+      hasServiceFee: false,
+      variantIds: [],
+      outletIds: [],
+      ...p,
+      status: 'ACTIVE',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as MasterProduct));
+
+    setProducts(prev => [...imported, ...prev]);
+    showToast(`Berhasil mengimpor ${imported.length} produk`, "success");
   };
 
   const tabs: { key: StatusTab; label: string; count: number }[] = [
@@ -156,6 +218,23 @@ export default function MasterProductsPage() {
         products={filteredProducts}
         onEdit={handleEdit}
         onToggleStatus={handleToggleStatus}
+      />
+      
+      {/* Form Dialog */}
+      <MasterProductForm
+        open={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        product={selectedProduct}
+        onSubmit={handleFormSubmit}
+        categories={mockMasterCategories}
+        variants={mockMasterVariants}
+        outlets={mockOutlets}
+      />
+
+      <ImportProductModal 
+        open={isImportOpen} 
+        onClose={() => setIsImportOpen(false)} 
+        onImport={handleImportSubmit}
       />
     </div>
   );

@@ -1,102 +1,86 @@
-// Master Module Types
+export type Status = 'ACTIVE' | 'INACTIVE';
 
-// === OUTLET ===
-export interface Outlet {
-  id: number;
+export interface MasterCategory {
+  id: string;
   name: string;
-  address: string;
-  isActive: boolean;
+  icon?: string; // URL or icon name
+  productsCount: number;
+  status: Status;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// === MASTER PRODUK ===
+export interface MasterVariantOption {
+  id: string;
+  name: string;
+  priceAdjustment: number;
+  isDefault?: boolean;
+  productId?: string; // If optionSource is 'menu_book'
+}
+
+export interface MasterVariant {
+  id: string;
+  name: string; // Group name, e.g., "Size", "Sugar Level"
+  type: 'SINGLE' | 'MULTIPLE'; // Radio vs Checkbox
+  options: MasterVariantOption[];
+  isMandatory: boolean;
+  minSelection?: number;
+  maxSelection?: number;
+  // New fields for Master Variant specific logic
+  optionSource?: 'custom' | 'menu_book';
+  appliedProductCount?: number;
+  status: Status;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface MasterProduct {
-  id: number;
+  id: string;
+  // General
   name: string;
   description?: string;
-  isActive: boolean;
-  imageUrl?: string;
+  categoryId: string;
+  image?: string;
+  
+  // Pricing
   basePrice: number;
-  comparePriceclassName?: number; // harga coret
-  prices: {
-    default: number;
-    gofood?: number;
-    grabfood?: number;
-    shopeefood?: number;
+  costPrice?: number; // HPP / Harga Modal for Gross Profit calculation
+  channelPrices?: {
+    goFood?: number;
+    grabFood?: number;
+    shopeeFood?: number;
+    [key: string]: number | undefined;
   };
-  outletIds: number[];
-  categoryIds: number[];
-  variantIds: number[];
-  settings: {
-    useDimension: boolean;
-    useStockLimit: boolean;
-    useTax: boolean;
-    useServiceFee: boolean;
-    useTakeawayFee: boolean;
+  
+  // Inventory
+  sku?: string;
+  trackStock: boolean;
+  minStock?: number;
+  stock?: number;
+  
+  // Attributes
+  dimensions?: {
+    length?: number;
+    width?: number;
+    height?: number;
+    weight?: number;
   };
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MasterProductFormData {
-  name: string;
-  description?: string;
-  isActive: boolean;
-  images: File[];
-  basePrice: number;
-  comparePrice?: number;
-  gofoodPrice?: number;
-  grabfoodPrice?: number;
-  shopeefoodPrice?: number;
-  outletIds: number[];
-  categoryIds: number[];
-  variantIds: number[];
-  useDimension: boolean;
-  useStockLimit: boolean;
-  useTax: boolean;
-  useServiceFee: boolean;
-  useTakeawayFee: boolean;
+  hasTax: boolean;
+  hasServiceFee: boolean;
+  
+  // Relations
+  variantIds: string[]; // IDs of MasterVariants attached
+  outletIds?: string[]; // IDs of outlets where this product is available
+  
+  status: Status;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface MasterProductFilters {
   status: 'all' | 'active' | 'inactive';
   search: string;
-}
-
-// === MASTER VARIAN ===
-export interface MasterVariant {
-  id: number;
-  name: string;
-  isRequired: boolean;
-  maxOptions?: number; // null = unlimited
-  optionSource: 'custom' | 'product'; 
-  options: MasterVariantOption[];
-  isActive: boolean;
-  appliedProductCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MasterVariantOption {
-  id: number;
-  name: string;
-  price: number;
-  channelPrices?: {
-    gofood?: number;
-    grabfood?: number;
-    shopeefood?: number;
-  };
-  stockLimit?: number;
-  isActive: boolean;
-  sourceProductId?: number; // if from product
-}
-
-export interface MasterVariantFormData {
-  name: string;
-  isRequired: boolean;
-  maxOptions?: number;
-  optionSource: 'custom' | 'product';
-  options: Omit<MasterVariantOption, 'id'>[];
-  isActive: boolean;
+  categoryId?: string;
 }
 
 export interface MasterVariantFilters {
@@ -104,30 +88,9 @@ export interface MasterVariantFilters {
   search: string;
 }
 
-// === MASTER KATEGORI ===
-export interface MasterCategory {
-  id: number;
+export interface Outlet {
+  id: string;
   name: string;
-  isActive: boolean;
-  productCount: number;
-  productIds: number[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MasterCategoryFormData {
-  name: string;
-  isActive: boolean;
-  productIds: number[];
-}
-
-export interface MasterCategoryFilters {
-  status: 'all' | 'active' | 'inactive';
-  search: string;
-}
-
-// === IMPORT TYPES ===
-export interface ImportFromOutletData {
-  outletId: number;
-  selectedIds: number[];
+  address?: string;
+  isActive?: boolean;
 }

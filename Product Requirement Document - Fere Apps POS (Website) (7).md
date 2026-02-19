@@ -6385,7 +6385,7 @@ Klik icon download → buka preview modal.
 
 QR berisi:
 
-opaper.app/{slug\_outlet}?meja={nama\_meja}
+fere.app/{slug\_outlet}?meja={nama\_meja}
 
 Customization:
 
@@ -6476,3 +6476,253 @@ Customization:
              └── Order
 
 **F. Integrasi**
+
+1. # **SCOPE**
+
+   Integrasi **WhatsApp Business (WABA / WhatsApp Business Platform API)** untuk:  
+* Kirim notifikasi otomatis  
+* Kirim invoice / receipt  
+* Kirim notifikasi order sesuai yang di chat customer  
+* Reply chat manual dari website
+
+2. # **FUNCTIONAL REQUIREMENTS**
+
+   ## **A. STATUS CARD (Dashboard Integrasi)**
+
+   ### **Card UI:**
+
+* Logo WhatsApp  
+* Status:  
+  * Not Connected  
+  * Connected  
+  * Token Expired  
+* Connected Phone Number  
+* Last Sync  
+* Button:  
+  * Connect  
+  * Disconnect  
+  * Reconnect
+
+3. ## **CONNECT WHATSAPP BUSINESS**
+
+   ### **Required Data:**
+
+* Meta App ID  
+* Phone Number ID  
+* Business Account ID  
+* Access Token  
+* Webhook Verify Token  
+  Atau:  
+  	OAuth login Meta (Recommended UX)
+
+4. ## **MESSAGE FEATURES**
+
+   ### **4.1 Auto Notification (Outbound Only)**
+
+   Trigger:  
+* Order Created  
+* Order Paid  
+* Order Completed  
+* Booking Confirmed  
+* Booking Reminder  
+* Payment Reminder  
+  Template message required (pre-approved by Meta).
+
+  ### **4.2 Manual Send Message**
+
+  Admin bisa:  
+* Pilih order  
+* Klik “Send WhatsApp”  
+* Kirim template message
+
+### **4.3 Incoming Message (Optional Advanced)**
+
+Jika webhook diaktifkan:
+
+* Customer balas WA  
+* Message masuk ke Fere  
+* Ditampilkan di:  
+  * Inbox panel  
+  * Order detail
+
+### **4.4 Reply From Website?**
+
+With WhatsApp Business API (Cloud API).
+
+5. # **UI DESIGN (RECOMMENDED)**
+
+   ## **A. Integrasi Page**
+
+   Card Layout:
+
+   ## **🟢 WhatsApp Business**
+
+   ## **Connected to: \+62xxxxxxxx**
+
+   ## **Last sync: 16 Feb 2026 22:11**
+
+   ## **\[ Manage \] \[ Disconnect \]**
+
+   Jika belum connect:
+
+   ## **⚪ WhatsApp Business**
+
+   ## **Not Connected**
+
+   ## **\[ Connect WhatsApp Business \]**
+
+## **B. Connect Flow Modal**
+
+Step 1:  
+Login Meta OAuth
+
+Step 2:  
+Select:
+
+* Business Account  
+* Phone Number  
+  Step 3:  
+  Grant permission  
+  Step 4:  
+  Webhook auto configured  
+  Success page:  
+  Connected successfully
+
+## **C. Settings Page (After Connected)**
+
+Sections:
+
+### **1\. Notification Settings**
+
+Toggle:
+
+* Send Order Confirmation  
+* Send Payment Success  
+* Send Reminder  
+* Send Booking Confirmation
+
+  ### **2\. Message Templates**
+
+  Editable preview:  
+  Example:  
+  Order Confirmation:  
+  Halo {{customer\_name}},  
+  Pesanan Anda dengan nomor {{order\_no}} telah kami terima.  
+  Total: {{total}}
+
+  ### **3\. Inbox (Optional Advanced Feature)**
+
+  Sidebar:
+
+* Customer list  
+* Unread indicator  
+  Main panel:  
+* Chat bubble style  
+* Admin reply box
+
+6. # **FLOW DIAGRAM**
+
+   ## **FLOW 1: CONNECT**
+
+   User klik Connect  
+   → Redirect ke Meta OAuth  
+   → User login  
+   → Approve app  
+   → System simpan:  
+* access\_token  
+* phone\_number\_id  
+* business\_account\_id  
+  → Setup webhook  
+  → Status \= Connected
+
+  ## **FLOW 2: AUTO SEND MESSAGE**
+
+  Customer order  
+  → Order saved  
+  → Check WA integration status  
+  → Generate template payload  
+  → Call:  
+  POST [https://graph.facebook.com/v17.0/{phone-number-id}/messages](https://graph.facebook.com/v17.0/%7Bphone-number-id%7D/messages)  
+  → Success  
+  → Log message
+
+  ## **FLOW 3: CUSTOMER REPLY**
+
+  Customer balas WA  
+  → Meta kirim webhook  
+  → Fere webhook endpoint receive  
+  → Save ke table wa\_messages  
+  → Attach ke:  
+* order\_id (if context exists)  
+* customer\_id
+
+  ## **FLOW 4: ADMIN REPLY FROM DASHBOARD**
+
+  Admin buka Inbox  
+  → Ketik reply  
+  → Send  
+  → Call WA API  
+  → Save message log
+
+7. # **DATABASE STRUCTURE (SIMPLIFIED)**
+
+   ### **wa\_integrations**
+
+* id  
+* outlet\_id  
+* phone\_number\_id  
+* business\_account\_id  
+* access\_token  
+* token\_expired\_at  
+* Is\_active
+
+  ### **wa\_message\_templates**
+
+* id  
+* outlet\_id  
+* type (order\_confirm, payment\_success)  
+* template\_name  
+* content  
+* Is\_active
+
+  ### **wa\_messages**
+
+* id  
+* outlet\_id  
+* customer\_phone  
+* direction (incoming/outgoing)  
+* message  
+* order\_id (nullable)  
+* status  
+* created\_at
+
+8. # **TECHNICAL ARCHITECTURE**
+
+   Fere Backend  
+   ↕  
+   Meta WhatsApp Cloud API  
+   ↕  
+   Customer WhatsApp  
+   Webhook Endpoint:  
+   POST /webhook/whatsapp
+
+9. # **REPLY DIRECTLY FROM WEBSITE?**
+
+   ### **YES — if :**
+
+* Menggunakan WhatsApp Business API (Cloud API)  
+* Webhook aktif  
+* Session 24 jam masih aktif  
+  Rule Meta:  
+* Jika customer chat dalam 24 jam → bisa free text reply  
+* Jika \> 24 jam → harus pakai approved template
+
+10. #  **SECURITY REQUIREMENTS**
+
+* Encrypt access token  
+* Auto token refresh  
+* Webhook signature validation  
+* Limit message rate  
+* Audit log  
+  **WhatsApp Integration berfungsi sebagai:** Automation Engine \+ Communication Hub \+ Conversion Tool
+

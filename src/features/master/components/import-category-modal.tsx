@@ -17,22 +17,22 @@ interface ImportCategoryModalProps {
   open: boolean;
   onClose: () => void;
   outlets: Outlet[];
-  onImport: (outletId: number, categoryIds: number[]) => void;
+  onImport: (outletId: string, categoryIds: number[]) => void;
 }
 
 // Mock outlet categories for demo
-const mockOutletCategories: Record<number, { id: number; name: string; productCount: number }[]> = {
-  1: [
+const mockOutletCategories: Record<string, { id: number; name: string; productCount: number }[]> = {
+  "outlet-1": [
     { id: 101, name: 'Makanan', productCount: 12 },
     { id: 102, name: 'Minuman', productCount: 8 },
     { id: 103, name: 'Snack', productCount: 5 },
   ],
-  2: [
+  "outlet-2": [
     { id: 201, name: 'Rice Bowl', productCount: 6 },
     { id: 202, name: 'Noodles', productCount: 4 },
     { id: 203, name: 'Beverages', productCount: 7 },
   ],
-  3: [
+  "outlet-3": [
     { id: 301, name: 'Paket Hemat', productCount: 3 },
     { id: 302, name: 'Menu Spesial', productCount: 5 },
   ],

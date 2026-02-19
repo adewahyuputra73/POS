@@ -117,9 +117,80 @@ export default function GrossProfitPage() {
 
   const handleExport = async () => {
     setIsExporting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsExporting(false);
-    showToast("Laporan laba kotor berhasil diekspor", "success");
+    try {
+      const { ExcelExportService } = await import("@/lib/excel-export");
+      const exportService = new ExcelExportService();
+
+      const tabLabel = activeTab === "menu" ? "Menu" : activeTab === "variant" ? "Varian" : "Kategori";
+
+      // 1. Metadata Sheet
+      exportService.addMetadataSheet({
+        title: `Laporan Laba Kotor (${tabLabel})`,
+        period: `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`,
+        generatedAt: new Date().toLocaleString("id-ID"),
+        generatedBy: "Admin",
+        outletName: selectedOutlet === "all" ? "Semua Outlet" : selectedOutlet === "outlet-1" ? "Cabang Pusat" : "Cabang BSD",
+      });
+
+      // 2. Data Sheet
+      let columns = [];
+      let data = filteredData;
+
+      if (activeTab === "menu") {
+        columns = [
+          { header: "Nama Produk", key: "name", width: 30 },
+          { header: "Kategori", key: "category", width: 20 },
+          { header: "Terjual", key: "sold", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Penjualan Kotor", key: "grossSales", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Penjualan Bersih", key: "netSales", width: 20, style: { numFmt: '#,##0' } },
+          { header: "HPP", key: "hpp", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Laba Kotor", key: "grossProfit", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Margin (%)", key: "margin", width: 15, style: { numFmt: '0.0"%"' } },
+        ];
+      } else if (activeTab === "variant") {
+        columns = [
+          { header: "Nama Opsi", key: "optionName", width: 20 },
+          { header: "Nama Varian", key: "variantName", width: 20 },
+          { header: "Terjual", key: "sold", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Penjualan Kotor", key: "grossSales", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Penjualan Bersih", key: "netSales", width: 20, style: { numFmt: '#,##0' } },
+          { header: "HPP", key: "hpp", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Laba Kotor", key: "grossProfit", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Margin (%)", key: "margin", width: 15, style: { numFmt: '0.0"%"' } },
+        ];
+        // Cast to any to access variant properties safely
+        data = filteredData.map(item => ({
+          ...item,
+          // Ensure optional properties are present if needed, though they are activeTab specific
+        }));
+      } else {
+        columns = [
+          { header: "Nama Kategori", key: "name", width: 30 },
+          { header: "Terjual", key: "sold", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Penjualan Kotor", key: "grossSales", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Penjualan Bersih", key: "netSales", width: 20, style: { numFmt: '#,##0' } },
+          { header: "HPP", key: "hpp", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Laba Kotor", key: "grossProfit", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Margin (%)", key: "margin", width: 15, style: { numFmt: '0.0"%"' } },
+        ];
+      }
+
+      exportService.addDataSheet({
+        name: `Data ${tabLabel}`,
+        columns,
+        data
+      });
+
+      // Download
+      await exportService.download(`Laba_Kotor_${tabLabel}_${new Date().getTime()}`);
+
+      showToast("Laporan laba kotor berhasil diekspor", "success");
+    } catch (error) {
+      console.error("Export failed:", error);
+      showToast("Gagal mengekspor laporan", "error");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   // Columns for menu tab

@@ -26,7 +26,7 @@ import { StatusToggle } from "@/features/products/components/status-toggle";
 interface MasterVariantTableProps {
   variants: MasterVariant[];
   onEdit: (variant: MasterVariant) => void;
-  onToggleStatus: (variantId: number, isActive: boolean) => void;
+  onToggleStatus: (variantId: string, isActive: boolean) => void;
 }
 
 type SortField = 'name' | 'optionCount' | 'appliedProductCount' | 'updatedAt';
@@ -56,7 +56,7 @@ export function MasterVariantTable({
           comparison = a.options.length - b.options.length;
           break;
         case 'appliedProductCount':
-          comparison = a.appliedProductCount - b.appliedProductCount;
+          comparison = (a.appliedProductCount || 0) - (b.appliedProductCount || 0);
           break;
         case 'updatedAt':
           comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
@@ -165,14 +165,14 @@ export function MasterVariantTable({
                   <div>
                     <p className="font-medium text-gray-900">{variant.name}</p>
                     <div className="flex gap-1 mt-1">
-                      {variant.isRequired && (
+                      {variant.isMandatory && (
                         <Badge variant="default" className="text-[10px] bg-red-100 text-red-700 border-0">
                           Wajib
                         </Badge>
                       )}
-                      {variant.maxOptions && (
+                      {variant.maxSelection && (
                         <Badge variant="default" className="text-[10px] bg-gray-100 text-gray-600 border-0">
-                          Max {variant.maxOptions}
+                          Max {variant.maxSelection}
                         </Badge>
                       )}
                     </div>
@@ -205,20 +205,20 @@ export function MasterVariantTable({
               <TableCell className="text-center">
                 <span className={cn(
                   "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium",
-                  variant.appliedProductCount > 0 
+                  (variant.appliedProductCount || 0) > 0 
                     ? "bg-green-50 text-green-700"
                     : "bg-gray-100 text-gray-500"
                 )}>
-                  {variant.appliedProductCount} Produk
+                  {variant.appliedProductCount || 0} Produk
                 </span>
               </TableCell>
               <TableCell className="text-gray-500 text-sm">
-                {formatDate(variant.updatedAt)}
+                {formatDate(variant.updatedAt.toString())}
               </TableCell>
               <TableCell className="text-center">
                 <div className="flex justify-center">
                   <StatusToggle
-                    checked={variant.isActive}
+                    checked={variant.status === 'ACTIVE'}
                     onChange={(checked) => onToggleStatus(variant.id, checked)}
                   />
                 </div>

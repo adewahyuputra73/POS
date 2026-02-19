@@ -161,19 +161,45 @@ export default function ProductSalesPage() {
 
   const handleExport = async () => {
     setIsExporting(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    console.log("Export product sales with:", { dateRange, selectedOutlet, selectedProducts, selectedCategories, aggregationMode });
-    
-    const filterInfo = [];
-    if (selectedOutlet !== "all") filterInfo.push(`Outlet: ${outletMap[selectedOutlet]}`);
-    if (selectedProducts.length > 0) filterInfo.push(`${selectedProducts.length} produk`);
-    if (selectedCategories.length > 0) filterInfo.push(`${selectedCategories.length} kategori`);
-    
-    showToast(
-      `Laporan penjualan produk berhasil diekspor (${filteredProducts.length} produk)`,
-      "success"
-    );
-    setIsExporting(false);
+    try {
+      const { ExcelExportService } = await import("@/lib/excel-export");
+      const exportService = new ExcelExportService();
+
+      // 1. Metadata Sheet
+      exportService.addMetadataSheet({
+        title: "Laporan Penjualan Produk",
+        period: `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`,
+        generatedAt: new Date().toLocaleString("id-ID"),
+        generatedBy: "Admin",
+        outletName: selectedOutlet === "all" ? "Semua Outlet" : outletMap[selectedOutlet],
+      });
+
+      // 2. Data Sheet
+      exportService.addDataSheet({
+        name: "Data Penjualan Produk",
+        columns: [
+          { header: "Outlet", key: "outlet", width: 25 },
+          { header: "Nama Produk", key: "product_name", width: 35 },
+          { header: "Kategori", key: "category", width: 20 },
+          { header: "Item Terjual", key: "item_sold", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Total Penjualan", key: "total_sales", width: 25, style: { numFmt: '#,##0' } },
+        ],
+        data: filteredProducts
+      });
+
+      // Download
+      await exportService.download(`Penjualan_Produk_${new Date().getTime()}`);
+
+      showToast(
+        `Laporan penjualan produk berhasil diekspor (${filteredProducts.length} produk)`,
+        "success"
+      );
+    } catch (error) {
+      console.error("Export failed:", error);
+      showToast("Gagal mengekspor laporan", "error");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (

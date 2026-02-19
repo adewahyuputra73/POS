@@ -1,302 +1,188 @@
-import { 
-  MasterProduct, 
-  MasterVariant, 
-  MasterCategory, 
-  Outlet,
-  MasterProductFilters,
-  MasterVariantFilters,
-  MasterCategoryFilters,
-} from './types';
+import { MasterCategory, MasterProduct, MasterVariant, Outlet } from "./types";
 
-// === OUTLETS ===
+
+
 export const mockOutlets: Outlet[] = [
-  { id: 1, name: 'Outlet Pusat', address: 'Jl. Sudirman No. 1, Jakarta', isActive: true },
-  { id: 2, name: 'Outlet Bandung', address: 'Jl. Asia Afrika No. 10, Bandung', isActive: true },
-  { id: 3, name: 'Outlet Surabaya', address: 'Jl. Tunjungan No. 5, Surabaya', isActive: true },
-  { id: 4, name: 'Outlet Yogyakarta', address: 'Jl. Malioboro No. 20, Yogyakarta', isActive: false },
+  { id: "outlet-1", name: "Cabang Pusat", address: "Jl. Sudirman No. 1", isActive: true },
+  { id: "outlet-2", name: "Cabang BSD", address: "BSD City", isActive: true },
 ];
 
-// === MASTER PRODUK ===
-export const mockMasterProducts: MasterProduct[] = [
-  {
-    id: 1,
-    name: 'Nasi Goreng Spesial',
-    description: 'Nasi goreng dengan telur, ayam, dan sayuran',
-    isActive: true,
-    imageUrl: '/images/nasi-goreng.jpg',
-    basePrice: 35000,
-    prices: { default: 35000, gofood: 38000, grabfood: 38000, shopeefood: 37000 },
-    outletIds: [1, 2, 3],
-    categoryIds: [1],
-    variantIds: [1, 2],
-    settings: {
-      useDimension: false,
-      useStockLimit: true,
-      useTax: true,
-      useServiceFee: true,
-      useTakeawayFee: true,
-    },
-    createdAt: '2026-01-10T08:00:00Z',
-    updatedAt: '2026-02-01T14:30:00Z',
-  },
-  {
-    id: 2,
-    name: 'Mie Goreng Seafood',
-    description: 'Mie goreng dengan udang, cumi, dan sayuran segar',
-    isActive: true,
-    basePrice: 40000,
-    prices: { default: 40000, gofood: 43000, grabfood: 43000 },
-    outletIds: [1, 2],
-    categoryIds: [1],
-    variantIds: [1],
-    settings: {
-      useDimension: false,
-      useStockLimit: true,
-      useTax: true,
-      useServiceFee: false,
-      useTakeawayFee: true,
-    },
-    createdAt: '2026-01-12T10:00:00Z',
-    updatedAt: '2026-01-28T11:20:00Z',
-  },
-  {
-    id: 3,
-    name: 'Es Kopi Susu',
-    description: 'Kopi espresso dengan susu segar dan es',
-    isActive: true,
-    basePrice: 22000,
-    prices: { default: 22000, gofood: 25000, grabfood: 25000, shopeefood: 24000 },
-    outletIds: [1, 2, 3, 4],
-    categoryIds: [2],
-    variantIds: [3],
-    settings: {
-      useDimension: false,
-      useStockLimit: false,
-      useTax: true,
-      useServiceFee: false,
-      useTakeawayFee: false,
-    },
-    createdAt: '2026-01-15T09:00:00Z',
-    updatedAt: '2026-01-20T16:45:00Z',
-  },
-  {
-    id: 4,
-    name: 'Ayam Geprek',
-    description: 'Ayam crispy dengan sambal geprek pedas',
-    isActive: false,
-    basePrice: 28000,
-    prices: { default: 28000, gofood: 31000 },
-    outletIds: [1],
-    categoryIds: [1],
-    variantIds: [2],
-    settings: {
-      useDimension: false,
-      useStockLimit: true,
-      useTax: true,
-      useServiceFee: true,
-      useTakeawayFee: true,
-    },
-    createdAt: '2026-01-18T14:00:00Z',
-    updatedAt: '2026-01-25T10:00:00Z',
-  },
-];
-
-// === MASTER VARIAN ===
-export const mockMasterVariants: MasterVariant[] = [
-  {
-    id: 1,
-    name: 'Ukuran Porsi',
-    isRequired: true,
-    maxOptions: 1,
-    optionSource: 'custom',
-    options: [
-      { id: 1, name: 'Regular', price: 0, isActive: true },
-      { id: 2, name: 'Large', price: 5000, isActive: true },
-      { id: 3, name: 'Extra Large', price: 10000, isActive: true },
-    ],
-    isActive: true,
-    appliedProductCount: 8,
-    createdAt: '2026-01-05T08:00:00Z',
-    updatedAt: '2026-01-30T12:00:00Z',
-  },
-  {
-    id: 2,
-    name: 'Level Pedas',
-    isRequired: false,
-    maxOptions: 1,
-    optionSource: 'custom',
-    options: [
-      { id: 4, name: 'Tidak Pedas', price: 0, isActive: true },
-      { id: 5, name: 'Pedas', price: 0, isActive: true },
-      { id: 6, name: 'Extra Pedas', price: 2000, isActive: true },
-    ],
-    isActive: true,
-    appliedProductCount: 12,
-    createdAt: '2026-01-06T09:00:00Z',
-    updatedAt: '2026-01-28T15:30:00Z',
-  },
-  {
-    id: 3,
-    name: 'Topping Minuman',
-    isRequired: false,
-    optionSource: 'custom',
-    options: [
-      { id: 7, name: 'Boba', price: 5000, isActive: true },
-      { id: 8, name: 'Jelly', price: 3000, isActive: true },
-      { id: 9, name: 'Whipped Cream', price: 4000, isActive: true },
-      { id: 10, name: 'Extra Shot', price: 6000, isActive: true },
-    ],
-    isActive: true,
-    appliedProductCount: 5,
-    createdAt: '2026-01-08T11:00:00Z',
-    updatedAt: '2026-01-22T09:15:00Z',
-  },
-  {
-    id: 4,
-    name: 'Pilihan Lauk',
-    isRequired: false,
-    maxOptions: 3,
-    optionSource: 'product',
-    options: [
-      { id: 11, name: 'Telur Dadar', price: 5000, isActive: true, sourceProductId: 101 },
-      { id: 12, name: 'Ayam Goreng', price: 12000, isActive: true, sourceProductId: 102 },
-      { id: 13, name: 'Tempe Goreng', price: 4000, isActive: false, sourceProductId: 103 },
-    ],
-    isActive: false,
-    appliedProductCount: 0,
-    createdAt: '2026-01-10T14:00:00Z',
-    updatedAt: '2026-01-15T10:00:00Z',
-  },
-];
-
-// === MASTER KATEGORI ===
 export const mockMasterCategories: MasterCategory[] = [
   {
-    id: 1,
-    name: 'Makanan Utama',
-    isActive: true,
-    productCount: 15,
-    productIds: [1, 2, 4],
-    createdAt: '2026-01-01T08:00:00Z',
-    updatedAt: '2026-02-01T10:30:00Z',
+    id: "mc-1",
+    name: "Minuman",
+    icon: "Coffee",
+    productsCount: 12,
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-01"),
+    updatedAt: new Date("2024-01-01"),
   },
   {
-    id: 2,
-    name: 'Minuman',
-    isActive: true,
-    productCount: 10,
-    productIds: [3],
-    createdAt: '2026-01-01T08:00:00Z',
-    updatedAt: '2026-01-25T14:00:00Z',
+    id: "mc-2",
+    name: "Makanan",
+    icon: "Utensils",
+    productsCount: 8,
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-01"),
+    updatedAt: new Date("2024-01-01"),
   },
   {
-    id: 3,
-    name: 'Snack & Cemilan',
-    isActive: true,
-    productCount: 8,
-    productIds: [],
-    createdAt: '2026-01-02T09:00:00Z',
-    updatedAt: '2026-01-20T11:00:00Z',
-  },
-  {
-    id: 4,
-    name: 'Dessert',
-    isActive: true,
-    productCount: 5,
-    productIds: [],
-    createdAt: '2026-01-03T10:00:00Z',
-    updatedAt: '2026-01-18T16:30:00Z',
-  },
-  {
-    id: 5,
-    name: 'Promo Bundle',
-    isActive: false,
-    productCount: 0,
-    productIds: [],
-    createdAt: '2026-01-05T12:00:00Z',
-    updatedAt: '2026-01-10T08:00:00Z',
+    id: "mc-3",
+    name: "Snack",
+    icon: "Cookie",
+    productsCount: 5,
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-15"),
   },
 ];
 
-// === FILTER FUNCTIONS ===
-export function filterMasterProducts(
-  products: MasterProduct[],
-  filters: MasterProductFilters
-): MasterProduct[] {
-  return products.filter((product) => {
-    if (filters.status === 'active' && !product.isActive) return false;
-    if (filters.status === 'inactive' && product.isActive) return false;
+export const mockMasterVariants: MasterVariant[] = [
+  {
+    id: "mv-1",
+    name: "Size",
+    type: "SINGLE",
+    options: [
+      { id: "opt-1", name: "Regular", priceAdjustment: 0, isDefault: true },
+      { id: "opt-2", name: "Large", priceAdjustment: 5000 },
+    ],
+    isMandatory: true,
+    optionSource: 'custom',
+    appliedProductCount: 5,
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-01"),
+    updatedAt: new Date("2024-01-01"),
+  },
+  {
+    id: "mv-2",
+    name: "Sugar Level",
+    type: "SINGLE",
+    options: [
+      { id: "opt-3", name: "Normal", priceAdjustment: 0, isDefault: true },
+      { id: "opt-4", name: "Less Sugar", priceAdjustment: 0 },
+      { id: "opt-5", name: "No Sugar", priceAdjustment: 0 },
+    ],
+    isMandatory: true,
+    optionSource: 'custom',
+    appliedProductCount: 8,
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-01"),
+    updatedAt: new Date("2024-01-01"),
+  },
+  {
+    id: "mv-3",
+    name: "Topping",
+    type: "MULTIPLE",
+    options: [
+      { id: "opt-6", name: "Pearl", priceAdjustment: 3000 },
+      { id: "opt-7", name: "Jelly", priceAdjustment: 3000 },
+      { id: "opt-8", name: "Pudding", priceAdjustment: 4000 },
+    ],
+    isMandatory: false,
+    maxSelection: 2,
+    optionSource: 'menu_book',
+    appliedProductCount: 3,
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-02"),
+    updatedAt: new Date("2024-01-02"),
+  },
+];
 
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      if (!product.name.toLowerCase().includes(searchLower)) {
-        return false;
-      }
-    }
+export const mockMasterProducts: MasterProduct[] = [
+  {
+    id: "mp-1",
+    name: "Kopi Susu Gula Aren",
+    categoryId: "mc-1",
+    basePrice: 18000,
+    channelPrices: {
+      goFood: 22000,
+      grabFood: 22000,
+      shopeeFood: 22000,
+    },
+    trackStock: true,
+    stock: 100,
+    sku: "KOPI-AREN-001",
+    hasTax: true,
+    hasServiceFee: false,
+    variantIds: ["mv-1", "mv-2"],
+    outletIds: ["outlet-1", "outlet-2"],
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-01"),
+    updatedAt: new Date("2024-01-01"),
+  },
+  {
+    id: "mp-2",
+    name: "Nasi Goreng Spesial",
+    categoryId: "mc-2",
+    basePrice: 25000,
+    channelPrices: {
+      goFood: 30000,
+      grabFood: 30000,
+    },
+    trackStock: true,
+    stock: 50,
+    sku: "NASGOR-SP-001",
+    hasTax: true,
+    hasServiceFee: true,
+    variantIds: ["mv-3"], // Maybe extra egg topping?
+    outletIds: ["outlet-1"],
+    status: "ACTIVE",
+    createdAt: new Date("2024-01-01"),
+    updatedAt: new Date("2024-01-01"),
+  },
+];
 
-    return true;
-  });
-}
-
-export function filterMasterVariants(
-  variants: MasterVariant[],
-  filters: MasterVariantFilters
-): MasterVariant[] {
-  return variants.filter((variant) => {
-    if (filters.status === 'active' && !variant.isActive) return false;
-    if (filters.status === 'inactive' && variant.isActive) return false;
-
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      if (!variant.name.toLowerCase().includes(searchLower)) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-}
-
-export function filterMasterCategories(
-  categories: MasterCategory[],
-  filters: MasterCategoryFilters
-): MasterCategory[] {
-  return categories.filter((category) => {
-    if (filters.status === 'active' && !category.isActive) return false;
-    if (filters.status === 'inactive' && category.isActive) return false;
-
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      if (!category.name.toLowerCase().includes(searchLower)) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-}
-
-// === STATS HELPERS ===
-export function getMasterProductStats(products: MasterProduct[]) {
+export const getMasterProductStats = (products: MasterProduct[]) => {
   return {
     total: products.length,
-    active: products.filter((p) => p.isActive).length,
-    inactive: products.filter((p) => !p.isActive).length,
+    active: products.filter(p => p.status === 'ACTIVE').length,
+    inactive: products.filter(p => p.status === 'INACTIVE').length,
   };
-}
+};
 
-export function getMasterVariantStats(variants: MasterVariant[]) {
+export const filterMasterProducts = (products: MasterProduct[], filters: any) => {
+  return products.filter(p => {
+    if (filters.status !== 'all' && filters.status !== p.status.toLowerCase()) {
+      if (filters.status === 'active' && p.status !== 'ACTIVE') return false;
+      if (filters.status === 'inactive' && p.status !== 'INACTIVE') return false;
+    }
+    if (filters.search && !p.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+    return true;
+  });
+};
+
+export const getMasterVariantStats = (variants: MasterVariant[]) => {
   return {
     total: variants.length,
-    active: variants.filter((v) => v.isActive).length,
-    inactive: variants.filter((v) => !v.isActive).length,
+    active: variants.filter(v => v.status === 'ACTIVE').length,
+    inactive: variants.filter(v => v.status === 'INACTIVE').length,
   };
-}
+};
 
-export function getMasterCategoryStats(categories: MasterCategory[]) {
-  return {
-    total: categories.length,
-    active: categories.filter((c) => c.isActive).length,
-    inactive: categories.filter((c) => !c.isActive).length,
-  };
-}
+export const filterMasterVariants = (variants: MasterVariant[], filters: any) => {
+  return variants.filter(v => {
+    if (filters.status !== 'all' && filters.status !== v.status.toLowerCase()) {
+      if (filters.status === 'active' && v.status !== 'ACTIVE') return false;
+      if (filters.status === 'inactive' && v.status !== 'INACTIVE') return false;
+    }
+    if (filters.search && !v.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+    return true;
+  });
+};
+
+// Mock Data for "Import from Outlet" simulation
+export const mockOutletProducts = [
+  { id: "op-1", name: "Es Teh Manis (Lokal)", price: 5000, category: "Minuman", outletId: "outlet-1" },
+  { id: "op-2", name: "Tahu Goreng (Lokal)", price: 10000, category: "Snack", outletId: "outlet-1" },
+  { id: "op-3", name: "Kopi Hitam (Lokal)", price: 15000, category: "Minuman", outletId: "outlet-2" },
+];
+
+export const mockOutletVariants = [
+  { id: "ov-1", name: "Level Pedas (Lokal)", options: 3, outletId: "outlet-1" },
+  { id: "ov-2", name: "Extra Sauce (Lokal)", options: 2, outletId: "outlet-2" },
+];
+
+export const mockOutletCategories = [
+  { id: "oc-1", name: "Promo Harian (Lokal)", outletId: "outlet-1" },
+  { id: "oc-2", name: "Menu Sarapan (Lokal)", outletId: "outlet-2" },
+];

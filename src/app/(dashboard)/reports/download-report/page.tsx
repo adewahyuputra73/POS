@@ -87,15 +87,80 @@ export default function DownloadReportPage() {
     setIsExporting(true);
     setExportSuccess(false);
 
-    // Simulate export
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const { ExcelExportService } = await import("@/lib/excel-export");
+      const exportService = new ExcelExportService();
 
-    setIsExporting(false);
-    setExportSuccess(true);
-    showToast(`Laporan ${selectedType} berhasil diunduh`, "success");
+      const period = `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`;
+      
+      exportService.addMetadataSheet({
+        title: reportOptions.find(o => o.id === selectedType)?.title || "Laporan",
+        period: period,
+        generatedAt: new Date().toLocaleString("id-ID"),
+        generatedBy: "Admin",
+        outletName: "Semua Outlet",
+      });
 
-    // Reset after 3 seconds
-    setTimeout(() => setExportSuccess(false), 3000);
+      // Generate dummy data based on type
+      let data: any[] = [];
+      let columns: any[] = [];
+
+      if (selectedType === "order") {
+        columns = [
+          { header: "No. Order", key: "orderNo", width: 15 },
+          { header: "Tanggal", key: "date", width: 15 },
+          { header: "Pelanggan", key: "customer", width: 20 },
+          { header: "Total", key: "total", width: 15, style: { numFmt: '#,##0' } },
+        ];
+        data = Array.from({ length: 10 }).map((_, i) => ({
+          orderNo: `ORD-2026-${1000 + i}`,
+          date: new Date().toLocaleDateString("id-ID"),
+          customer: "Guest",
+          total: (i + 1) * 50000
+        }));
+      } else if (selectedType === "item") {
+        columns = [
+          { header: "Nama Produk", key: "product", width: 30 },
+          { header: "Kategori", key: "category", width: 20 },
+          { header: "Qty", key: "qty", width: 10 },
+          { header: "Total", key: "total", width: 15, style: { numFmt: '#,##0' } },
+        ];
+        data = Array.from({ length: 10 }).map((_, i) => ({
+          product: `Produk ${i + 1}`,
+          category: i % 2 === 0 ? "Makanan" : "Minuman",
+          qty: i + 1,
+          total: (i + 1) * 25000
+        }));
+      } else {
+        // Generic fallback
+        columns = [
+          { header: "Keterangan", key: "desc", width: 40 },
+          { header: "Nilai", key: "value", width: 20 },
+        ];
+        data = [
+          { desc: "Contoh Data 1", value: 100 },
+          { desc: "Contoh Data 2", value: 200 },
+        ];
+      }
+
+      exportService.addDataSheet({
+        name: "Data",
+        columns,
+        data
+      });
+
+      await exportService.download(`Laporan_${selectedType}_${new Date().getTime()}`);
+
+      setExportSuccess(true);
+      showToast(`Laporan ${selectedType} berhasil diunduh`, "success");
+    } catch (error) {
+      console.error("Export failed:", error);
+      setError("Gagal mengunduh laporan");
+    } finally {
+      setIsExporting(false);
+      // Reset success message after 3 seconds
+      setTimeout(() => setExportSuccess(false), 3000);
+    }
   };
 
   const getColorClasses = (color: string, isSelected: boolean) => {

@@ -27,7 +27,7 @@ import { mockOutlets } from "../mock-data";
 interface MasterProductTableProps {
   products: MasterProduct[];
   onEdit: (product: MasterProduct) => void;
-  onToggleStatus: (productId: number, isActive: boolean) => void;
+  onToggleStatus: (productId: string, isActive: boolean) => void;
 }
 
 type SortField = 'name' | 'basePrice' | 'outletCount' | 'updatedAt';
@@ -57,7 +57,7 @@ export function MasterProductTable({
           comparison = a.basePrice - b.basePrice;
           break;
         case 'outletCount':
-          comparison = a.outletIds.length - b.outletIds.length;
+          comparison = (a.outletIds?.length || 0) - (b.outletIds?.length || 0);
           break;
         case 'updatedAt':
           comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
@@ -105,7 +105,7 @@ export function MasterProductTable({
     });
   };
 
-  const getOutletNames = (outletIds: number[]) => {
+  const getOutletNames = (outletIds: string[]) => {
     return outletIds
       .map((id) => mockOutlets.find((o) => o.id === id)?.name || 'Unknown')
       .slice(0, 2)
@@ -170,14 +170,14 @@ export function MasterProductTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedProducts.map((product) => (
+            {paginatedProducts.map((product) => (
             <TableRow key={product.id} className="hover:bg-gray-50/50">
               <TableCell>
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center overflow-hidden">
-                    {product.imageUrl ? (
+                    {product.image ? (
                       <img 
-                        src={product.imageUrl} 
+                        src={product.image} 
                         alt={product.name}
                         className="h-full w-full object-cover"
                       />
@@ -198,9 +198,9 @@ export function MasterProductTable({
               <TableCell>
                 <div>
                   <p className="font-semibold text-gray-900">{formatPrice(product.basePrice)}</p>
-                  {product.prices.gofood && (
+                  {product.channelPrices?.goFood && (
                     <p className="text-xs text-gray-500">
-                      GoFood: {formatPrice(product.prices.gofood)}
+                      GoFood: {formatPrice(product.channelPrices.goFood)}
                     </p>
                   )}
                 </div>
@@ -211,27 +211,27 @@ export function MasterProductTable({
                   <div>
                     <span className={cn(
                       "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium",
-                      product.outletIds.length > 0 
+                      (product.outletIds?.length || 0) > 0 
                         ? "bg-blue-50 text-blue-700"
                         : "bg-gray-100 text-gray-500"
                     )}>
-                      {product.outletIds.length} Outlet
+                      {product.outletIds?.length || 0} Outlet
                     </span>
-                    {product.outletIds.length > 0 && (
+                    {(product.outletIds?.length || 0) > 0 && (
                       <p className="text-xs text-gray-500 mt-0.5 truncate max-w-[150px]">
-                        {getOutletNames(product.outletIds)}
+                        {getOutletNames(product.outletIds || [])}
                       </p>
                     )}
                   </div>
                 </div>
               </TableCell>
               <TableCell className="text-gray-500 text-sm">
-                {formatDate(product.updatedAt)}
+                {formatDate(product.updatedAt.toString())}
               </TableCell>
               <TableCell className="text-center">
                 <div className="flex justify-center">
                   <StatusToggle
-                    checked={product.isActive}
+                    checked={product.status === 'ACTIVE'}
                     onChange={(checked) => onToggleStatus(product.id, checked)}
                   />
                 </div>

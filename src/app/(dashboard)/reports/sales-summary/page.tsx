@@ -133,15 +133,71 @@ export default function SalesSummaryPage() {
 
   const handleExport = async () => {
     setIsExporting(true);
-    // Simulate export delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    // In real implementation, call API and trigger download
-    console.log("Export triggered with:", { dateRange, selectedOutlet });
-    showToast(
-      `Laporan ringkasan penjualan ${summaryData.outlet_name} berhasil diekspor`,
-      "success"
-    );
-    setIsExporting(false);
+    try {
+      // Lazy load the service to ensure client-side execution
+      const { ExcelExportService } = await import("@/lib/excel-export");
+      const exportService = new ExcelExportService();
+
+      // 1. Metadata Sheet
+      exportService.addMetadataSheet({
+        title: "Laporan Ringkasan Penjualan",
+        period: `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`,
+        generatedAt: new Date().toLocaleString("id-ID"),
+        generatedBy: "Admin", // TODO: Get from auth context
+        outletName: summaryData.outlet_name,
+      });
+
+      // 2. Summary Sheet (KPIs)
+      exportService.addSummarySheet([
+        { label: "Item Terjual", value: formatNumber(summaryData.item_sold) },
+        { label: "Total Pesanan", value: formatNumber(summaryData.total_order) },
+        { label: "Rata-rata / Transaksi", value: formatCurrency(summaryData.avg_per_transaction) },
+        { label: "Total Penjualan", value: formatCurrency(summaryData.total_sales) },
+        { label: "Total Dine In", value: formatCurrency(summaryData.total_dine_in) },
+        { label: "Total QR Order", value: formatCurrency(summaryData.total_qr_order) },
+        { label: "Total Delivery", value: formatCurrency(summaryData.total_delivery) },
+      ]);
+
+      // 3. Details Sheet
+      exportService.addDataSheet({
+        name: "Rincian Penjualan",
+        columns: [
+          { header: "Keterangan", key: "label", width: 40 },
+          { header: "Nilai", key: "value", width: 30, style: { numFmt: '#,##0' } },
+        ],
+        data: mockSalesDetails.map(item => ({
+          label: item.label,
+          value: item.value
+        }))
+      });
+
+      // 4. Payment Methods Sheet
+      exportService.addDataSheet({
+        name: "Metode Pembayaran",
+        columns: [
+          { header: "Metode", key: "method", width: 30 },
+          { header: "Jumlah Order", key: "order_count", width: 20 },
+          { header: "Total Nilai", key: "total", width: 30, style: { numFmt: '#,##0' } },
+        ],
+        data: filteredPaymentMethods
+      });
+
+      // Download
+      await exportService.download(`Ringkasan_Penjualan_${summaryData.outlet_name.replace(/\s+/g, "_")}_${new Date().getTime()}`);
+
+      showToast(
+        `Laporan ringkasan penjualan berhasil diekspor`,
+        "success"
+      );
+    } catch (error) {
+      console.error("Export failed:", error);
+      showToast(
+        "Gagal mengekspor laporan. Silakan coba lagi.",
+        "error"
+      );
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (

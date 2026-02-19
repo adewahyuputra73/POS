@@ -100,9 +100,46 @@ export default function CategorySalesPage() {
 
   const handleExport = async () => {
     setIsExporting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsExporting(false);
-    showToast("Laporan kategori produk berhasil diekspor", "success");
+    try {
+      const { ExcelExportService } = await import("@/lib/excel-export");
+      const exportService = new ExcelExportService();
+
+      // 1. Metadata Sheet
+      exportService.addMetadataSheet({
+        title: "Laporan Penjualan Kategori",
+        period: `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`,
+        generatedAt: new Date().toLocaleString("id-ID"),
+        generatedBy: "Admin",
+        outletName: selectedOutlet === "all" ? "Semua Outlet" : selectedOutlet === "outlet-1" ? "Cabang Pusat" : "Cabang BSD",
+      });
+
+      // 2. Data Sheet
+      exportService.addDataSheet({
+        name: "Data Penjualan Kategori",
+        columns: [
+          { header: "No", key: "no", width: 8 },
+          { header: "Nama Kategori", key: "name", width: 30 },
+          { header: "Item Terjual", key: "itemSold", width: 20, style: { numFmt: '#,##0' } },
+          { header: "Total Penjualan", key: "totalSales", width: 25, style: { numFmt: '#,##0' } },
+        ],
+        data: mockTableData.map((item, index) => ({
+          no: index + 1,
+          name: item.name,
+          itemSold: item.itemSold,
+          totalSales: item.totalSales,
+        }))
+      });
+
+      // Download
+      await exportService.download(`Penjualan_Kategori_${new Date().getTime()}`);
+
+      showToast("Laporan kategori produk berhasil diekspor", "success");
+    } catch (error) {
+      console.error("Export failed:", error);
+      showToast("Gagal mengekspor laporan", "error");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const columns = [

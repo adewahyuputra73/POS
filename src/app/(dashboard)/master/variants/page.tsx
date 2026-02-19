@@ -8,17 +8,19 @@ import { cn } from "@/lib/utils";
 import { Search, X } from "lucide-react";
 import {
   MasterVariantTable,
+  MasterVariantForm,
   AddOptionsMenu,
+  ImportVariantModal,
 } from "@/features/master";
 import {
   mockMasterVariants,
+  mockMasterProducts,
   filterMasterVariants,
   getMasterVariantStats,
 } from "@/features/master/mock-data";
 import { MasterVariant, MasterVariantFilters } from "@/features/master/types";
 
 type StatusTab = 'all' | 'active' | 'inactive';
-
 export default function MasterVariantsPage() {
   const { showToast } = useToast();
   
@@ -29,6 +31,10 @@ export default function MasterVariantsPage() {
     search: '',
   });
   const [activeTab, setActiveTab] = useState<StatusTab>('all');
+  
+  // Modal State
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<MasterVariant | null>(null);
 
   // Computed
   const stats = useMemo(() => getMasterVariantStats(variants), [variants]);
@@ -42,15 +48,16 @@ export default function MasterVariantsPage() {
 
   // Handlers
   const handleEdit = (variant: MasterVariant) => {
-    // TODO: Open edit modal
-    showToast(`Edit "${variant.name}" - Coming soon`, "info");
+    setSelectedVariant(variant);
+    setIsFormOpen(true);
   };
 
-  const handleToggleStatus = (variantId: number, isActive: boolean) => {
+  const handleToggleStatus = (variantId: string, isActive: boolean) => {
+    const newStatus = isActive ? 'ACTIVE' : 'INACTIVE';
     setVariants((prev) =>
       prev.map((v) =>
         v.id === variantId
-          ? { ...v, isActive, updatedAt: new Date().toISOString() }
+          ? { ...v, status: newStatus, updatedAt: new Date() }
           : v
       )
     );
@@ -62,11 +69,58 @@ export default function MasterVariantsPage() {
   };
 
   const handleAddNew = () => {
-    showToast("Tambah Master Varian - Coming soon", "info");
+    setSelectedVariant(null);
+    setIsFormOpen(true);
+  };
+  
+  const handleFormSubmit = (data: Omit<MasterVariant, "id" | "createdAt" | "updatedAt">) => {
+    if (selectedVariant) {
+      // Edit
+      setVariants((prev) => 
+        prev.map((v) => 
+          v.id === selectedVariant.id 
+            ? { ...v, ...data, updatedAt: new Date() }
+            : v
+        )
+      );
+      showToast(`Master varian "${data.name}" berhasil diperbarui`, "success");
+    } else {
+      // Add
+      const newVariant: MasterVariant = {
+        id: `mv-${Date.now()}`,
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      setVariants((prev) => [newVariant, ...prev]);
+      showToast(`Master varian "${data.name}" berhasil dibuat`, "success");
+    }
+    setIsFormOpen(false);
   };
 
+  // Import State
+  const [isImportOpen, setIsImportOpen] = useState(false);
+
   const handleImport = () => {
-    showToast(`Impor dari Outlet - Coming soon`, "info");
+    setIsImportOpen(true);
+  };
+
+  const handleImportSubmit = (newVariants: Partial<MasterVariant>[]) => {
+    const imported: MasterVariant[] = newVariants.map((v, index) => ({
+      id: `mv-imp-${Date.now()}-${index}`,
+      name: v.name || "Imported Variant",
+      type: 'SINGLE',
+      options: [],
+      isMandatory: false,
+      optionSource: 'custom',
+      ...v,
+      status: 'ACTIVE',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as MasterVariant));
+
+    setVariants(prev => [...imported, ...prev]);
+    showToast(`Berhasil mengimpor ${imported.length} varian`, "success");
   };
 
   const tabs: { key: StatusTab; label: string; count: number }[] = [
@@ -155,6 +209,20 @@ export default function MasterVariantsPage() {
         variants={filteredVariants}
         onEdit={handleEdit}
         onToggleStatus={handleToggleStatus}
+      />
+      
+      <MasterVariantForm
+        open={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        variant={selectedVariant}
+        onSubmit={handleFormSubmit}
+        products={mockMasterProducts}
+      />
+
+      <ImportVariantModal 
+        open={isImportOpen} 
+        onClose={() => setIsImportOpen(false)} 
+        onImport={handleImportSubmit}
       />
     </div>
   );

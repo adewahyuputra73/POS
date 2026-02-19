@@ -97,9 +97,44 @@ export default function VoidReportPage() {
 
   const handleExport = async () => {
     setIsExporting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsExporting(false);
-    showToast("Laporan void berhasil diekspor", "success");
+    try {
+      const { ExcelExportService } = await import("@/lib/excel-export");
+      const exportService = new ExcelExportService();
+
+      // 1. Metadata Sheet
+      exportService.addMetadataSheet({
+        title: "Laporan Pembatalan / Void",
+        period: `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`,
+        generatedAt: new Date().toLocaleString("id-ID"),
+        generatedBy: "Admin",
+        outletName: "Semua Outlet", // This page doesn't have outlet selector in mock, assuming filtered by staff/date
+      });
+
+      // 2. Data Sheet
+      exportService.addDataSheet({
+        name: "Data Void",
+        columns: [
+          { header: "Tanggal", key: "date", width: 15 },
+          { header: "Jam", key: "time", width: 10 },
+          { header: "Staff", key: "staffName", width: 20 },
+          { header: "Produk", key: "product", width: 30 },
+          { header: "Kategori", key: "category", width: 20 },
+          { header: "Jumlah", key: "qty", width: 10, style: { numFmt: '#,##0' } },
+          { header: "Harga", key: "price", width: 15, style: { numFmt: '#,##0' } },
+        ],
+        data: filteredData
+      });
+
+      // Download
+      await exportService.download(`Laporan_Void_${new Date().getTime()}`);
+
+      showToast("Laporan void berhasil diekspor", "success");
+    } catch (error) {
+      console.error("Export failed:", error);
+      showToast("Gagal mengekspor laporan", "error");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const columns = [

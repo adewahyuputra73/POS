@@ -167,9 +167,57 @@ export default function StockFlowPage() {
 
   const handleExport = async () => {
     setIsExporting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsExporting(false);
-    showToast("Laporan arus stok berhasil diekspor", "success");
+    try {
+      const { ExcelExportService } = await import("@/lib/excel-export");
+      const exportService = new ExcelExportService();
+
+      // 1. Metadata Sheet
+      exportService.addMetadataSheet({
+        title: "Laporan Arus Stok",
+        period: `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`,
+        generatedAt: new Date().toLocaleString("id-ID"),
+        generatedBy: "Admin",
+        outletName: selectedOutlet === "all" ? "Semua Outlet" : selectedOutlet === "outlet-1" ? "Cabang Pusat" : "Cabang BSD",
+      });
+
+      // 2. Data Sheet
+      exportService.addDataSheet({
+        name: "Data Arus Stok",
+        columns: [
+          { header: "Nama Bahan", key: "name", width: 30 },
+          { header: "Kategori", key: "category", width: 20 },
+          { header: "Satuan", key: "unit", width: 10 },
+          { header: "Awal", key: "start", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Penjualan", key: "sales", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Penambahan", key: "addition", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Pengeluaran", key: "expense", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Opname", key: "opname", width: 15, style: { numFmt: '#,##0' } },
+          { header: "Akhir", key: "end", width: 15, style: { numFmt: '#,##0' } },
+        ],
+        data: filteredData.map(item => ({
+          ...item,
+          // If viewMode is price, map price fields
+          ...(viewMode === "price" ? {
+            start: item.startPrice,
+            sales: item.salesPrice,
+            addition: item.additionPrice,
+            expense: item.expensePrice,
+            opname: item.opnamePrice,
+            end: item.endPrice,
+          } : {})
+        }))
+      });
+
+      // Download
+      await exportService.download(`Arus_Stok_${new Date().getTime()}`);
+
+      showToast("Laporan arus stok berhasil diekspor", "success");
+    } catch (error) {
+      console.error("Export failed:", error);
+      showToast("Gagal mengekspor laporan", "error");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const renderStockValue = (value: number, priceValue: number) => {
