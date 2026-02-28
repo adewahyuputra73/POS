@@ -191,7 +191,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex flex-wrap items-center gap-3 p-4 bg-white rounded-xl border border-border shadow-card">
+      <div className="flex flex-wrap items-center gap-3 p-4 bg-surface rounded-xl border border-border shadow-card">
         <div className="flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-lg flex-1 max-w-sm">
           <Search className="h-4 w-4 text-text-secondary" />
           <input
@@ -219,7 +219,7 @@ export default function DashboardPage() {
                 className={cn(
                   "px-3 py-1.5 text-xs font-semibold rounded-md transition-all capitalize",
                   statusFilter === status
-                    ? "bg-white text-primary shadow-sm"
+                    ? "bg-surface text-primary shadow-sm"
                     : "text-text-secondary hover:text-text-primary"
                 )}
               >
@@ -340,7 +340,7 @@ export default function DashboardPage() {
                         alt={product.name} 
                         className="h-12 w-12 rounded-xl object-cover ring-2 ring-transparent group-hover:ring-primary/20 transition-all"
                       />
-                      <div className="absolute -top-1.5 -left-1.5 h-5 w-5 rounded-full bg-secondary border-2 border-white flex items-center justify-center text-[10px] font-bold text-white">
+                      <div className="absolute -top-1.5 -left-1.5 h-5 w-5 rounded-full bg-secondary border-2 border-surface flex items-center justify-center text-[10px] font-bold text-white">
                         {index + 1}
                       </div>
                     </div>

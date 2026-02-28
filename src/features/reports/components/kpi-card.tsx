@@ -22,7 +22,7 @@ export function KPICard({
 }: KPICardProps) {
   return (
     <div className={cn(
-      "bg-white rounded-xl border border-border p-5 shadow-card",
+      "bg-surface rounded-xl border border-border p-5 shadow-card",
       className
     )}>
       <div className="flex items-start justify-between gap-4">

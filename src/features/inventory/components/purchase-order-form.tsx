@@ -87,7 +87,7 @@ export function PurchaseOrderForm({ onSubmit, onCancel }: PurchaseOrderFormProps
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-surface rounded-xl border border-border p-6">
         <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
           <FileText className="h-5 w-5 text-orange-600" />
           Purchase Order
@@ -121,7 +121,7 @@ export function PurchaseOrderForm({ onSubmit, onCancel }: PurchaseOrderFormProps
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border">
           <div className="flex gap-3 flex-wrap">
             <Input
@@ -154,14 +154,14 @@ export function PurchaseOrderForm({ onSubmit, onCancel }: PurchaseOrderFormProps
         </div>
 
         {!selectedSupplierId ? (
-          <div className="p-12 text-center text-gray-400">
+          <div className="p-12 text-center text-text-disabled">
             <FileText className="h-10 w-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm">Pilih supplier untuk melihat daftar bahan</p>
           </div>
         ) : (
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-50/50">
+              <TableRow className="bg-background/50">
                 <TableHead className="font-semibold text-xs">Nama Bahan</TableHead>
                 <TableHead className="font-semibold text-xs">Kategori</TableHead>
                 <TableHead className="font-semibold text-xs text-right">Stok Saat Ini</TableHead>
@@ -175,7 +175,7 @@ export function PurchaseOrderForm({ onSubmit, onCancel }: PurchaseOrderFormProps
                 return (
                   <TableRow key={sm.id}>
                     <TableCell className="font-medium text-sm">{sm.materialName}</TableCell>
-                    <TableCell className="text-sm text-gray-600">{sm.categoryName}</TableCell>
+                    <TableCell className="text-sm text-text-secondary">{sm.categoryName}</TableCell>
                     <TableCell className="text-right text-sm">{sm.currentStock.toLocaleString('id-ID')} {sm.baseUnit}</TableCell>
                     <TableCell>
                       <Input
@@ -186,13 +186,13 @@ export function PurchaseOrderForm({ onSubmit, onCancel }: PurchaseOrderFormProps
                         placeholder="0"
                       />
                     </TableCell>
-                    <TableCell className="text-sm text-gray-600">{sm.purchaseUnit}</TableCell>
+                    <TableCell className="text-sm text-text-secondary">{sm.purchaseUnit}</TableCell>
                   </TableRow>
                 );
               })}
               {supplierMaterials.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-gray-400">Tidak ada bahan ditemukan</TableCell>
+                  <TableCell colSpan={5} className="text-center py-8 text-text-disabled">Tidak ada bahan ditemukan</TableCell>
                 </TableRow>
               )}
             </TableBody>

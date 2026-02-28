@@ -8,7 +8,7 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen flex bg-white font-sans">
+    <div className="min-h-screen flex bg-surface font-sans">
       {/* Left side - Dynamic Branding Panel */}
       <div className="hidden lg:flex lg:w-[55%] bg-slate-950 relative overflow-hidden">
         {/* Animated gradients and patterns */}

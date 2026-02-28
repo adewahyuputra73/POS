@@ -29,7 +29,7 @@ export function AggregationToggle({ value, onChange, className }: AggregationTog
           className={cn(
             "px-3 py-1.5 text-sm font-medium rounded-md transition-all",
             value === mode.value
-              ? "bg-white text-primary shadow-sm"
+              ? "bg-surface text-primary shadow-sm"
               : "text-text-secondary hover:text-text-primary"
           )}
         >

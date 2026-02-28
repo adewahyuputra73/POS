@@ -95,7 +95,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-surface rounded-xl border border-border p-6">
         <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
           <ArrowLeftRight className="h-5 w-5 text-purple-600" />
           Transfer Bahan
@@ -131,7 +131,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border space-y-3">
           <Tabs value={materialType} onValueChange={(v) => setMaterialType(v as MaterialType)}>
             <TabsList>
@@ -170,7 +170,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
 
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50">
+            <TableRow className="bg-background/50">
               <TableHead className="font-semibold text-xs">Nama Bahan</TableHead>
               <TableHead className="font-semibold text-xs">Kategori</TableHead>
               <TableHead className="font-semibold text-xs text-right">Stok Saat Ini</TableHead>
@@ -185,7 +185,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
               return (
                 <TableRow key={m.id}>
                   <TableCell className="font-medium text-sm">{m.name}</TableCell>
-                  <TableCell className="text-sm text-gray-600">{m.categoryName}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{m.categoryName}</TableCell>
                   <TableCell className="text-right text-sm">{m.currentStock.toLocaleString('id-ID')} {m.baseUnit}</TableCell>
                   <TableCell>
                     <Input
@@ -197,7 +197,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
                       disabled={m.currentStock === 0}
                     />
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">{m.baseUnit}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{m.baseUnit}</TableCell>
                   <TableCell>
                     <Input
                       type="number" min={0}
@@ -212,7 +212,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
             })}
             {filteredMaterials.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-400">Tidak ada bahan ditemukan</TableCell>
+                <TableCell colSpan={6} className="text-center py-8 text-text-disabled">Tidak ada bahan ditemukan</TableCell>
               </TableRow>
             )}
           </TableBody>

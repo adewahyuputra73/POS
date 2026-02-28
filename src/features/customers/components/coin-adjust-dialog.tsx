@@ -36,8 +36,8 @@ export function CoinAdjustDialog({ customer, onConfirm, onCancel }: CoinAdjustDi
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-in slide-in-from-bottom-4 duration-300">
-        <button onClick={onCancel} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-in slide-in-from-bottom-4 duration-300">
+        <button onClick={onCancel} className="absolute top-4 right-4 text-text-disabled hover:text-text-secondary">
           <X className="h-5 w-5" />
         </button>
 
@@ -46,14 +46,14 @@ export function CoinAdjustDialog({ customer, onConfirm, onCancel }: CoinAdjustDi
             <Coins className="h-5 w-5 text-amber-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">Adjust Koin</h3>
-            <p className="text-xs text-gray-500">{customer.name} — Saldo: {customer.totalCoins.toLocaleString('id-ID')} koin</p>
+            <h3 className="font-semibold text-text-primary">Adjust Koin</h3>
+            <p className="text-xs text-text-secondary">{customer.name} — Saldo: {customer.totalCoins.toLocaleString('id-ID')} koin</p>
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Tipe Adjustment</label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Tipe Adjustment</label>
             <Select value={type} onValueChange={(v) => setType(v as 'credit' | 'debit')}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -64,7 +64,7 @@ export function CoinAdjustDialog({ customer, onConfirm, onCancel }: CoinAdjustDi
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Nominal Koin</label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Nominal Koin</label>
             <Input
               type="number"
               value={amount || ''}
@@ -76,14 +76,14 @@ export function CoinAdjustDialog({ customer, onConfirm, onCancel }: CoinAdjustDi
             {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-3 space-y-1">
+          <div className="bg-background rounded-lg p-3 space-y-1">
             <div className="flex justify-between text-xs">
-              <span className="text-gray-500">Nilai Koin</span>
-              <span className="font-medium text-gray-700">{formatCurrency(coinValue)}</span>
+              <span className="text-text-secondary">Nilai Koin</span>
+              <span className="font-medium text-text-primary">{formatCurrency(coinValue)}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-gray-500">Saldo Setelah</span>
-              <span className={`font-semibold ${newBalance < 0 ? 'text-red-600' : 'text-gray-900'}`}>
+              <span className="text-text-secondary">Saldo Setelah</span>
+              <span className={`font-semibold ${newBalance < 0 ? 'text-red-600' : 'text-text-primary'}`}>
                 {newBalance.toLocaleString('id-ID')} koin
               </span>
             </div>

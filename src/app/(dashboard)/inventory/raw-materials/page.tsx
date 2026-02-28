@@ -134,9 +134,9 @@ export default function RawMaterialsPage() {
       />
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-border p-4 space-y-4">
+      <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
         {/* Type Tabs */}
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-lg w-fit">
+        <div className="flex gap-1 p-1 bg-background rounded-lg w-fit">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -144,14 +144,14 @@ export default function RawMaterialsPage() {
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
                 activeTab === tab.key
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-surface text-text-primary shadow-sm"
+                  : "text-text-secondary hover:text-text-primary"
               )}
             >
               {tab.label}
               <span className={cn(
                 "px-2 py-0.5 rounded-full text-xs",
-                activeTab === tab.key ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-600"
+                activeTab === tab.key ? "bg-purple-600 text-white" : "bg-background text-text-secondary"
               )}>
                 {tab.key === 'raw'
                   ? materials.filter((m) => m.type === 'raw').length
@@ -170,7 +170,7 @@ export default function RawMaterialsPage() {
               onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
               leftIcon={<Search className="h-4 w-4" />}
               rightIcon={filters.search ? (
-                <button onClick={() => setFilters((prev) => ({ ...prev, search: '' }))} className="text-gray-400 hover:text-gray-600">
+                <button onClick={() => setFilters((prev) => ({ ...prev, search: '' }))} className="text-text-disabled hover:text-text-secondary">
                   <X className="h-4 w-4" />
                 </button>
               ) : undefined}
@@ -179,7 +179,7 @@ export default function RawMaterialsPage() {
 
           {/* Category Filter */}
           <select
-            className="h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
+            className="h-10 px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
             value={filters.categoryId === 'all' ? 'all' : String(filters.categoryId)}
             onChange={(e) => setFilters((prev) => ({
               ...prev,
@@ -194,7 +194,7 @@ export default function RawMaterialsPage() {
 
           {/* Stock Status Filter */}
           <select
-            className="h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
+            className="h-10 px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
             value={filters.stockStatus}
             onChange={(e) => setFilters((prev) => ({ ...prev, stockStatus: e.target.value as StockStatus | 'all' }))}
           >
@@ -206,7 +206,7 @@ export default function RawMaterialsPage() {
 
         {/* Quick Stats */}
         <div className="flex gap-3 text-sm">
-          <span className="text-gray-500">Total: <strong className="text-gray-900">{stats.total}</strong></span>
+          <span className="text-text-secondary">Total: <strong className="text-text-primary">{stats.total}</strong></span>
           <span className="text-green-600">Masih Ada: <strong>{stats.available}</strong></span>
           <span className="text-yellow-600">Menipis: <strong>{stats.low}</strong></span>
           <span className="text-red-600">Habis: <strong>{stats.empty}</strong></span>

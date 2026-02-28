@@ -68,9 +68,9 @@ export function SupplierModal({ open, onClose, supplier, onSubmit }: SupplierMod
           <Input label="No. Telepon" placeholder="08xxxxxxxxxx" value={phone} onChange={(e) => setPhone(e.target.value)} />
           <Input label="Alamat" placeholder="Alamat lengkap supplier" value={address} onChange={(e) => setAddress(e.target.value)} />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Tempo Pembayaran</label>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">Tempo Pembayaran</label>
             <select
-              className="w-full h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
+              className="w-full h-10 px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
               value={paymentTerm}
               onChange={(e) => setPaymentTerm(e.target.value)}
             >
@@ -79,7 +79,7 @@ export function SupplierModal({ open, onClose, supplier, onSubmit }: SupplierMod
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Tipe Pembayaran</label>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">Tipe Pembayaran</label>
             <div className="flex gap-3">
               {(['cash', 'transfer'] as const).map((type) => (
                 <button
@@ -88,7 +88,7 @@ export function SupplierModal({ open, onClose, supplier, onSubmit }: SupplierMod
                   className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-all ${
                     paymentType === type
                       ? 'bg-indigo-600 text-white border-indigo-600'
-                      : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300'
+                      : 'bg-surface text-text-secondary border-border hover:border-indigo-300'
                   }`}
                 >
                   {type === 'cash' ? 'Cash' : 'Transfer'}
@@ -97,7 +97,7 @@ export function SupplierModal({ open, onClose, supplier, onSubmit }: SupplierMod
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-divider">
           <Button variant="outline" onClick={onClose}>Batal</Button>
           <Button onClick={handleSubmit}>{isEdit ? 'Simpan' : 'Tambah'}</Button>
         </div>

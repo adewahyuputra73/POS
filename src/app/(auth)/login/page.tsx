@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+    <div className="bg-surface rounded-2xl shadow-xl border border-divider p-8">
       {/* Mobile logo */}
       <div className="lg:hidden text-center mb-8">
         <h1 className="text-2xl font-bold text-indigo-600">{APP_NAME}</h1>
@@ -17,8 +17,8 @@ export default function LoginPage() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
-        <p className="text-gray-500 mt-2">
+        <h2 className="text-2xl font-bold text-text-primary">Welcome back</h2>
+        <p className="text-text-secondary mt-2">
           Sign in to your account to continue
         </p>
       </div>
@@ -27,7 +27,7 @@ export default function LoginPage() {
       <LoginForm />
 
       {/* Footer */}
-      <div className="mt-6 text-center text-sm text-gray-500">
+      <div className="mt-6 text-center text-sm text-text-secondary">
         <p>
           Don&apos;t have an account?{" "}
           <a

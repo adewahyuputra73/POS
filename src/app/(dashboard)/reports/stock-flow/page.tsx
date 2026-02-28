@@ -366,7 +366,7 @@ export default function StockFlowPage() {
       />
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-white rounded-xl border border-border">
+      <div className="flex flex-wrap items-center gap-4 p-4 bg-surface rounded-xl border border-border">
         <DateRangePicker
           value={dateRange}
           onChange={setDateRange}
@@ -384,7 +384,7 @@ export default function StockFlowPage() {
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-3 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+          className="px-3 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
         >
           {mockCategoryOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -408,7 +408,7 @@ export default function StockFlowPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-border">
+        <div className="bg-surface p-4 rounded-xl border border-border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary-light rounded-lg">
               <Package className="h-5 w-5 text-primary" />
@@ -419,7 +419,7 @@ export default function StockFlowPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-border">
+        <div className="bg-surface p-4 rounded-xl border border-border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-success-light rounded-lg">
               <ArrowUp className="h-5 w-5 text-success" />
@@ -434,7 +434,7 @@ export default function StockFlowPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-border">
+        <div className="bg-surface p-4 rounded-xl border border-border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-warning-light rounded-lg">
               <TrendingUp className="h-5 w-5 text-warning" />
@@ -449,7 +449,7 @@ export default function StockFlowPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-border">
+        <div className="bg-surface p-4 rounded-xl border border-border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-error-light rounded-lg">
               <ArrowDown className="h-5 w-5 text-error" />
@@ -467,7 +467,7 @@ export default function StockFlowPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Detail Arus Stok
         </h3>

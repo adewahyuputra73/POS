@@ -84,56 +84,56 @@ export default function CustomersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-border p-4">
+        <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <Users className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-xs text-gray-500">Total Pelanggan</p>
+              <p className="text-xs text-text-secondary">Total Pelanggan</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4">
+        <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-red-50 flex items-center justify-center">
               <span className="text-lg">🔥</span>
             </div>
             <div>
               <p className="text-2xl font-bold text-red-600">{stats.hot}</p>
-              <p className="text-xs text-gray-500">Hot</p>
+              <p className="text-xs text-text-secondary">Hot</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4">
+        <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-yellow-50 flex items-center justify-center">
               <span className="text-lg">🌤</span>
             </div>
             <div>
               <p className="text-2xl font-bold text-yellow-600">{stats.warm}</p>
-              <p className="text-xs text-gray-500">Warm</p>
+              <p className="text-xs text-text-secondary">Warm</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4">
+        <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center">
               <span className="text-lg">❄️</span>
             </div>
             <div>
               <p className="text-2xl font-bold text-blue-600">{stats.boil}</p>
-              <p className="text-xs text-gray-500">Boil</p>
+              <p className="text-xs text-text-secondary">Boil</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Search + Filters */}
-      <div className="bg-white rounded-xl border border-border p-5 space-y-4">
+      <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-disabled" />
           <Input
             placeholder="Cari nama atau nomor telepon..."
             value={filters.search}

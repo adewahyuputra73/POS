@@ -31,18 +31,18 @@ function formatDate(iso: string) {
 export function VoucherTable({ vouchers, onEdit, onDelete }: VoucherTableProps) {
   if (vouchers.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <Tag className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-        <p className="text-gray-500 text-sm">Belum ada voucher</p>
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <Tag className="h-12 w-12 text-text-disabled mx-auto mb-3" />
+        <p className="text-text-secondary text-sm">Belum ada voucher</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
+          <TableRow className="bg-background/50">
             <TableHead className="font-semibold text-xs">Kode & Tipe Diskon</TableHead>
             <TableHead className="font-semibold text-xs">Detail Voucher</TableHead>
             <TableHead className="font-semibold text-xs">Durasi</TableHead>
@@ -60,7 +60,7 @@ export function VoucherTable({ vouchers, onEdit, onDelete }: VoucherTableProps) 
             const quotaPercent = v.quotaTotal ? Math.round((v.quotaUsed / v.quotaTotal) * 100) : null;
 
             return (
-              <TableRow key={v.id} className="hover:bg-gray-50/50 transition-colors">
+              <TableRow key={v.id} className="hover:bg-background/50 transition-colors">
                 {/* Kode & Tipe */}
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -68,19 +68,19 @@ export function VoucherTable({ vouchers, onEdit, onDelete }: VoucherTableProps) 
                       {v.type === 'produk' ? <Tag className="h-4 w-4" /> : <Truck className="h-4 w-4" />}
                     </div>
                     <div>
-                      <p className="font-mono font-semibold text-sm text-gray-900">{v.code}</p>
-                      <p className="text-[11px] text-gray-500 capitalize">{v.type === 'produk' ? 'Diskon Produk' : 'Ongkos Kirim'}</p>
+                      <p className="font-mono font-semibold text-sm text-text-primary">{v.code}</p>
+                      <p className="text-[11px] text-text-secondary capitalize">{v.type === 'produk' ? 'Diskon Produk' : 'Ongkos Kirim'}</p>
                     </div>
                   </div>
                 </TableCell>
 
                 {/* Detail */}
                 <TableCell>
-                  <p className="text-sm text-gray-900">{v.description}</p>
+                  <p className="text-sm text-text-primary">{v.description}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-xs font-semibold text-primary">{discountLabel}</span>
                     {v.budgetPerTransaction && (
-                      <span className="text-[11px] text-gray-400">maks {formatCurrency(v.budgetPerTransaction)}/trx</span>
+                      <span className="text-[11px] text-text-disabled">maks {formatCurrency(v.budgetPerTransaction)}/trx</span>
                     )}
                     {v.isStackable && <Badge variant="info" size="sm">Stackable</Badge>}
                   </div>
@@ -88,8 +88,8 @@ export function VoucherTable({ vouchers, onEdit, onDelete }: VoucherTableProps) 
 
                 {/* Durasi */}
                 <TableCell>
-                  <p className="text-xs text-gray-700">{formatDate(v.startDate)}</p>
-                  <p className="text-[11px] text-gray-400">s/d {formatDate(v.endDate)}</p>
+                  <p className="text-xs text-text-primary">{formatDate(v.startDate)}</p>
+                  <p className="text-[11px] text-text-disabled">s/d {formatDate(v.endDate)}</p>
                 </TableCell>
 
                 {/* Kuota */}
@@ -97,10 +97,10 @@ export function VoucherTable({ vouchers, onEdit, onDelete }: VoucherTableProps) 
                   {v.quotaTotal ? (
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-gray-600">{v.quotaUsed} / {v.quotaTotal}</span>
-                        <span className="text-gray-400">{quotaPercent}%</span>
+                        <span className="text-text-secondary">{v.quotaUsed} / {v.quotaTotal}</span>
+                        <span className="text-text-disabled">{quotaPercent}%</span>
                       </div>
-                      <div className="w-full bg-gray-100 rounded-full h-1.5">
+                      <div className="w-full bg-background rounded-full h-1.5">
                         <div
                           className={`h-1.5 rounded-full transition-all ${quotaPercent! >= 100 ? 'bg-red-500' : quotaPercent! >= 75 ? 'bg-yellow-500' : 'bg-primary'}`}
                           style={{ width: `${Math.min(quotaPercent!, 100)}%` }}
@@ -108,7 +108,7 @@ export function VoucherTable({ vouchers, onEdit, onDelete }: VoucherTableProps) 
                       </div>
                     </div>
                   ) : (
-                    <span className="text-xs text-gray-400">Tanpa batas</span>
+                    <span className="text-xs text-text-disabled">Tanpa batas</span>
                   )}
                 </TableCell>
 

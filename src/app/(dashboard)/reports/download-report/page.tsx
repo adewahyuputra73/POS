@@ -164,7 +164,7 @@ export default function DownloadReportPage() {
   };
 
   const getColorClasses = (color: string, isSelected: boolean) => {
-    if (!isSelected) return "border-border hover:border-gray-300";
+    if (!isSelected) return "border-border hover:border-border";
     
     switch (color) {
       case "primary":
@@ -209,7 +209,7 @@ export default function DownloadReportPage() {
       />
 
       {/* Date Range */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Pilih Rentang Tanggal
         </h3>
@@ -233,7 +233,7 @@ export default function DownloadReportPage() {
       </div>
 
       {/* Report Type Selection */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Pilih Tipe Laporan
         </h3>
@@ -279,7 +279,7 @@ export default function DownloadReportPage() {
       </div>
 
       {/* Export Button */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-semibold text-text-primary">

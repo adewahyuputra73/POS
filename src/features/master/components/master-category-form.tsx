@@ -60,7 +60,7 @@ export function MasterCategoryForm({
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div 
-          className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+          className="bg-surface rounded-xl shadow-xl w-full max-w-md overflow-hidden"
           onClick={e => e.stopPropagation()}
         >
           <div className="flex items-center justify-between p-4 border-b border-border">

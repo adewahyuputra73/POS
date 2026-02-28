@@ -106,7 +106,7 @@ function CanvasObject({ obj, isSelected, onSelect, onDrag }: {
   const typeConfig: Record<LayoutObjectType, { bg: string; label: string }> = {
     bar: { bg: 'bg-amber-200 border-amber-400 text-amber-800', label: '🍸 Bar' },
     dapur: { bg: 'bg-orange-200 border-orange-400 text-orange-800', label: '🍳 Dapur' },
-    tembok: { bg: 'bg-gray-400 border-gray-500', label: '' },
+    tembok: { bg: 'bg-border border-border', label: '' },
   };
   const config = typeConfig[obj.type];
 
@@ -127,7 +127,7 @@ function CanvasObject({ obj, isSelected, onSelect, onDrag }: {
     >
       {config.label && <span className="text-[10px] font-medium">{config.label}</span>}
       {obj.name && obj.type !== 'tembok' && (
-        <span className="text-[9px] absolute -bottom-4 left-0 right-0 text-center text-gray-500">{obj.name}</span>
+        <span className="text-[9px] absolute -bottom-4 left-0 right-0 text-center text-text-secondary">{obj.name}</span>
       )}
     </div>
   );
@@ -208,8 +208,8 @@ export default function LayoutPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tata Letak</h1>
-          <p className="text-sm text-gray-500 mt-1">Desain layout meja restoran secara visual</p>
+          <h1 className="text-2xl font-bold text-text-primary">Tata Letak</h1>
+          <p className="text-sm text-text-secondary mt-1">Desain layout meja restoran secara visual</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleReset} disabled={!hasChanges} className="gap-1.5">
@@ -222,7 +222,7 @@ export default function LayoutPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="bg-white rounded-xl border border-border p-3 flex items-center justify-between">
+      <div className="bg-surface rounded-xl border border-border p-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Area Selector */}
           <Select value={String(selectedAreaId)} onValueChange={(v) => { setSelectedAreaId(Number(v)); setSelectedId(null); }}>
@@ -236,11 +236,11 @@ export default function LayoutPage() {
             </SelectContent>
           </Select>
 
-          <div className="w-px h-6 bg-gray-200" />
+          <div className="w-px h-6 bg-background" />
 
           {/* Add Object Buttons */}
           <div className="flex items-center gap-1">
-            <span className="text-xs text-gray-500 mr-1">Tambah:</span>
+            <span className="text-xs text-text-secondary mr-1">Tambah:</span>
             <Button variant="outline" size="sm" onClick={() => addObject('bar')} className="h-8 text-xs gap-1">
               🍸 Bar
             </Button>
@@ -252,7 +252,7 @@ export default function LayoutPage() {
             </Button>
           </div>
 
-          <div className="w-px h-6 bg-gray-200" />
+          <div className="w-px h-6 bg-background" />
 
           {/* Delete */}
           {selectedId && (
@@ -267,7 +267,7 @@ export default function LayoutPage() {
           <Button variant="ghost" size="sm" onClick={() => setZoom(z => Math.max(0.5, z - 0.1))} className="h-8 w-8 p-0">
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-xs text-gray-500 w-12 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="text-xs text-text-secondary w-12 text-center">{Math.round(zoom * 100)}%</span>
           <Button variant="ghost" size="sm" onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="h-8 w-8 p-0">
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -275,7 +275,7 @@ export default function LayoutPage() {
       </div>
 
       {/* Canvas */}
-      <div className="bg-white rounded-xl border border-border overflow-auto" style={{ height: 'calc(100vh - 280px)' }}>
+      <div className="bg-surface rounded-xl border border-border overflow-auto" style={{ height: 'calc(100vh - 280px)' }}>
         <div
           className="relative bg-[radial-gradient(circle,#e5e7eb_1px,transparent_1px)] bg-[size:20px_20px]"
           style={{
@@ -286,31 +286,31 @@ export default function LayoutPage() {
           onClick={() => setSelectedId(null)}
         >
           {/* Legend */}
-          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-lg border border-border p-2.5 z-10 space-y-1.5">
-            <p className="text-[10px] font-semibold text-gray-600 mb-1">LEGENDA</p>
+          <div className="absolute top-3 right-3 bg-surface/90 backdrop-blur rounded-lg border border-border p-2.5 z-10 space-y-1.5">
+            <p className="text-[10px] font-semibold text-text-secondary mb-1">LEGENDA</p>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-green-200 border border-green-400" />
-              <span className="text-[10px] text-gray-500">Tersedia</span>
+              <span className="text-[10px] text-text-secondary">Tersedia</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-red-200 border border-red-400" />
-              <span className="text-[10px] text-gray-500">Terisi</span>
+              <span className="text-[10px] text-text-secondary">Terisi</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-yellow-200 border border-yellow-400" />
-              <span className="text-[10px] text-gray-500">Reserved</span>
+              <span className="text-[10px] text-text-secondary">Reserved</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-amber-200 border border-amber-400" />
-              <span className="text-[10px] text-gray-500">Bar</span>
+              <span className="text-[10px] text-text-secondary">Bar</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-orange-200 border border-orange-400" />
-              <span className="text-[10px] text-gray-500">Dapur</span>
+              <span className="text-[10px] text-text-secondary">Dapur</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm bg-gray-400" />
-              <span className="text-[10px] text-gray-500">Tembok</span>
+              <div className="w-3 h-3 rounded-sm bg-border" />
+              <span className="text-[10px] text-text-secondary">Tembok</span>
             </div>
           </div>
 
@@ -340,9 +340,9 @@ export default function LayoutPage() {
           {areaTables.length === 0 && areaObjects.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <Layers className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-400 text-sm">Belum ada meja di area ini</p>
-                <p className="text-gray-400 text-xs mt-1">Tambahkan meja dari halaman Meja</p>
+                <Layers className="h-12 w-12 text-text-disabled mx-auto mb-3" />
+                <p className="text-text-disabled text-sm">Belum ada meja di area ini</p>
+                <p className="text-text-disabled text-xs mt-1">Tambahkan meja dari halaman Meja</p>
               </div>
             </div>
           )}
@@ -350,7 +350,7 @@ export default function LayoutPage() {
       </div>
 
       {/* Status Bar */}
-      <div className="flex items-center justify-between text-xs text-gray-400">
+      <div className="flex items-center justify-between text-xs text-text-disabled">
         <div className="flex items-center gap-3">
           <span>{selectedArea?.name || '-'}</span>
           <span>·</span>

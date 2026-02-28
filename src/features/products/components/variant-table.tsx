@@ -98,7 +98,7 @@ export function VariantTable({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl border border-border p-8">
+      <div className="bg-surface rounded-xl border border-border p-8">
         <div className="flex items-center justify-center gap-3 text-text-secondary">
           <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           <span>Memuat data...</span>
@@ -109,7 +109,7 @@ export function VariantTable({
 
   if (variants.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
         <Layers className="h-12 w-12 mx-auto text-text-secondary mb-3" />
         <h3 className="text-lg font-semibold text-text-primary mb-1">
           Belum Ada Varian
@@ -122,7 +122,7 @@ export function VariantTable({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

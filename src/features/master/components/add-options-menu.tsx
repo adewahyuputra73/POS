@@ -58,30 +58,30 @@ export function AddOptionsMenu({
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-border shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-xl border border-border shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           <button
             onClick={handleAddNew}
-            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-background transition-colors text-left"
           >
             <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <FolderPlus className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <p className="font-medium text-gray-900 text-sm">{label} Baru</p>
-              <p className="text-xs text-gray-500">Buat dari awal</p>
+              <p className="font-medium text-text-primary text-sm">{label} Baru</p>
+              <p className="text-xs text-text-secondary">Buat dari awal</p>
             </div>
           </button>
           <div className="border-t border-border" />
           <button
             onClick={handleImport}
-            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-background transition-colors text-left"
           >
             <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center">
               <Download className="h-4 w-4 text-blue-600" />
             </div>
             <div>
-              <p className="font-medium text-gray-900 text-sm">{importLabel}</p>
-              <p className="text-xs text-gray-500">Salin dari outlet lain</p>
+              <p className="font-medium text-text-primary text-sm">{importLabel}</p>
+              <p className="text-xs text-text-secondary">Salin dari outlet lain</p>
             </div>
           </button>
         </div>

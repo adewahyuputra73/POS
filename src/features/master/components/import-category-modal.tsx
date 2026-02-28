@@ -93,7 +93,7 @@ export function ImportCategoryModal({
 
         {step === 'outlet' && (
           <div className="space-y-4 py-4">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-text-secondary">
               Pilih outlet sumber untuk mengimpor kategori:
             </p>
             <div className="space-y-2">
@@ -101,16 +101,16 @@ export function ImportCategoryModal({
                 <button
                   key={outlet.id}
                   onClick={() => handleSelectOutlet(outlet)}
-                  className="w-full flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-primary/5 transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors text-left"
                 >
                   <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Store className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900">{outlet.name}</p>
-                    <p className="text-sm text-gray-500 truncate">{outlet.address}</p>
+                    <p className="font-medium text-text-primary">{outlet.name}</p>
+                    <p className="text-sm text-text-secondary truncate">{outlet.address}</p>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
+                  <ChevronRight className="h-5 w-5 text-text-disabled" />
                 </button>
               ))}
             </div>
@@ -126,18 +126,18 @@ export function ImportCategoryModal({
               >
                 ← Ganti Outlet
               </button>
-              <span className="text-sm text-gray-400">|</span>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-text-disabled">|</span>
+              <span className="text-sm text-text-secondary">
                 {selectedOutlet.name}
               </span>
             </div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-text-secondary">
               Pilih kategori yang ingin diimpor:
             </p>
 
             {categories.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-text-disabled">
                 Tidak ada kategori di outlet ini
               </div>
             ) : (
@@ -149,7 +149,7 @@ export function ImportCategoryModal({
                       "flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-colors",
                       selectedCategories.includes(category.id)
                         ? "border-primary bg-primary/5"
-                        : "border-gray-200 hover:bg-gray-50"
+                        : "border-border hover:bg-background"
                     )}
                   >
                     <Checkbox
@@ -157,8 +157,8 @@ export function ImportCategoryModal({
                       onCheckedChange={() => handleToggleCategory(category.id)}
                     />
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">{category.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-text-primary">{category.name}</p>
+                      <p className="text-sm text-text-secondary">
                         {category.productCount} produk
                       </p>
                     </div>

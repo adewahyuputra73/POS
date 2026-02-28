@@ -57,7 +57,7 @@ export function DateRangePicker({ value, onChange, className }: DateRangePickerP
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex items-center gap-2 px-3 py-2 h-10 border border-border rounded-lg bg-white",
+          "flex items-center gap-2 px-3 py-2 h-10 border border-border rounded-lg bg-surface",
           "hover:border-primary/50 transition-colors",
           "text-sm font-medium text-text-primary min-w-[200px] justify-between"
         )}
@@ -70,7 +70,7 @@ export function DateRangePicker({ value, onChange, className }: DateRangePickerP
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-border rounded-lg shadow-card z-50 w-64 py-2">
+        <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-card z-50 w-64 py-2">
           <div className="px-3 py-2 border-b border-divider">
             <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Pilih Periode</p>
           </div>

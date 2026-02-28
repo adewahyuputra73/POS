@@ -43,7 +43,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 right-0 z-30 h-16 bg-white/80 backdrop-blur-md border-b border-divider transition-layout",
+        "fixed top-0 right-0 z-30 h-16 bg-surface/80 backdrop-blur-md border-b border-divider transition-layout",
         sidebarCollapsed ? "lg:left-20" : "lg:left-60",
         "left-0"
       )}
@@ -69,7 +69,7 @@ export function Header() {
           {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative group rounded-xl hover:bg-background">
             <Bell className="h-5 w-5 text-text-secondary group-hover:text-primary transition-colors" />
-            <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-error rounded-full border-2 border-white ring-2 ring-error/20" />
+            <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-error rounded-full border-2 border-surface ring-2 ring-error/20" />
           </Button>
 
           <div className="h-8 w-[1px] bg-border mx-2" />
@@ -104,7 +104,7 @@ export function Header() {
 
             {/* Dropdown menu */}
             {dropdownOpen && (
-              <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-border py-2.5 z-50 animate-in fade-in zoom-in duration-200">
+              <div className="absolute right-0 mt-3 w-64 bg-surface rounded-2xl shadow-xl border border-border py-2.5 z-50 animate-in fade-in zoom-in duration-200">
                 <div className="px-4 py-3 mb-1 border-b border-divider">
                   <p className="text-sm font-bold text-text-primary leading-none">
                     {user?.name || "Admin User"}

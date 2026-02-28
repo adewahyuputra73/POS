@@ -120,7 +120,7 @@ export function ImageUploader({
                   <button
                     type="button"
                     onClick={() => setPrimary(image.id)}
-                    className="p-1.5 bg-white rounded-lg text-text-primary hover:bg-primary hover:text-white transition-colors"
+                    className="p-1.5 bg-surface rounded-lg text-text-primary hover:bg-primary hover:text-white transition-colors"
                     title="Jadikan foto utama"
                   >
                     <ImageIcon className="h-4 w-4" />
@@ -129,7 +129,7 @@ export function ImageUploader({
                 <button
                   type="button"
                   onClick={() => removeImage(image.id)}
-                  className="p-1.5 bg-white rounded-lg text-error hover:bg-error hover:text-white transition-colors"
+                  className="p-1.5 bg-surface rounded-lg text-error hover:bg-error hover:text-white transition-colors"
                   title="Hapus foto"
                 >
                   <X className="h-4 w-4" />

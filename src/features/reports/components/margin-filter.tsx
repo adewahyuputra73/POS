@@ -39,7 +39,7 @@ export function MarginFilter({
       <div className="relative">
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="flex items-center gap-1.5 px-3 py-2 bg-white border border-border rounded-lg text-sm font-medium hover:border-primary/30 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 bg-surface border border-border rounded-lg text-sm font-medium hover:border-primary/30 transition-colors"
         >
           {operators.find(op => op.value === operator)?.label || operator}
           <ChevronDown className="h-3.5 w-3.5 text-text-secondary" />
@@ -51,7 +51,7 @@ export function MarginFilter({
               className="fixed inset-0 z-10" 
               onClick={() => setDropdownOpen(false)} 
             />
-            <div className="absolute top-full left-0 mt-1 bg-white border border-border rounded-lg shadow-lg z-20 min-w-[60px]">
+            <div className="absolute top-full left-0 mt-1 bg-surface border border-border rounded-lg shadow-lg z-20 min-w-[60px]">
               {operators.map(op => (
                 <button
                   key={op.value}

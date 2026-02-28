@@ -114,10 +114,10 @@ export function MasterProductTable({
 
   if (products.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum ada master produk</h3>
-        <p className="text-sm text-gray-500">
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <Package className="h-12 w-12 text-text-disabled mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-text-primary mb-2">Belum ada master produk</h3>
+        <p className="text-sm text-text-secondary">
           Klik tombol &quot;Tambah Master Produk&quot; untuk membuat produk baru
         </p>
       </div>
@@ -125,12 +125,12 @@ export function MasterProductTable({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
+          <TableRow className="bg-background/50">
             <TableHead 
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('name')}
             >
               <div className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export function MasterProductTable({
               </div>
             </TableHead>
             <TableHead 
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('basePrice')}
             >
               <div className="flex items-center gap-2">
@@ -148,7 +148,7 @@ export function MasterProductTable({
               </div>
             </TableHead>
             <TableHead 
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('outletCount')}
             >
               <div className="flex items-center gap-2">
@@ -157,7 +157,7 @@ export function MasterProductTable({
               </div>
             </TableHead>
             <TableHead 
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('updatedAt')}
             >
               <div className="flex items-center gap-2">
@@ -171,7 +171,7 @@ export function MasterProductTable({
         </TableHeader>
         <TableBody>
             {paginatedProducts.map((product) => (
-            <TableRow key={product.id} className="hover:bg-gray-50/50">
+            <TableRow key={product.id} className="hover:bg-background/50">
               <TableCell>
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center overflow-hidden">
@@ -186,9 +186,9 @@ export function MasterProductTable({
                     )}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">{product.name}</p>
+                    <p className="font-medium text-text-primary">{product.name}</p>
                     {product.description && (
-                      <p className="text-sm text-gray-500 truncate max-w-[200px]">
+                      <p className="text-sm text-text-secondary truncate max-w-[200px]">
                         {product.description}
                       </p>
                     )}
@@ -197,9 +197,9 @@ export function MasterProductTable({
               </TableCell>
               <TableCell>
                 <div>
-                  <p className="font-semibold text-gray-900">{formatPrice(product.basePrice)}</p>
+                  <p className="font-semibold text-text-primary">{formatPrice(product.basePrice)}</p>
                   {product.channelPrices?.goFood && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-text-secondary">
                       GoFood: {formatPrice(product.channelPrices.goFood)}
                     </p>
                   )}
@@ -207,25 +207,25 @@ export function MasterProductTable({
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <Store className="h-4 w-4 text-gray-400" />
+                  <Store className="h-4 w-4 text-text-disabled" />
                   <div>
                     <span className={cn(
                       "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium",
                       (product.outletIds?.length || 0) > 0 
                         ? "bg-blue-50 text-blue-700"
-                        : "bg-gray-100 text-gray-500"
+                        : "bg-background text-text-secondary"
                     )}>
                       {product.outletIds?.length || 0} Outlet
                     </span>
                     {(product.outletIds?.length || 0) > 0 && (
-                      <p className="text-xs text-gray-500 mt-0.5 truncate max-w-[150px]">
+                      <p className="text-xs text-text-secondary mt-0.5 truncate max-w-[150px]">
                         {getOutletNames(product.outletIds || [])}
                       </p>
                     )}
                   </div>
                 </div>
               </TableCell>
-              <TableCell className="text-gray-500 text-sm">
+              <TableCell className="text-text-secondary text-sm">
                 {formatDate(product.updatedAt.toString())}
               </TableCell>
               <TableCell className="text-center">
@@ -242,7 +242,7 @@ export function MasterProductTable({
                     variant="ghost"
                     size="icon"
                     onClick={() => onEdit(product)}
-                    className="h-8 w-8 text-gray-500 hover:text-orange-600"
+                    className="h-8 w-8 text-text-secondary hover:text-orange-600"
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -256,7 +256,7 @@ export function MasterProductTable({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-secondary">
             Menampilkan {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, products.length)} dari {products.length} produk
           </p>
           <div className="flex items-center gap-2">

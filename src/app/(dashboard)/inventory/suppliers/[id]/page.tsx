@@ -34,7 +34,7 @@ export default function SupplierDetailPage() {
           description="Supplier yang Anda cari tidak ditemukan"
           breadcrumbs={[{ label: "Inventory" }, { label: "Supplier", href: "/inventory/suppliers" }, { label: "Detail" }]}
         />
-        <div className="bg-white rounded-xl border border-border p-12 text-center">
+        <div className="bg-surface rounded-xl border border-border p-12 text-center">
           <Button variant="outline" onClick={() => router.back()}>Kembali</Button>
         </div>
       </div>
@@ -84,35 +84,35 @@ export default function SupplierDetailPage() {
       />
 
       {/* Supplier Info */}
-      <div className="bg-white rounded-xl border border-border p-6">
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Informasi Supplier</h3>
+      <div className="bg-surface rounded-xl border border-border p-6">
+        <h3 className="text-base font-semibold text-text-primary mb-4">Informasi Supplier</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="flex items-start gap-3">
-            <Phone className="h-5 w-5 text-gray-400 mt-0.5" />
+            <Phone className="h-5 w-5 text-text-disabled mt-0.5" />
             <div>
-              <p className="text-xs text-gray-500">No. Telepon</p>
-              <p className="text-sm font-medium text-gray-900">{supplier.phone || '-'}</p>
+              <p className="text-xs text-text-secondary">No. Telepon</p>
+              <p className="text-sm font-medium text-text-primary">{supplier.phone || '-'}</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
+            <MapPin className="h-5 w-5 text-text-disabled mt-0.5" />
             <div>
-              <p className="text-xs text-gray-500">Alamat</p>
-              <p className="text-sm font-medium text-gray-900">{supplier.address || '-'}</p>
+              <p className="text-xs text-text-secondary">Alamat</p>
+              <p className="text-sm font-medium text-text-primary">{supplier.address || '-'}</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
+            <Clock className="h-5 w-5 text-text-disabled mt-0.5" />
             <div>
-              <p className="text-xs text-gray-500">Tempo Pembayaran</p>
-              <p className="text-sm font-medium text-gray-900">{supplier.paymentTerm || '-'}</p>
+              <p className="text-xs text-text-secondary">Tempo Pembayaran</p>
+              <p className="text-sm font-medium text-text-primary">{supplier.paymentTerm || '-'}</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <CreditCard className="h-5 w-5 text-gray-400 mt-0.5" />
+            <CreditCard className="h-5 w-5 text-text-disabled mt-0.5" />
             <div>
-              <p className="text-xs text-gray-500">Tipe Pembayaran</p>
-              <p className="text-sm font-medium text-gray-900 capitalize">{supplier.paymentType || '-'}</p>
+              <p className="text-xs text-text-secondary">Tipe Pembayaran</p>
+              <p className="text-sm font-medium text-text-primary capitalize">{supplier.paymentType || '-'}</p>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function SupplierDetailPage() {
       {/* Materials */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-base font-semibold text-gray-900">Daftar Bahan</h3>
+          <h3 className="text-base font-semibold text-text-primary">Daftar Bahan</h3>
           <Button onClick={() => setAddModalOpen(true)} className="gap-1.5" size="sm">
             <Plus className="h-4 w-4" /> Tambah Bahan
           </Button>

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-@theme inline {
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   
   /* ========================================
@@ -117,3 +119,73 @@ body {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark {
+  color-scheme: dark;
+
+  /* Override theme CSS variables for dark mode */
+  --color-background: #0F172A;
+  --color-surface: #1E293B;
+  --color-divider: #334155;
+  --color-border: #334155;
+  --color-border-input: #475569;
+
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-disabled: #64748B;
+
+  --color-primary-light: rgba(33, 150, 243, 0.15);
+  --color-secondary-light: #334155;
+  --color-success-light: rgba(76, 175, 80, 0.15);
+  --color-warning-light: rgba(255, 152, 0, 0.15);
+  --color-error-light: rgba(244, 67, 54, 0.15);
+  --color-info-light: rgba(33, 150, 243, 0.15);
+
+  --color-grey: #64748B;
+
+  --background: #0F172A;
+  --foreground: #F1F5F9;
+  --card: #1E293B;
+  --nav-bg: #0B1120;
+}
+
+/* Dark mode: native inputs */
+.dark input[type="time"],
+.dark input[type="date"] {
+  color-scheme: dark;
+}
+
+.dark select,
+.dark textarea {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.dark input[type="range"] {
+  accent-color: var(--color-primary);
+}
+
+/* Dark mode: Scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748B;
+}
+
+/* Dark mode: Shadow adjustments */
+.dark .shadow-sm,
+.dark .shadow-card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 12px 0 rgba(0, 0, 0, 0.2);
+}
+
+.dark .shadow-lg {
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4), 0 8px 24px 0 rgba(0, 0, 0, 0.3);
+}
+

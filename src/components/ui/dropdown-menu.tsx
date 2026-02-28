@@ -78,7 +78,7 @@ export function DropdownMenuContent({ children, align = 'start', className }: Dr
 
   return (
     <div className={cn(
-      "absolute z-50 mt-2 min-w-[12rem] rounded-xl border border-border bg-white py-1.5 shadow-lg",
+      "absolute z-50 mt-2 min-w-[12rem] rounded-xl border border-border bg-surface py-1.5 shadow-lg",
       "animate-in fade-in-0 zoom-in-95",
       align === 'end' && 'right-0',
       align === 'center' && 'left-1/2 -translate-x-1/2',
@@ -107,9 +107,9 @@ export const DropdownMenuItem = React.forwardRef<HTMLButtonElement, DropdownMenu
           setOpen(false);
         }}
         className={cn(
-          "flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700",
-          "hover:bg-gray-50 transition-colors cursor-pointer",
-          "focus:outline-none focus:bg-gray-50",
+          "flex w-full items-center gap-2 px-3 py-2 text-sm text-text-primary",
+          "hover:bg-background transition-colors cursor-pointer",
+          "focus:outline-none focus:bg-background",
           className
         )}
         {...props}

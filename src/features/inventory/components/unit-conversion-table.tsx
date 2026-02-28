@@ -81,10 +81,10 @@ export function UnitConversionTable({
 
   if (conversions.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <Ruler className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum ada konversi unit</h3>
-        <p className="text-sm text-gray-500">
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <Ruler className="h-12 w-12 text-text-disabled mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-text-primary mb-2">Belum ada konversi unit</h3>
+        <p className="text-sm text-text-secondary">
           Klik tombol &quot;Tambah Konversi Unit&quot; untuk membuat konversi baru
         </p>
       </div>
@@ -92,12 +92,12 @@ export function UnitConversionTable({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
+          <TableRow className="bg-background/50">
             <TableHead
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('name')}
             >
               <div className="flex items-center gap-2">
@@ -106,7 +106,7 @@ export function UnitConversionTable({
               </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-gray-100 transition-colors text-center"
+              className="cursor-pointer hover:bg-background transition-colors text-center"
               onClick={() => handleSort('unitCount')}
             >
               <div className="flex items-center justify-center gap-2">
@@ -115,7 +115,7 @@ export function UnitConversionTable({
               </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-gray-100 transition-colors text-center"
+              className="cursor-pointer hover:bg-background transition-colors text-center"
               onClick={() => handleSort('linkedMaterialCount')}
             >
               <div className="flex items-center justify-center gap-2">
@@ -124,7 +124,7 @@ export function UnitConversionTable({
               </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('updatedAt')}
             >
               <div className="flex items-center gap-2">
@@ -137,15 +137,15 @@ export function UnitConversionTable({
         </TableHeader>
         <TableBody>
           {paginatedConversions.map((conversion) => (
-            <TableRow key={conversion.id} className="hover:bg-gray-50/50">
+            <TableRow key={conversion.id} className="hover:bg-background/50">
               <TableCell>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
                     <Ruler className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <span className="font-medium text-gray-900">{conversion.name}</span>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <span className="font-medium text-text-primary">{conversion.name}</span>
+                    <p className="text-xs text-text-secondary mt-0.5">
                       {conversion.units.map(u => u.name).join(' · ')}
                     </p>
                   </div>
@@ -161,12 +161,12 @@ export function UnitConversionTable({
                   "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium",
                   conversion.linkedMaterialCount > 0
                     ? "bg-green-50 text-green-700"
-                    : "bg-gray-100 text-gray-500"
+                    : "bg-background text-text-secondary"
                 )}>
                   {conversion.linkedMaterialCount} Bahan
                 </span>
               </TableCell>
-              <TableCell className="text-gray-500 text-sm">
+              <TableCell className="text-text-secondary text-sm">
                 {formatDate(conversion.updatedAt)}
               </TableCell>
               <TableCell>
@@ -175,7 +175,7 @@ export function UnitConversionTable({
                     variant="ghost"
                     size="icon"
                     onClick={() => onEdit(conversion)}
-                    className="h-8 w-8 text-gray-500 hover:text-blue-600"
+                    className="h-8 w-8 text-text-secondary hover:text-blue-600"
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -184,7 +184,7 @@ export function UnitConversionTable({
                     size="icon"
                     onClick={() => onDelete(conversion.id)}
                     disabled={conversion.linkedMaterialCount > 0}
-                    className="h-8 w-8 text-gray-500 hover:text-red-600 disabled:opacity-30"
+                    className="h-8 w-8 text-text-secondary hover:text-red-600 disabled:opacity-30"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -197,7 +197,7 @@ export function UnitConversionTable({
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-secondary">
             Menampilkan {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, conversions.length)} dari {conversions.length} konversi
           </p>
           <div className="flex items-center gap-2">

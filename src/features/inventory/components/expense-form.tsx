@@ -88,15 +88,15 @@ export function ExpenseForm({ onSubmit, onCancel }: ExpenseFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-surface rounded-xl border border-border p-6">
         <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
           <MinusCircle className="h-5 w-5 text-red-600" />
           Pengeluaran Stok
         </h3>
-        <p className="text-sm text-gray-500">Kurangi stok bahan dasar dengan mencatat alasan pengeluaran.</p>
+        <p className="text-sm text-text-secondary">Kurangi stok bahan dasar dengan mencatat alasan pengeluaran.</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border space-y-3">
           <Tabs value={materialType} onValueChange={(v) => setMaterialType(v as MaterialType)}>
             <TabsList>
@@ -126,7 +126,7 @@ export function ExpenseForm({ onSubmit, onCancel }: ExpenseFormProps) {
 
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50">
+            <TableRow className="bg-background/50">
               <TableHead className="font-semibold text-xs">Nama Bahan Dasar</TableHead>
               <TableHead className="font-semibold text-xs text-right">Stok Saat Ini</TableHead>
               <TableHead className="font-semibold text-xs">Jumlah Pengeluaran</TableHead>
@@ -151,7 +151,7 @@ export function ExpenseForm({ onSubmit, onCancel }: ExpenseFormProps) {
                       disabled={m.currentStock === 0}
                     />
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">{m.baseUnit}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{m.baseUnit}</TableCell>
                   <TableCell>
                     <Select
                       value={data.reason}
@@ -171,7 +171,7 @@ export function ExpenseForm({ onSubmit, onCancel }: ExpenseFormProps) {
             })}
             {filteredMaterials.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-400">Tidak ada bahan ditemukan</TableCell>
+                <TableCell colSpan={5} className="text-center py-8 text-text-disabled">Tidak ada bahan ditemukan</TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -179,7 +179,7 @@ export function ExpenseForm({ onSubmit, onCancel }: ExpenseFormProps) {
       </div>
 
       <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-500">{totalItems} item dipilih</div>
+        <div className="text-sm text-text-secondary">{totalItems} item dipilih</div>
         <div className="flex gap-3">
           <Button variant="outline" onClick={onCancel}>Batal</Button>
           <Button onClick={handleSubmit} disabled={!isValid} className="gap-1.5 bg-red-600 hover:bg-red-700">

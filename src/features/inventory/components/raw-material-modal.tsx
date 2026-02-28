@@ -95,9 +95,9 @@ export function RawMaterialModal({
           />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Kategori *</label>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">Kategori *</label>
             <select
-              className="w-full h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
+              className="w-full h-10 px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
               value={categoryId}
               onChange={(e) => setCategoryId(Number(e.target.value))}
             >
@@ -110,9 +110,9 @@ export function RawMaterialModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Unit Konversi *</label>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">Unit Konversi *</label>
             <select
-              className="w-full h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
+              className="w-full h-10 px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
               value={unitConversionId}
               onChange={(e) => setUnitConversionId(Number(e.target.value))}
             >
@@ -129,7 +129,7 @@ export function RawMaterialModal({
               <p className="text-xs font-medium text-blue-700 mb-2">Unit yang tersedia:</p>
               <div className="flex flex-wrap gap-2">
                 {selectedConversion.units.map((u) => (
-                  <span key={u.id} className="inline-flex items-center gap-1 px-2 py-1 rounded bg-white text-xs text-blue-600 border border-blue-200">
+                  <span key={u.id} className="inline-flex items-center gap-1 px-2 py-1 rounded bg-surface text-xs text-blue-600 border border-blue-200">
                     {u.name}
                     <span className="text-blue-400">({u.role})</span>
                   </span>
@@ -159,7 +159,7 @@ export function RawMaterialModal({
           />
         </div>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-divider">
           <Button variant="outline" onClick={onClose}>Batal</Button>
           <Button onClick={handleSubmit}>
             {isEdit ? 'Simpan Perubahan' : 'Tambah Bahan'}

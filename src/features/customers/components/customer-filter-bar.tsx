@@ -43,7 +43,7 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
     <div className="space-y-3">
       {/* Filter Chips Row */}
       <div className="flex items-center gap-2 flex-wrap">
-        <Filter className="h-4 w-4 text-gray-400" />
+        <Filter className="h-4 w-4 text-text-disabled" />
 
         {/* Tipe (Segment) */}
         <Select
@@ -109,15 +109,15 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
         </Select>
 
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={clearAll} className="h-9 text-xs text-gray-500 hover:text-gray-700 gap-1">
+          <Button variant="ghost" size="sm" onClick={clearAll} className="h-9 text-xs text-text-secondary hover:text-text-primary gap-1">
             <X className="h-3.5 w-3.5" /> Reset Filter
           </Button>
         )}
       </div>
 
       {/* Result count */}
-      <p className="text-xs text-gray-500">
-        Menampilkan <span className="font-semibold text-gray-700">{totalResults}</span> pelanggan
+      <p className="text-xs text-text-secondary">
+        Menampilkan <span className="font-semibold text-text-primary">{totalResults}</span> pelanggan
       </p>
     </div>
   );

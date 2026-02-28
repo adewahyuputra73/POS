@@ -11,6 +11,8 @@ interface SelectContextType {
   open: boolean;
   setOpen: (open: boolean) => void;
   disabled?: boolean;
+  registerItem: (value: string, label: React.ReactNode) => void;
+  itemLabels: Map<string, React.ReactNode>;
 }
 
 const SelectContext = React.createContext<SelectContextType | null>(null);
@@ -31,6 +33,17 @@ interface SelectProps {
 export function Select({ value = '', onValueChange, children, disabled }: SelectProps) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
+  const [, forceUpdate] = React.useState(0);
+  const itemLabelsRef = React.useRef<Map<string, React.ReactNode>>(new Map());
+
+  const registerItem = React.useCallback((itemValue: string, label: React.ReactNode) => {
+    const current = itemLabelsRef.current.get(itemValue);
+    if (current !== label) {
+      itemLabelsRef.current.set(itemValue, label);
+      // Force re-render so SelectValue can pick up the label
+      forceUpdate((n) => n + 1);
+    }
+  }, []);
 
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -41,7 +54,17 @@ export function Select({ value = '', onValueChange, children, disabled }: Select
   }, []);
 
   return (
-    <SelectContext.Provider value={{ value, onValueChange: onValueChange || (() => {}), open, setOpen, disabled }}>
+    <SelectContext.Provider
+      value={{
+        value,
+        onValueChange: onValueChange || (() => {}),
+        open,
+        setOpen,
+        disabled,
+        registerItem,
+        itemLabels: itemLabelsRef.current,
+      }}
+    >
       <div ref={ref} className="relative">{children}</div>
     </SelectContext.Provider>
   );
@@ -62,7 +85,7 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
         onClick={() => !disabled && setOpen(!open)}
         disabled={disabled}
         className={cn(
-          "flex h-10 w-full items-center justify-between rounded-lg border border-border bg-white px-3 py-2 text-sm",
+          "flex h-10 w-full items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm",
           "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
           "disabled:cursor-not-allowed disabled:opacity-50",
           "transition-colors",
@@ -71,7 +94,7 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
         {...props}
       >
         {children}
-        <ChevronDown className={cn("h-4 w-4 text-gray-400 transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("h-4 w-4 text-text-disabled transition-transform", open && "rotate-180")} />
       </button>
     );
   }
@@ -85,18 +108,20 @@ interface SelectValueProps {
 }
 
 export function SelectValue({ placeholder, children }: SelectValueProps) {
-  const { value } = useSelectContext();
-  // Simplified: If children provided (explicit label), use it. 
-  // Otherwise try to show value (fallback).
-  
+  const { value, itemLabels } = useSelectContext();
+
+  // Try to get the label from registered items
+  const registeredLabel = value ? itemLabels.get(value) : undefined;
+  const displayValue = children || registeredLabel || value;
+
   return (
-    <span className={cn("truncate", !value && "text-gray-400")}>
-      {children ? children : (value || placeholder)}
+    <span className={cn("truncate", !value && "text-text-disabled")}>
+      {displayValue || placeholder}
     </span>
   );
 }
 
-// SelectContent
+// SelectContent — always renders children (for label registration), hidden visually when closed
 interface SelectContentProps {
   children: React.ReactNode;
   align?: 'start' | 'end';
@@ -105,13 +130,12 @@ interface SelectContentProps {
 
 export function SelectContent({ children, align = 'start', className }: SelectContentProps) {
   const { open } = useSelectContext();
-  if (!open) return null;
 
   return (
     <div className={cn(
-      "absolute z-50 mt-1 w-full min-w-[8rem] rounded-lg border border-border bg-white shadow-lg",
+      "absolute z-50 mt-1 w-full min-w-[8rem] rounded-lg border border-border bg-surface shadow-lg",
       "max-h-60 overflow-y-auto py-1",
-      "animate-in fade-in-0 zoom-in-95",
+      open ? "animate-in fade-in-0 zoom-in-95" : "hidden",
       align === 'end' && 'right-0',
       className
     )}>
@@ -129,8 +153,13 @@ interface SelectItemProps {
 }
 
 export function SelectItem({ value, children, className, disabled }: SelectItemProps) {
-  const { value: selectedValue, onValueChange, setOpen } = useSelectContext();
+  const { value: selectedValue, onValueChange, setOpen, registerItem } = useSelectContext();
   const isSelected = selectedValue === value;
+
+  // Register this item's label so SelectValue can display it
+  React.useEffect(() => {
+    registerItem(value, children);
+  }, [value, children, registerItem]);
 
   return (
     <button
@@ -142,7 +171,7 @@ export function SelectItem({ value, children, className, disabled }: SelectItemP
       }}
       className={cn(
         "flex w-full items-center px-3 py-2 text-sm cursor-pointer transition-colors",
-        isSelected ? "bg-primary/5 text-primary font-medium" : "text-gray-700 hover:bg-gray-50",
+        isSelected ? "bg-primary/5 text-primary font-medium" : "text-text-primary hover:bg-background",
         disabled && "opacity-50 cursor-not-allowed",
         className
       )}

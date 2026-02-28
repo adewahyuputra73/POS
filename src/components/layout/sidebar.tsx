@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -193,7 +194,34 @@ export function Sidebar() {
   const { sidebarCollapsed, sidebarMobileOpen, toggleSidebar, setSidebarMobileOpen } =
     useUIStore();
 
-  const isActive = (href: string) => {
+  // Scroll position persistence
+  const navRef = useRef<HTMLElement>(null);
+  const scrollPositionRef = useRef(0);
+
+  // Track scroll position continuously
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const handleScroll = () => {
+      scrollPositionRef.current = nav.scrollTop;
+    };
+
+    nav.addEventListener("scroll", handleScroll, { passive: true });
+    return () => nav.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Restore scroll position after pathname change triggers re-render
+  useEffect(() => {
+    const nav = navRef.current;
+    if (nav && scrollPositionRef.current > 0) {
+      requestAnimationFrame(() => {
+        nav.scrollTop = scrollPositionRef.current;
+      });
+    }
+  }, [pathname]);
+
+  const isActive = useCallback((href: string) => {
     if (href === "/dashboard") return pathname === "/" || pathname === "/dashboard";
     
     // For /products, only match exact path, not /products/variants
@@ -207,7 +235,7 @@ export function Sidebar() {
     }
     
     return pathname.startsWith(href);
-  };
+  }, [pathname]);
 
   const NavLink = ({ item }: { item: NavItem }) => (
     <Link
@@ -217,7 +245,7 @@ export function Sidebar() {
         "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 mb-0.5",
         isActive(item.href)
           ? "bg-primary text-white"
-          : "text-gray-400 hover:text-white hover:bg-secondary-light",
+          : "text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-primary hover:bg-secondary-light dark:hover:bg-gray-100",
         sidebarCollapsed && "justify-center px-2"
       )}
     >
@@ -231,7 +259,7 @@ export function Sidebar() {
     </Link>
   );
 
-  const SidebarContent = () => (
+  const renderSidebarContent = () => (
     <div className="flex flex-col h-full py-5">
       {/* Logo */}
       <div
@@ -245,14 +273,14 @@ export function Sidebar() {
         </div>
         {!sidebarCollapsed && (
           <div className="flex flex-col">
-            <span className="font-bold text-lg text-white leading-tight">{APP_NAME}</span>
+            <span className="font-bold text-lg text-white dark:text-secondary leading-tight">{APP_NAME}</span>
             <span className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Admin Panel</span>
           </div>
         )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
+      <nav ref={navRef} className="flex-1 px-3 space-y-0.5 overflow-y-auto sidebar-nav">
         <p className={cn(
           "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3",
           sidebarCollapsed && "hidden"
@@ -299,7 +327,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Navigation */}
-      <div className="px-3 mt-auto pt-4 border-t border-secondary-light">
+      <div className="px-3 mt-auto pt-4 border-t border-secondary-light dark:border-gray-200">
         <p className={cn(
           "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3",
           sidebarCollapsed && "hidden"
@@ -312,7 +340,7 @@ export function Sidebar() {
       {/* Collapse Button (Desktop) */}
       <button
         onClick={toggleSidebar}
-        className="hidden lg:flex absolute -right-3 top-20 h-6 w-6 items-center justify-center rounded-full bg-white border border-divider shadow-sm text-gray-400 hover:text-primary hover:border-primary transition-all z-50 focus:outline-none"
+        className="hidden lg:flex absolute -right-3 top-20 h-6 w-6 items-center justify-center rounded-full bg-surface dark:bg-white border border-divider dark:border-gray-300 shadow-sm text-text-disabled hover:text-primary hover:border-primary transition-all z-50 focus:outline-none"
       >
         {sidebarCollapsed ? (
           <ChevronRight className="h-3.5 w-3.5" />
@@ -329,11 +357,11 @@ export function Sidebar() {
       <aside
         className={cn(
           "hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:z-40",
-          "bg-secondary transition-layout",
+          "bg-secondary dark:bg-white dark:border-r dark:border-gray-200 transition-layout",
           sidebarCollapsed ? "lg:w-20" : "lg:w-60"
         )}
       >
-        <SidebarContent />
+        {renderSidebarContent()}
       </aside>
 
       {/* Mobile Sidebar Overlay */}
@@ -347,7 +375,7 @@ export function Sidebar() {
       {/* Mobile Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-60 bg-secondary lg:hidden shadow-2xl",
+          "fixed inset-y-0 left-0 z-50 w-60 bg-secondary dark:bg-white lg:hidden shadow-2xl",
           "transform transition-transform duration-300 ease-in-out",
           sidebarMobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
@@ -355,11 +383,11 @@ export function Sidebar() {
         {/* Close button */}
         <button
           onClick={() => setSidebarMobileOpen(false)}
-          className="absolute right-3 top-5 p-2 text-gray-400 hover:text-white hover:bg-secondary-light rounded-lg"
+          className="absolute right-3 top-5 p-2 text-gray-400 hover:text-white dark:hover:text-primary hover:bg-secondary-light dark:hover:bg-gray-100 rounded-lg"
         >
           <X className="h-5 w-5" />
         </button>
-        <SidebarContent />
+        {renderSidebarContent()}
       </aside>
     </>
   );

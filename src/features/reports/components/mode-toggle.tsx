@@ -25,7 +25,7 @@ export function ModeToggle<T extends string>({
             "px-4 py-2 text-sm font-medium rounded-lg transition-all",
             value === option.value
               ? "bg-primary text-white shadow-sm"
-              : "text-text-secondary hover:text-text-primary hover:bg-white"
+              : "text-text-secondary hover:text-text-primary hover:bg-surface"
           )}
         >
           {option.label}

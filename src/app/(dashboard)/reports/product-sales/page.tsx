@@ -214,7 +214,7 @@ export default function ProductSalesPage() {
       />
 
       {/* Filter Bar */}
-      <div className="bg-white rounded-xl border border-border shadow-card p-4">
+      <div className="bg-surface rounded-xl border border-border shadow-card p-4">
         <div className="flex flex-wrap items-start gap-3">
           <DateRangePicker value={dateRange} onChange={setDateRange} />
           <OutletSelector 
@@ -311,7 +311,7 @@ export default function ProductSalesPage() {
       </div>
 
       {/* Chart */}
-      <div className="bg-white rounded-xl border border-border shadow-card p-5">
+      <div className="bg-surface rounded-xl border border-border shadow-card p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">Tren Penjualan Produk ({aggregationMode === 'daily' ? 'Harian' : aggregationMode === 'weekly' ? 'Mingguan' : aggregationMode === 'monthly' ? 'Bulanan' : aggregationMode === 'hourly' ? 'Per Jam' : 'Total'})</h3>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
@@ -367,7 +367,7 @@ export default function ProductSalesPage() {
       </div>
 
       {/* Data Table */}
-      <div className="bg-white rounded-xl border border-border shadow-card overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border shadow-card overflow-hidden">
         <div className="p-5 border-b border-divider flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-semibold text-text-primary">Detail Penjualan Produk</h3>

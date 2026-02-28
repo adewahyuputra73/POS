@@ -162,7 +162,7 @@ export default function VariantsPage() {
       />
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-border p-4">
+      <div className="bg-surface rounded-xl border border-border p-4">
         {/* Search Bar */}
         <div className="flex items-center gap-3">
           {/* Search */}
@@ -222,7 +222,7 @@ export default function VariantsPage() {
             onClick={() => setDeleteConfirmVariant(null)}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md p-6">
               <h3 className="text-lg font-bold text-text-primary mb-2">
                 Hapus Varian?
               </h3>

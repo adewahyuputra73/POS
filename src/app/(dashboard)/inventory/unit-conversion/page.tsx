@@ -91,7 +91,7 @@ export default function UnitConversionPage() {
         }
       />
 
-      <div className="bg-white rounded-xl border border-border p-4">
+      <div className="bg-surface rounded-xl border border-border p-4">
         <div className="flex-1 max-w-sm">
           <Input
             placeholder="Cari konversi unit..."
@@ -99,7 +99,7 @@ export default function UnitConversionPage() {
             onChange={(e) => setFilters({ search: e.target.value })}
             leftIcon={<Search className="h-4 w-4" />}
             rightIcon={filters.search ? (
-              <button onClick={() => setFilters({ search: '' })} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setFilters({ search: '' })} className="text-text-disabled hover:text-text-secondary">
                 <X className="h-4 w-4" />
               </button>
             ) : undefined}

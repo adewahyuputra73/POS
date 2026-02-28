@@ -141,7 +141,7 @@ export function DataTable<T>({
                   key={String(col.key)}
                   className={cn(
                     "px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider",
-                    col.sortable && "cursor-pointer select-none hover:bg-white transition-colors",
+                    col.sortable && "cursor-pointer select-none hover:bg-surface transition-colors",
                     col.className
                   )}
                   onClick={() => col.sortable && handleSort(String(col.key))}
@@ -154,7 +154,7 @@ export function DataTable<T>({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-divider">
+          <tbody className="bg-surface divide-y divide-divider">
             {paginatedData.length === 0 ? (
               <tr>
                 <td

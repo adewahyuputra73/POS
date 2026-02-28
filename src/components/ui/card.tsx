@@ -9,9 +9,9 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = "default", ...props }, ref) => {
     const variants = {
-      default: "bg-white border border-gray-200 shadow-sm",
-      bordered: "bg-white border-2 border-gray-200",
-      elevated: "bg-white shadow-lg",
+      default: "bg-surface border border-border shadow-sm",
+      bordered: "bg-surface border-2 border-border",
+      elevated: "bg-surface shadow-lg",
     };
 
     return (
@@ -32,7 +32,7 @@ const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("px-6 py-4 border-b border-gray-100", className)}
+      className={cn("px-6 py-4 border-b border-divider", className)}
       {...props}
     />
   )
@@ -46,7 +46,7 @@ const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn("text-lg font-semibold text-gray-900", className)}
+      className={cn("text-lg font-semibold text-text-primary", className)}
       {...props}
     />
   )
@@ -60,7 +60,7 @@ const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn("text-sm text-gray-500 mt-1", className)}
+      className={cn("text-sm text-text-secondary mt-1", className)}
       {...props}
     />
   )
@@ -85,7 +85,7 @@ const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
     <div
       ref={ref}
       className={cn(
-        "px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center",
+        "px-6 py-4 bg-background border-t border-divider flex items-center",
         className
       )}
       {...props}

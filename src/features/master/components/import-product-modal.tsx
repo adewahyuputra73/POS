@@ -102,10 +102,10 @@ export function ImportProductModal({ open, onClose, onImport }: ImportProductMod
 
               <div className="border rounded-md max-h-[300px] overflow-y-auto p-2 space-y-2">
                 {availableProducts.length === 0 ? (
-                  <p className="text-sm text-gray-500 text-center py-4">Tidak ada produk di outlet ini.</p>
+                  <p className="text-sm text-text-secondary text-center py-4">Tidak ada produk di outlet ini.</p>
                 ) : (
                   availableProducts.map(product => (
-                    <div key={product.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg border border-transparent hover:border-gray-100">
+                    <div key={product.id} className="flex items-center space-x-3 p-2 hover:bg-background rounded-lg border border-transparent hover:border-divider">
                       <Checkbox 
                         id={product.id} 
                         checked={selectedProductIds.includes(product.id)}
@@ -113,7 +113,7 @@ export function ImportProductModal({ open, onClose, onImport }: ImportProductMod
                       />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{product.name}</p>
-                        <p className="text-xs text-gray-500">Rp {product.price.toLocaleString()} • {product.category}</p>
+                        <p className="text-xs text-text-secondary">Rp {product.price.toLocaleString()} • {product.category}</p>
                       </div>
                     </div>
                   ))

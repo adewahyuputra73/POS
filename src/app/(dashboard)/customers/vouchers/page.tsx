@@ -100,8 +100,8 @@ export default function VouchersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Voucher</h1>
-          <p className="text-sm text-gray-500 mt-1">Kelola voucher diskon untuk pelanggan</p>
+          <h1 className="text-2xl font-bold text-text-primary">Voucher</h1>
+          <p className="text-sm text-text-secondary mt-1">Kelola voucher diskon untuk pelanggan</p>
         </div>
         <Button onClick={() => setViewMode('add')} className="gap-2">
           <Plus className="h-4 w-4" /> Tambah Voucher
@@ -111,18 +111,18 @@ export default function VouchersPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total Voucher', value: stats.total, icon: Tag, color: 'text-gray-700 bg-gray-50' },
+          { label: 'Total Voucher', value: stats.total, icon: Tag, color: 'text-text-primary bg-background' },
           { label: 'Berjalan', value: stats.active, icon: Tag, color: 'text-green-700 bg-green-50' },
           { label: 'Akan Datang', value: stats.upcoming, icon: Tag, color: 'text-yellow-700 bg-yellow-50' },
-          { label: 'Selesai', value: stats.ended, icon: Tag, color: 'text-gray-500 bg-gray-50' },
+          { label: 'Selesai', value: stats.ended, icon: Tag, color: 'text-text-secondary bg-background' },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl border border-border p-4 flex items-center gap-3">
+          <div key={stat.label} className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
             <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${stat.color}`}>
               <stat.icon className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              <p className="text-xs text-gray-500">{stat.label}</p>
+              <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
+              <p className="text-xs text-text-secondary">{stat.label}</p>
             </div>
           </div>
         ))}
@@ -131,7 +131,7 @@ export default function VouchersPage() {
       {/* Search + Status Tabs */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-disabled" />
           <Input
             value={filters.search}
             onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
@@ -139,15 +139,15 @@ export default function VouchersPage() {
             className="pl-9"
           />
         </div>
-        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-background rounded-lg p-1">
           {statusTabs.map(tab => (
             <button
               key={tab.value}
               onClick={() => setFilters(prev => ({ ...prev, status: tab.value }))}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                 filters.status === tab.value
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-surface text-text-primary shadow-sm'
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               {tab.label}
@@ -169,7 +169,7 @@ export default function VouchersPage() {
       />
 
       {/* Result count */}
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-text-disabled">
         Menampilkan {filteredVouchers.length} dari {vouchers.length} voucher
       </p>
     </div>

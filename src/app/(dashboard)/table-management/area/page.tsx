@@ -78,18 +78,18 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
         <Button variant="ghost" size="sm" onClick={onCancel} className="gap-1.5">
           <ArrowLeft className="h-4 w-4" /> Kembali
         </Button>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-text-primary">
           {isEditing ? 'Ubah Area' : 'Tambah Area'}
         </h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Informasi Area */}
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">Informasi Area</h3>
+        <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-text-primary">Informasi Area</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Nama Area * <span className="text-gray-400">({form.name.length}/50)</span></label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Nama Area * <span className="text-text-disabled">({form.name.length}/50)</span></label>
               <Input
                 value={form.name}
                 onChange={(e) => { setForm(prev => ({ ...prev, name: e.target.value })); if (errors.name) setErrors(prev => ({ ...prev, name: '' })); }}
@@ -100,7 +100,7 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
               {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Deskripsi Area</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Deskripsi Area</label>
               <Input
                 value={form.description}
                 onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
@@ -112,7 +112,7 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
           {/* Harga */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Harga (Rp)</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Harga (Rp)</label>
               <Input
                 type="number"
                 value={form.basePrice || ''}
@@ -122,7 +122,7 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Per Pax</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Per Pax</label>
               <Input
                 type="number"
                 value={form.paxDivider || ''}
@@ -135,19 +135,19 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
         </div>
 
         {/* Toggles */}
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">Pengaturan Area</h3>
+        <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-text-primary">Pengaturan Area</h3>
 
           {/* Extra Price Toggle */}
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <p className="text-sm text-gray-700 font-medium">Sesuaikan Harga Tambahan</p>
-              <p className="text-xs text-gray-400">Hitung biaya tambahan jika jumlah melebihi batas paket</p>
+              <p className="text-sm text-text-primary font-medium">Sesuaikan Harga Tambahan</p>
+              <p className="text-xs text-text-disabled">Hitung biaya tambahan jika jumlah melebihi batas paket</p>
             </div>
             <button
               type="button"
               onClick={() => setForm(prev => ({ ...prev, enableExtraPrice: !prev.enableExtraPrice }))}
-              className={`relative w-11 h-6 rounded-full transition-colors ${form.enableExtraPrice ? 'bg-primary' : 'bg-gray-200'}`}
+              className={`relative w-11 h-6 rounded-full transition-colors ${form.enableExtraPrice ? 'bg-primary' : 'bg-background'}`}
             >
               <div className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${form.enableExtraPrice ? 'translate-x-5' : ''}`} />
             </button>
@@ -156,13 +156,13 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
           {/* Max Capacity Toggle */}
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <p className="text-sm text-gray-700 font-medium">Terapkan Batas Maksimal Pengunjung</p>
-              <p className="text-xs text-gray-400">Area memiliki max capacity, tidak bisa menerima reservasi over limit</p>
+              <p className="text-sm text-text-primary font-medium">Terapkan Batas Maksimal Pengunjung</p>
+              <p className="text-xs text-text-disabled">Area memiliki max capacity, tidak bisa menerima reservasi over limit</p>
             </div>
             <button
               type="button"
               onClick={() => setForm(prev => ({ ...prev, enableMaxCapacity: !prev.enableMaxCapacity }))}
-              className={`relative w-11 h-6 rounded-full transition-colors ${form.enableMaxCapacity ? 'bg-primary' : 'bg-gray-200'}`}
+              className={`relative w-11 h-6 rounded-full transition-colors ${form.enableMaxCapacity ? 'bg-primary' : 'bg-background'}`}
             >
               <div className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${form.enableMaxCapacity ? 'translate-x-5' : ''}`} />
             </button>
@@ -184,13 +184,13 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
           {/* Child Access Toggle */}
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <p className="text-sm text-gray-700 font-medium">Akses Anak</p>
-              <p className="text-xs text-gray-400">Area dapat dipilih untuk reservasi dengan anak</p>
+              <p className="text-sm text-text-primary font-medium">Akses Anak</p>
+              <p className="text-xs text-text-disabled">Area dapat dipilih untuk reservasi dengan anak</p>
             </div>
             <button
               type="button"
               onClick={() => setForm(prev => ({ ...prev, allowChildren: !prev.allowChildren }))}
-              className={`relative w-11 h-6 rounded-full transition-colors ${form.allowChildren ? 'bg-primary' : 'bg-gray-200'}`}
+              className={`relative w-11 h-6 rounded-full transition-colors ${form.allowChildren ? 'bg-primary' : 'bg-background'}`}
             >
               <div className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${form.allowChildren ? 'translate-x-5' : ''}`} />
             </button>
@@ -198,8 +198,8 @@ function AreaForm({ initialData, onSubmit, onCancel, isEditing }: {
         </div>
 
         {/* Services & Facilities */}
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">Layanan & Fasilitas</h3>
+        <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-text-primary">Layanan & Fasilitas</h3>
           <div className="flex flex-wrap gap-2">
             {form.services.map((s, i) => (
               <span key={i} className="inline-flex items-center gap-1 bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-medium">
@@ -294,8 +294,8 @@ export default function AreaPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Area</h1>
-          <p className="text-sm text-gray-500 mt-1">Kelola area dan zona dalam outlet</p>
+          <h1 className="text-2xl font-bold text-text-primary">Area</h1>
+          <p className="text-sm text-text-secondary mt-1">Kelola area dan zona dalam outlet</p>
         </div>
         <Button onClick={() => setViewMode('add')} className="gap-2">
           <Plus className="h-4 w-4" /> Tambah Area
@@ -310,13 +310,13 @@ export default function AreaPage() {
           { label: 'Total Meja', value: stats.totalTables, icon: Layers, color: 'text-purple-700 bg-purple-50' },
           { label: 'Total Kapasitas', value: stats.totalCapacity, icon: Users, color: 'text-amber-700 bg-amber-50' },
         ].map((s) => (
-          <div key={s.label} className="bg-white rounded-xl border border-border p-4 flex items-center gap-3">
+          <div key={s.label} className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
             <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${s.color}`}>
               <s.icon className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{s.value}</p>
-              <p className="text-xs text-gray-500">{s.label}</p>
+              <p className="text-2xl font-bold text-text-primary">{s.value}</p>
+              <p className="text-xs text-text-secondary">{s.label}</p>
             </div>
           </div>
         ))}
@@ -324,7 +324,7 @@ export default function AreaPage() {
 
       {/* Search */}
       <div className="relative w-full md:w-80">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-disabled" />
         <Input
           value={filters.search}
           onChange={(e) => setFilters({ search: e.target.value })}
@@ -334,10 +334,10 @@ export default function AreaPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50">
+            <TableRow className="bg-background/50">
               <TableHead className="font-semibold text-xs">Nama Area</TableHead>
               <TableHead className="font-semibold text-xs text-center">Jumlah Meja</TableHead>
               <TableHead className="font-semibold text-xs text-center">Kapasitas</TableHead>
@@ -348,16 +348,16 @@ export default function AreaPage() {
           </TableHeader>
           <TableBody>
             {filtered.map((area) => (
-              <TableRow key={area.id} className="hover:bg-gray-50/50 transition-colors">
+              <TableRow key={area.id} className="hover:bg-background/50 transition-colors">
                 <TableCell>
                   <div>
-                    <p className="font-medium text-sm text-gray-900">{area.name}</p>
-                    {area.description && <p className="text-xs text-gray-400 truncate max-w-xs">{area.description}</p>}
+                    <p className="font-medium text-sm text-text-primary">{area.name}</p>
+                    {area.description && <p className="text-xs text-text-disabled truncate max-w-xs">{area.description}</p>}
                     {area.basePrice > 0 && <p className="text-xs text-primary mt-0.5">{formatCurrency(area.basePrice)} / {area.paxDivider} pax</p>}
                   </div>
                 </TableCell>
-                <TableCell className="text-center text-sm font-medium text-gray-700">{area.tableCount}</TableCell>
-                <TableCell className="text-center text-sm text-gray-700">{area.totalCapacity} pax</TableCell>
+                <TableCell className="text-center text-sm font-medium text-text-primary">{area.tableCount}</TableCell>
+                <TableCell className="text-center text-sm text-text-primary">{area.totalCapacity} pax</TableCell>
                 <TableCell className="text-center">
                   <div className="flex flex-wrap gap-1 justify-center">
                     {area.services.slice(0, 3).map(s => (
@@ -366,7 +366,7 @@ export default function AreaPage() {
                     {area.services.length > 3 && (
                       <Badge variant="default" size="sm">+{area.services.length - 3}</Badge>
                     )}
-                    {area.services.length === 0 && <span className="text-xs text-gray-400">-</span>}
+                    {area.services.length === 0 && <span className="text-xs text-text-disabled">-</span>}
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
@@ -390,7 +390,7 @@ export default function AreaPage() {
         </Table>
       </div>
 
-      <p className="text-xs text-gray-400">Menampilkan {filtered.length} dari {areas.length} area</p>
+      <p className="text-xs text-text-disabled">Menampilkan {filtered.length} dari {areas.length} area</p>
     </div>
   );
 }

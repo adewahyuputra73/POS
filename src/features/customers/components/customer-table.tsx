@@ -32,21 +32,21 @@ interface CustomerTableProps {
 export function CustomerTable({ customers, onViewDetail, onWhatsApp }: CustomerTableProps) {
   if (customers.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center">
-          <Eye className="h-6 w-6 text-gray-400" />
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-background flex items-center justify-center">
+          <Eye className="h-6 w-6 text-text-disabled" />
         </div>
-        <h3 className="text-sm font-medium text-gray-900">Belum ada pelanggan</h3>
-        <p className="mt-1 text-sm text-gray-500">Pelanggan akan muncul setelah ada transaksi</p>
+        <h3 className="text-sm font-medium text-text-primary">Belum ada pelanggan</h3>
+        <p className="mt-1 text-sm text-text-secondary">Pelanggan akan muncul setelah ada transaksi</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
+          <TableRow className="bg-background/50">
             <TableHead className="font-semibold text-xs">Tipe</TableHead>
             <TableHead className="font-semibold text-xs">Nama Pelanggan</TableHead>
             <TableHead className="font-semibold text-xs text-center">Total Reservasi</TableHead>
@@ -63,7 +63,7 @@ export function CustomerTable({ customers, onViewDetail, onWhatsApp }: CustomerT
           {customers.map((customer) => {
             const seg = segmentConfig[customer.segment];
             return (
-              <TableRow key={customer.id} className="hover:bg-gray-50/50 transition-colors">
+              <TableRow key={customer.id} className="hover:bg-background/50 transition-colors">
                 <TableCell>
                   <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${seg.color}`}>
                     {seg.label}
@@ -71,8 +71,8 @@ export function CustomerTable({ customers, onViewDetail, onWhatsApp }: CustomerT
                 </TableCell>
                 <TableCell>
                   <div>
-                    <p className="font-medium text-sm text-gray-900">{customer.name}</p>
-                    <p className="text-xs text-gray-500">{customer.phone}</p>
+                    <p className="font-medium text-sm text-text-primary">{customer.name}</p>
+                    <p className="text-xs text-text-secondary">{customer.phone}</p>
                   </div>
                 </TableCell>
                 <TableCell className="text-center text-sm">{customer.totalReservations}</TableCell>
@@ -85,7 +85,7 @@ export function CustomerTable({ customers, onViewDetail, onWhatsApp }: CustomerT
                     <span className="text-yellow-500">●</span> {customer.coins.toLocaleString('id-ID')}
                   </span>
                 </TableCell>
-                <TableCell className="text-sm text-gray-600">{formatDate(customer.lastVisit)}</TableCell>
+                <TableCell className="text-sm text-text-secondary">{formatDate(customer.lastVisit)}</TableCell>
                 <TableCell>
                   <div className="flex items-center justify-center gap-1">
                     <Button variant="ghost" size="sm" onClick={() => onViewDetail(customer)} className="h-8 w-8 p-0" title="Lihat detail">

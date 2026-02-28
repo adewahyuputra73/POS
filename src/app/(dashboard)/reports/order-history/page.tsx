@@ -423,7 +423,7 @@ export default function OrderHistoryPage() {
       />
 
       {/* Filters */}
-      <div className="space-y-4 p-4 bg-white rounded-xl border border-border">
+      <div className="space-y-4 p-4 bg-surface rounded-xl border border-border">
         <div className="flex flex-wrap items-center gap-4">
           {/* Search */}
           <div className="flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl flex-1 max-w-sm">
@@ -453,7 +453,7 @@ export default function OrderHistoryPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "all")}
-            className="px-3 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            className="px-3 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           >
             <option value="all">Semua Status</option>
             <option value="UNPAID">Belum Dibayar</option>
@@ -467,7 +467,7 @@ export default function OrderHistoryPage() {
           <select
             value={paymentFilter}
             onChange={(e) => setPaymentFilter(e.target.value as PaymentMethod | "all")}
-            className="px-3 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            className="px-3 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           >
             <option value="all">Semua Pembayaran</option>
             <option value="CASH">Tunai</option>
@@ -481,7 +481,7 @@ export default function OrderHistoryPage() {
           <select
             value={fulfillmentFilter}
             onChange={(e) => setFulfillmentFilter(e.target.value as FulfillmentType | "all")}
-            className="px-3 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            className="px-3 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           >
             <option value="all">Semua Tipe</option>
             <option value="DINE_IN">Makan di Tempat</option>
@@ -524,7 +524,7 @@ export default function OrderHistoryPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <DataTable
           data={filteredOrders}
           columns={columns}
@@ -542,7 +542,7 @@ export default function OrderHistoryPage() {
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+              className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 border-b border-border">
@@ -654,7 +654,7 @@ export default function OrderHistoryPage() {
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6"
+              className="bg-surface rounded-2xl shadow-2xl w-full max-w-sm p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="text-xl font-bold text-text-primary mb-4">
@@ -707,7 +707,7 @@ export default function OrderHistoryPage() {
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6"
+              className="bg-surface rounded-2xl shadow-2xl w-full max-w-sm p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">

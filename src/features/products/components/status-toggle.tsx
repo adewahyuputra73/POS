@@ -42,7 +42,7 @@ export function StatusToggle({
       className={cn(
         "relative inline-flex items-center rounded-full transition-colors duration-200",
         sizeConfig.track,
-        checked ? "bg-success" : "bg-gray-300",
+        checked ? "bg-success" : "bg-border",
         disabled && "opacity-50 cursor-not-allowed",
         !disabled && "cursor-pointer",
         className

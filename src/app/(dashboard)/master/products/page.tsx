@@ -159,10 +159,10 @@ export default function MasterProductsPage() {
       />
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-border p-4">
+      <div className="bg-surface rounded-xl border border-border p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Tab Filters */}
-          <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+          <div className="flex gap-1 p-1 bg-background rounded-lg">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -170,8 +170,8 @@ export default function MasterProductsPage() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
                   activeTab === tab.key
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-surface text-text-primary shadow-sm"
+                    : "text-text-secondary hover:text-text-primary"
                 )}
               >
                 {tab.label}
@@ -180,7 +180,7 @@ export default function MasterProductsPage() {
                     "px-2 py-0.5 rounded-full text-xs",
                     activeTab === tab.key
                       ? "bg-orange-500 text-white"
-                      : "bg-gray-200 text-gray-600"
+                      : "bg-background text-text-secondary"
                   )}
                 >
                   {tab.count}
@@ -202,7 +202,7 @@ export default function MasterProductsPage() {
                 filters.search ? (
                   <button
                     onClick={() => setFilters((prev) => ({ ...prev, search: "" }))}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-text-disabled hover:text-text-secondary"
                   >
                     <X className="h-4 w-4" />
                   </button>

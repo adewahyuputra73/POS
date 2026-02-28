@@ -44,21 +44,21 @@ interface StockFlowTableProps {
 export function StockFlowTable({ records, onViewDetail }: StockFlowTableProps) {
   if (records.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center">
-          <FileText className="h-6 w-6 text-gray-400" />
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-background flex items-center justify-center">
+          <FileText className="h-6 w-6 text-text-disabled" />
         </div>
-        <h3 className="text-sm font-medium text-gray-900">Belum ada arus stok</h3>
-        <p className="mt-1 text-sm text-gray-500">Buat transaksi arus stok pertama Anda</p>
+        <h3 className="text-sm font-medium text-text-primary">Belum ada arus stok</h3>
+        <p className="mt-1 text-sm text-text-secondary">Buat transaksi arus stok pertama Anda</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
+          <TableRow className="bg-background/50">
             <TableHead className="font-semibold text-xs">Tipe Transfer</TableHead>
             <TableHead className="font-semibold text-xs">No. Referensi</TableHead>
             <TableHead className="font-semibold text-xs">Outlet / Supplier</TableHead>
@@ -74,14 +74,14 @@ export function StockFlowTable({ records, onViewDetail }: StockFlowTableProps) {
             const tc = typeConfig[record.type];
             const sc = statusConfig[record.status];
             return (
-              <TableRow key={record.id} className="hover:bg-gray-50/50 transition-colors">
+              <TableRow key={record.id} className="hover:bg-background/50 transition-colors">
                 <TableCell>
                   <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${tc.color}`}>
                     {tc.icon}
                     {tc.label}
                   </div>
                 </TableCell>
-                <TableCell className="font-mono text-xs text-gray-600">{record.referenceNumber}</TableCell>
+                <TableCell className="font-mono text-xs text-text-secondary">{record.referenceNumber}</TableCell>
                 <TableCell className="text-sm">{record.outletOrSupplier}</TableCell>
                 <TableCell className="text-center text-sm">{record.totalItems} item</TableCell>
                 <TableCell className="text-right text-sm font-medium">
@@ -91,7 +91,7 @@ export function StockFlowTable({ records, onViewDetail }: StockFlowTableProps) {
                     </span>
                   ) : '-'}
                 </TableCell>
-                <TableCell className="text-sm text-gray-600">{formatDate(record.createdAt)}</TableCell>
+                <TableCell className="text-sm text-text-secondary">{formatDate(record.createdAt)}</TableCell>
                 <TableCell>
                   <Badge variant={sc.variant}>{sc.label}</Badge>
                 </TableCell>

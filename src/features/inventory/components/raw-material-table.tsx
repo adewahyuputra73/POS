@@ -88,10 +88,10 @@ export function RawMaterialTable({
 
   if (materials.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <FlaskConical className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum ada bahan dasar</h3>
-        <p className="text-sm text-gray-500">
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <FlaskConical className="h-12 w-12 text-text-disabled mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-text-primary mb-2">Belum ada bahan dasar</h3>
+        <p className="text-sm text-text-secondary">
           Klik tombol &quot;Tambah Bahan Dasar&quot; untuk membuat bahan baru
         </p>
       </div>
@@ -99,23 +99,23 @@ export function RawMaterialTable({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('name')}>
+          <TableRow className="bg-background/50">
+            <TableHead className="cursor-pointer hover:bg-background transition-colors" onClick={() => handleSort('name')}>
               <div className="flex items-center gap-2">NAMA BAHAN DASAR <SortIcon field="name" /></div>
             </TableHead>
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('categoryName')}>
+            <TableHead className="cursor-pointer hover:bg-background transition-colors" onClick={() => handleSort('categoryName')}>
               <div className="flex items-center gap-2">KATEGORI <SortIcon field="categoryName" /></div>
             </TableHead>
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors text-right" onClick={() => handleSort('stockValue')}>
+            <TableHead className="cursor-pointer hover:bg-background transition-colors text-right" onClick={() => handleSort('stockValue')}>
               <div className="flex items-center justify-end gap-2">TOTAL HARGA <SortIcon field="stockValue" /></div>
             </TableHead>
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('updatedAt')}>
+            <TableHead className="cursor-pointer hover:bg-background transition-colors" onClick={() => handleSort('updatedAt')}>
               <div className="flex items-center gap-2">TERAKHIR DIPERBARUI <SortIcon field="updatedAt" /></div>
             </TableHead>
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors text-right" onClick={() => handleSort('currentStock')}>
+            <TableHead className="cursor-pointer hover:bg-background transition-colors text-right" onClick={() => handleSort('currentStock')}>
               <div className="flex items-center justify-end gap-2">STOK SAAT INI <SortIcon field="currentStock" /></div>
             </TableHead>
             <TableHead className="text-center">STATUS</TableHead>
@@ -126,7 +126,7 @@ export function RawMaterialTable({
           {paginatedMaterials.map((material) => {
             const status = statusConfig[material.status];
             return (
-              <TableRow key={material.id} className="hover:bg-gray-50/50">
+              <TableRow key={material.id} className="hover:bg-background/50">
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <div className={cn(
@@ -139,22 +139,22 @@ export function RawMaterialTable({
                       )} />
                     </div>
                     <div>
-                      <span className="font-medium text-gray-900">{material.name}</span>
-                      <p className="text-xs text-gray-500 mt-0.5">{material.baseUnit}</p>
+                      <span className="font-medium text-text-primary">{material.name}</span>
+                      <p className="text-xs text-text-secondary mt-0.5">{material.baseUnit}</p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-gray-600">{material.categoryName}</span>
+                  <span className="text-sm text-text-secondary">{material.categoryName}</span>
                 </TableCell>
                 <TableCell className="text-right">
-                  <span className="text-sm font-medium text-gray-900">{formatCurrency(material.stockValue)}</span>
+                  <span className="text-sm font-medium text-text-primary">{formatCurrency(material.stockValue)}</span>
                 </TableCell>
-                <TableCell className="text-gray-500 text-sm">
+                <TableCell className="text-text-secondary text-sm">
                   {formatDate(material.updatedAt)}
                 </TableCell>
                 <TableCell className="text-right">
-                  <span className="text-sm font-medium text-gray-900">{formatNumber(material.currentStock, material.baseUnit)}</span>
+                  <span className="text-sm font-medium text-text-primary">{formatNumber(material.currentStock, material.baseUnit)}</span>
                 </TableCell>
                 <TableCell className="text-center">
                   <span className={cn("inline-flex px-2.5 py-1 rounded-full text-xs font-medium", status.class)}>
@@ -163,10 +163,10 @@ export function RawMaterialTable({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-center gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => onDetail(material)} className="h-8 w-8 text-gray-500 hover:text-blue-600">
+                    <Button variant="ghost" size="icon" onClick={() => onDetail(material)} className="h-8 w-8 text-text-secondary hover:text-blue-600">
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => onEdit(material)} className="h-8 w-8 text-gray-500 hover:text-emerald-600">
+                    <Button variant="ghost" size="icon" onClick={() => onEdit(material)} className="h-8 w-8 text-text-secondary hover:text-emerald-600">
                       <Pencil className="h-4 w-4" />
                     </Button>
                   </div>
@@ -179,7 +179,7 @@ export function RawMaterialTable({
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-secondary">
             Menampilkan {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, materials.length)} dari {materials.length} bahan
           </p>
           <div className="flex items-center gap-2">

@@ -443,7 +443,7 @@ export default function GrossProfitPage() {
       />
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-white rounded-xl border border-border">
+      <div className="flex flex-wrap items-center gap-4 p-4 bg-surface rounded-xl border border-border">
         <DateRangePicker
           value={dateRange}
           onChange={setDateRange}
@@ -496,7 +496,7 @@ export default function GrossProfitPage() {
       </div>
 
       {/* Data Table */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-text-primary">
             {activeTab === "menu" 

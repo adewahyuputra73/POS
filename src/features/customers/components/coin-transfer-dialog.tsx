@@ -38,8 +38,8 @@ export function CoinTransferDialog({ customer, onConfirm, onCancel }: CoinTransf
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-in slide-in-from-bottom-4 duration-300">
-        <button onClick={onCancel} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-in slide-in-from-bottom-4 duration-300">
+        <button onClick={onCancel} className="absolute top-4 right-4 text-text-disabled hover:text-text-secondary">
           <X className="h-5 w-5" />
         </button>
 
@@ -48,20 +48,20 @@ export function CoinTransferDialog({ customer, onConfirm, onCancel }: CoinTransf
             <ArrowRight className="h-5 w-5 text-blue-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">Transfer Koin</h3>
-            <p className="text-xs text-gray-500">{customer.name} — Saldo: {customer.totalCoins.toLocaleString('id-ID')} koin</p>
+            <h3 className="font-semibold text-text-primary">Transfer Koin</h3>
+            <p className="text-xs text-text-secondary">{customer.name} — Saldo: {customer.totalCoins.toLocaleString('id-ID')} koin</p>
           </div>
         </div>
 
         <div className="space-y-4">
           {/* Recipient search */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Penerima</label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Penerima</label>
             {selectedRecipient ? (
               <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{selectedRecipient.name}</p>
-                  <p className="text-xs text-gray-500">{selectedRecipient.phone}</p>
+                  <p className="text-sm font-medium text-text-primary">{selectedRecipient.name}</p>
+                  <p className="text-xs text-text-secondary">{selectedRecipient.phone}</p>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setSelectedRecipient(null)} className="h-7 text-xs">
                   Ubah
@@ -69,7 +69,7 @@ export function CoinTransferDialog({ customer, onConfirm, onCancel }: CoinTransf
               </div>
             ) : (
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-disabled" />
                 <Input
                   value={recipientSearch}
                   onChange={(e) => setRecipientSearch(e.target.value)}
@@ -77,18 +77,18 @@ export function CoinTransferDialog({ customer, onConfirm, onCancel }: CoinTransf
                   className="pl-9"
                 />
                 {searchResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-border rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
                     {searchResults.map(c => (
                       <button
                         key={c.id}
                         onClick={() => { setSelectedRecipient(c); setRecipientSearch(''); setError(''); }}
-                        className="w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between"
+                        className="w-full px-3 py-2 text-left hover:bg-background flex items-center justify-between"
                       >
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{c.name}</p>
-                          <p className="text-xs text-gray-500">{c.phone}</p>
+                          <p className="text-sm font-medium text-text-primary">{c.name}</p>
+                          <p className="text-xs text-text-secondary">{c.phone}</p>
                         </div>
-                        <span className="text-xs text-gray-400">{c.totalCoins} koin</span>
+                        <span className="text-xs text-text-disabled">{c.totalCoins} koin</span>
                       </button>
                     ))}
                   </div>
@@ -99,7 +99,7 @@ export function CoinTransferDialog({ customer, onConfirm, onCancel }: CoinTransf
 
           {/* Amount */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Jumlah Koin</label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Jumlah Koin</label>
             <Input
               type="number"
               value={amount || ''}
@@ -112,21 +112,21 @@ export function CoinTransferDialog({ customer, onConfirm, onCancel }: CoinTransf
           </div>
 
           {/* Summary */}
-          <div className="bg-gray-50 rounded-lg p-3 space-y-1">
+          <div className="bg-background rounded-lg p-3 space-y-1">
             <div className="flex justify-between text-xs">
-              <span className="text-gray-500">Nilai Transfer</span>
-              <span className="font-medium text-gray-700">{formatCurrency(coinValue)}</span>
+              <span className="text-text-secondary">Nilai Transfer</span>
+              <span className="font-medium text-text-primary">{formatCurrency(coinValue)}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-gray-500">Saldo Pengirim Setelah</span>
-              <span className={`font-semibold ${customer.totalCoins - amount < 0 ? 'text-red-600' : 'text-gray-900'}`}>
+              <span className="text-text-secondary">Saldo Pengirim Setelah</span>
+              <span className={`font-semibold ${customer.totalCoins - amount < 0 ? 'text-red-600' : 'text-text-primary'}`}>
                 {(customer.totalCoins - amount).toLocaleString('id-ID')} koin
               </span>
             </div>
             {selectedRecipient && (
               <div className="flex justify-between text-xs">
-                <span className="text-gray-500">Saldo Penerima Setelah</span>
-                <span className="font-semibold text-gray-900">
+                <span className="text-text-secondary">Saldo Penerima Setelah</span>
+                <span className="font-semibold text-text-primary">
                   {(selectedRecipient.totalCoins + amount).toLocaleString('id-ID')} koin
                 </span>
               </div>

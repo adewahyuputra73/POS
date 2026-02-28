@@ -391,7 +391,7 @@ export function CommandPalette() {
         className="fixed inset-0 z-[101] flex items-start justify-center pt-[12vh] md:pt-[15vh] px-4 pointer-events-none"
       >
         <div
-          className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-white/20 overflow-hidden pointer-events-auto"
+          className="w-full max-w-xl bg-surface rounded-2xl shadow-2xl border border-border overflow-hidden pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
           style={{
             animation: "slideIn 0.25s ease-out",
@@ -399,7 +399,7 @@ export function CommandPalette() {
           }}
         >
           {/* Search Input */}
-          <div className="flex items-center gap-4 px-5 py-4 border-b border-divider bg-gradient-to-r from-background to-white">
+          <div className="flex items-center gap-4 px-5 py-4 border-b border-divider bg-gradient-to-r from-background to-surface">
             <div className="p-2 bg-primary/10 rounded-xl">
               <Search className="h-5 w-5 text-primary" />
             </div>
@@ -431,7 +431,7 @@ export function CommandPalette() {
           {/* Results */}
           <div
             ref={resultsRef}
-            className="max-h-[50vh] overflow-y-auto p-3 bg-white"
+            className="max-h-[50vh] overflow-y-auto p-3 bg-surface"
           >
             {flatItems.length === 0 ? (
               <div className="py-12 text-center">
@@ -526,15 +526,15 @@ export function CommandPalette() {
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-3 border-t border-divider bg-gradient-to-r from-background to-white flex items-center justify-between">
+          <div className="px-5 py-3 border-t border-divider bg-gradient-to-r from-background to-surface flex items-center justify-between">
             <div className="flex items-center gap-4 text-xs text-text-secondary">
               <span className="flex items-center gap-1.5">
-                <kbd className="px-2 py-1 bg-white border border-border rounded font-mono text-[10px] shadow-sm">↑</kbd>
-                <kbd className="px-2 py-1 bg-white border border-border rounded font-mono text-[10px] shadow-sm">↓</kbd>
+                <kbd className="px-2 py-1 bg-surface border border-border rounded font-mono text-[10px] shadow-sm">↑</kbd>
+                <kbd className="px-2 py-1 bg-surface border border-border rounded font-mono text-[10px] shadow-sm">↓</kbd>
                 <span className="font-medium">Navigasi</span>
               </span>
               <span className="flex items-center gap-1.5">
-                <kbd className="px-2 py-1 bg-white border border-border rounded font-mono text-[10px] shadow-sm">↵</kbd>
+                <kbd className="px-2 py-1 bg-surface border border-border rounded font-mono text-[10px] shadow-sm">↵</kbd>
                 <span className="font-medium">Pilih</span>
               </span>
             </div>
@@ -579,7 +579,7 @@ export function CommandPalette() {
         <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors w-40 lg:w-48 text-left font-medium">
           Cari halaman...
         </span>
-        <div className="hidden lg:flex items-center gap-1 px-1.5 py-0.5 bg-white border border-border rounded text-[10px] text-text-secondary font-bold shadow-sm">
+        <div className="hidden lg:flex items-center gap-1 px-1.5 py-0.5 bg-surface border border-border rounded text-[10px] text-text-secondary font-bold shadow-sm">
           <Command className="h-2.5 w-2.5" />
           <span>K</span>
         </div>

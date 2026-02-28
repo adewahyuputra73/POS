@@ -24,7 +24,7 @@ export function TabView<T extends string>({
           className={cn(
             "px-4 py-2 text-sm font-medium rounded-lg transition-all",
             activeTab === tab.value
-              ? "bg-white text-primary shadow-sm"
+              ? "bg-surface text-primary shadow-sm"
               : "text-text-secondary hover:text-text-primary"
           )}
         >

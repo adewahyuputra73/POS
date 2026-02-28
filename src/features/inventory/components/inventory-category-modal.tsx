@@ -59,9 +59,9 @@ export function InventoryCategoryModal({
             error={error}
             maxLength={50}
           />
-          <p className="mt-1 text-xs text-gray-400">{name.length}/50 karakter</p>
+          <p className="mt-1 text-xs text-text-disabled">{name.length}/50 karakter</p>
         </div>
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-divider">
           <Button variant="outline" onClick={onClose}>Batal</Button>
           <Button onClick={handleSubmit}>{isEdit ? 'Simpan' : 'Tambah'}</Button>
         </div>

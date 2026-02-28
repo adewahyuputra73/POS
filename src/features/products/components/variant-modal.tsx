@@ -227,7 +227,7 @@ export function VariantModal({
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+          className="bg-surface rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -583,7 +583,7 @@ export function VariantModal({
             onClick={() => setShowProductPicker(false)}
           />
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[70vh] flex flex-col">
+            <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg max-h-[70vh] flex flex-col">
               <div className="flex items-center justify-between px-4 py-3 border-b border-border">
                 <h3 className="font-semibold text-text-primary">Pilih Produk</h3>
                 <button

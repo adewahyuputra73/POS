@@ -212,7 +212,7 @@ export default function SalesSummaryPage() {
       />
 
       {/* Filter Bar */}
-      <div className="flex flex-wrap items-center gap-3 p-4 bg-white rounded-xl border border-border shadow-card">
+      <div className="flex flex-wrap items-center gap-3 p-4 bg-surface rounded-xl border border-border shadow-card">
         <DateRangePicker value={dateRange} onChange={setDateRange} />
         <OutletSelector 
           value={selectedOutlet} 
@@ -272,7 +272,7 @@ export default function SalesSummaryPage() {
       </div>
 
       {/* Order Type Breakdown */}
-      <div className="bg-white rounded-xl border border-border shadow-card p-5">
+      <div className="bg-surface rounded-xl border border-border shadow-card p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">Penjualan per Tipe Pesanan</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="flex items-center gap-4 p-4 bg-background rounded-lg">
@@ -308,7 +308,7 @@ export default function SalesSummaryPage() {
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sales Details */}
-        <div className="bg-white rounded-xl border border-border shadow-card p-5">
+        <div className="bg-surface rounded-xl border border-border shadow-card p-5">
           <h3 className="text-lg font-semibold text-text-primary mb-4">Rincian Penjualan</h3>
           <div className="space-y-0">
             {mockSalesDetails.map((item, index) => {
@@ -336,7 +336,7 @@ export default function SalesSummaryPage() {
         </div>
 
         {/* Payment Methods */}
-        <div className="bg-white rounded-xl border border-border shadow-card p-5">
+        <div className="bg-surface rounded-xl border border-border shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-text-primary">Metode Pembayaran</h3>
             <div className="flex items-center gap-2 px-3 py-1.5 bg-background border border-border rounded-lg">
@@ -400,5 +400,5 @@ function PaymentIcon({ method }: { method: string }) {
     "GrabFood": <Smartphone className="h-4 w-4 text-green-600" />,
   };
   
-  return iconMap[method] || <Wallet className="h-4 w-4 text-gray-500" />;
+  return iconMap[method] || <Wallet className="h-4 w-4 text-text-secondary" />;
 }

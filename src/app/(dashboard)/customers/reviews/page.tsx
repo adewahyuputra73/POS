@@ -51,37 +51,37 @@ export default function ReviewsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-border p-4">
+        <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-yellow-50 flex items-center justify-center">
               <Star className="h-5 w-5 text-yellow-500" />
             </div>
             <div>
               <p className="text-2xl font-bold">{stats.avgRating}</p>
-              <p className="text-xs text-gray-500">Rating Rata-rata</p>
+              <p className="text-xs text-text-secondary">Rating Rata-rata</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4">
+        <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <MessageSquare className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="text-2xl font-bold">{stats.totalReviews}</p>
-              <p className="text-xs text-gray-500">Total Ulasan</p>
+              <p className="text-xs text-text-secondary">Total Ulasan</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4 col-span-2">
-          <p className="text-xs text-gray-500 mb-2">Distribusi Rating</p>
+        <div className="bg-surface rounded-xl border border-border p-4 col-span-2">
+          <p className="text-xs text-text-secondary mb-2">Distribusi Rating</p>
           <div className="flex items-center gap-2">
             {stats.ratingDistribution.map((count, i) => {
               const maxCount = Math.max(...stats.ratingDistribution, 1);
               const pct = (count / maxCount) * 100;
               return (
                 <div key={i} className="flex-1 text-center">
-                  <div className="relative h-16 bg-gray-100 rounded-md overflow-hidden mb-1">
+                  <div className="relative h-16 bg-background rounded-md overflow-hidden mb-1">
                     <div
                       className="absolute bottom-0 left-0 right-0 bg-yellow-400 rounded-md transition-all"
                       style={{ height: `${pct}%` }}
@@ -91,7 +91,7 @@ export default function ReviewsPage() {
                     <span className="text-xs font-medium">{i + 1}</span>
                     <Star className="h-2.5 w-2.5 text-yellow-400 fill-yellow-400" />
                   </div>
-                  <p className="text-[10px] text-gray-400">{count}</p>
+                  <p className="text-[10px] text-text-disabled">{count}</p>
                 </div>
               );
             })}
@@ -100,10 +100,10 @@ export default function ReviewsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-border p-5">
+      <div className="bg-surface rounded-xl border border-border p-5">
         <div className="flex items-center gap-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-disabled" />
             <Input
               placeholder="Cari nama pelanggan, order ID, atau komentar..."
               value={filters.search}
@@ -135,8 +135,8 @@ export default function ReviewsPage() {
             </SelectContent>
           </Select>
         </div>
-        <p className="text-xs text-gray-500 mt-2">
-          Menampilkan <span className="font-semibold text-gray-700">{filteredReviews.length}</span> ulasan
+        <p className="text-xs text-text-secondary mt-2">
+          Menampilkan <span className="font-semibold text-text-primary">{filteredReviews.length}</span> ulasan
         </p>
       </div>
 

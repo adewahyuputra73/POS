@@ -138,10 +138,10 @@ export function CategoryModal({
             </div>
 
             {/* Status Toggle */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-background rounded-lg">
               <div>
-                <p className="font-medium text-gray-900">Status Aktif</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-text-primary">Status Aktif</p>
+                <p className="text-sm text-text-secondary">
                   Kategori akan ditampilkan di menu
                 </p>
               </div>
@@ -167,37 +167,37 @@ export function CategoryModal({
               </div>
 
               {selectedProducts.length === 0 ? (
-                <div className="border border-dashed border-gray-200 rounded-lg p-6 text-center">
-                  <Package className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500">
+                <div className="border border-dashed border-border rounded-lg p-6 text-center">
+                  <Package className="h-8 w-8 text-text-disabled mx-auto mb-2" />
+                  <p className="text-sm text-text-secondary">
                     Belum ada produk dipilih
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-text-disabled mt-1">
                     Klik &quot;Tambah Produk&quot; untuk memilih produk
                   </p>
                 </div>
               ) : (
-              <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-[200px] overflow-y-auto">
+              <div className="border border-border rounded-lg divide-y divide-divider max-h-[200px] overflow-y-auto">
                   {selectedProducts.map((product) => (
                     <div
                       key={product.id}
-                      className="flex items-center gap-3 p-3 hover:bg-gray-50"
+                      className="flex items-center gap-3 p-3 hover:bg-background"
                     >
-                      <div className="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        <Package className="h-5 w-5 text-gray-400" />
+                      <div className="h-10 w-10 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
+                        <Package className="h-5 w-5 text-text-disabled" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate text-sm">
+                        <p className="font-medium text-text-primary truncate text-sm">
                           {product.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-text-secondary">
                           {formatPrice(product.price)}
                         </p>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleRemoveProduct(product.id)}
-                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-text-disabled hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -205,14 +205,14 @@ export function CategoryModal({
                   ))}
                 </div>
               )}
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-text-disabled">
                 Opsional. Produk bisa ditambahkan nanti.
               </p>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+          <div className="flex justify-end gap-3 pt-4 border-t border-divider">
             <Button variant="outline" onClick={onClose}>
               Batal
             </Button>

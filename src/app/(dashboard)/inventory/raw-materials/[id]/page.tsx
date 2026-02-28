@@ -72,7 +72,7 @@ export default function RawMaterialDetailPage() {
             { label: "Detail" },
           ]}
         />
-        <div className="bg-white rounded-xl border border-border p-12 text-center">
+        <div className="bg-surface rounded-xl border border-border p-12 text-center">
           <Button variant="outline" onClick={() => router.back()}>Kembali</Button>
         </div>
       </div>
@@ -174,20 +174,20 @@ export default function RawMaterialDetailPage() {
 
       {/* Info Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-border p-4">
-          <p className="text-sm text-gray-500 mb-1">Stok Saat Ini</p>
-          <p className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('id-ID').format(material.currentStock)} {material.baseUnit}</p>
+        <div className="bg-surface rounded-xl border border-border p-4">
+          <p className="text-sm text-text-secondary mb-1">Stok Saat Ini</p>
+          <p className="text-xl font-bold text-text-primary">{new Intl.NumberFormat('id-ID').format(material.currentStock)} {material.baseUnit}</p>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4">
-          <p className="text-sm text-gray-500 mb-1">Nilai Stok</p>
-          <p className="text-xl font-bold text-gray-900">{formatCurrency(material.stockValue)}</p>
+        <div className="bg-surface rounded-xl border border-border p-4">
+          <p className="text-sm text-text-secondary mb-1">Nilai Stok</p>
+          <p className="text-xl font-bold text-text-primary">{formatCurrency(material.stockValue)}</p>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4">
-          <p className="text-sm text-gray-500 mb-1">Batas Bawah</p>
-          <p className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('id-ID').format(material.stockLimit)} {material.baseUnit}</p>
+        <div className="bg-surface rounded-xl border border-border p-4">
+          <p className="text-sm text-text-secondary mb-1">Batas Bawah</p>
+          <p className="text-xl font-bold text-text-primary">{new Intl.NumberFormat('id-ID').format(material.stockLimit)} {material.baseUnit}</p>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4">
-          <p className="text-sm text-gray-500 mb-1">Status</p>
+        <div className="bg-surface rounded-xl border border-border p-4">
+          <p className="text-sm text-text-secondary mb-1">Status</p>
           <span className={cn("inline-flex px-3 py-1 rounded-full text-sm font-medium border", status.class)}>
             {status.label}
           </span>
@@ -224,7 +224,7 @@ export default function RawMaterialDetailPage() {
 
       {/* Stock Logs */}
       <div>
-        <h3 className="text-base font-semibold text-gray-900 mb-3">Riwayat Arus Stok</h3>
+        <h3 className="text-base font-semibold text-text-primary mb-3">Riwayat Arus Stok</h3>
         <StockLogTable logs={logs} />
       </div>
 

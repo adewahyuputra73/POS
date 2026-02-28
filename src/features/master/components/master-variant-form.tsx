@@ -205,7 +205,7 @@ export function MasterVariantForm({
 
                 <div className="space-y-2">
                   <Label>Sumber Opsi</Label>
-                   <div className="flex p-1 bg-gray-100 rounded-lg">
+                   <div className="flex p-1 bg-background rounded-lg">
                     <button
                       type="button"
                       onClick={() => {
@@ -217,8 +217,8 @@ export function MasterVariantForm({
                       className={cn(
                         "flex-1 flex items-center justify-center gap-2 py-1.5 text-sm font-medium rounded-md transition-all",
                         formData.optionSource === "custom" 
-                          ? "bg-white text-indigo-600 shadow-sm" 
-                          : "text-gray-500 hover:text-gray-700"
+                          ? "bg-surface text-indigo-600 shadow-sm" 
+                          : "text-text-secondary hover:text-text-primary"
                       )}
                     >
                       <Type className="h-4 w-4" />
@@ -230,8 +230,8 @@ export function MasterVariantForm({
                       className={cn(
                         "flex-1 flex items-center justify-center gap-2 py-1.5 text-sm font-medium rounded-md transition-all",
                         formData.optionSource === "menu_book" 
-                          ? "bg-white text-purple-600 shadow-sm" 
-                          : "text-gray-500 hover:text-gray-700"
+                          ? "bg-surface text-purple-600 shadow-sm" 
+                          : "text-text-secondary hover:text-text-primary"
                       )}
                     >
                       <BookOpen className="h-4 w-4" />
@@ -243,15 +243,15 @@ export function MasterVariantForm({
 
             <div className="space-y-2">
               <Label>Tipe Pilihan</Label>
-              <div className="flex p-1 bg-gray-100 rounded-lg">
+              <div className="flex p-1 bg-background rounded-lg">
                 <button
                   type="button"
                   onClick={() => handleChange("type", "SINGLE")}
                   className={cn(
                     "flex-1 py-1.5 text-sm font-medium rounded-md transition-all",
                     formData.type === "SINGLE" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "bg-surface text-text-primary shadow-sm" 
+                      : "text-text-secondary hover:text-text-primary"
                   )}
                 >
                   Satu Pilihan (Radio)
@@ -262,8 +262,8 @@ export function MasterVariantForm({
                   className={cn(
                     "flex-1 py-1.5 text-sm font-medium rounded-md transition-all",
                     formData.type === "MULTIPLE" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "bg-surface text-text-primary shadow-sm" 
+                      : "text-text-secondary hover:text-text-primary"
                   )}
                 >
                   Banyak Pilihan (Checkbox)
@@ -273,11 +273,11 @@ export function MasterVariantForm({
           </div>
 
           {/* Validation Settings */}
-          <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+          <div className="p-4 bg-background rounded-lg space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-base">Wajib Dipilih?</Label>
-                <p className="text-xs text-gray-500">Pelanggan harus memilih opsi ini</p>
+                <p className="text-xs text-text-secondary">Pelanggan harus memilih opsi ini</p>
               </div>
               <StatusToggle
                 checked={formData.isMandatory || false}
@@ -286,7 +286,7 @@ export function MasterVariantForm({
             </div>
 
             {formData.type === "MULTIPLE" && (
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
                 <div className="space-y-2">
                   <Label>Minimal Pilihan</Label>
                   <Input
@@ -329,8 +329,8 @@ export function MasterVariantForm({
 
             <div className="space-y-2">
               {formData.options?.map((option, index) => (
-                <div key={option.id} className="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-lg group hover:border-indigo-200 transition-colors">
-                  <div className="mt-2.5 text-gray-400 cursor-move">
+                <div key={option.id} className="flex items-start gap-3 p-3 bg-surface border border-border rounded-lg group hover:border-indigo-200 transition-colors">
+                  <div className="mt-2.5 text-text-disabled cursor-move">
                     <GripVertical className="h-4 w-4" />
                   </div>
                   
@@ -364,7 +364,7 @@ export function MasterVariantForm({
                       </div>
                       <div className="w-32">
                         <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-semibold">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-xs font-semibold">
                             +Rp
                           </span>
                           <Input
@@ -379,13 +379,13 @@ export function MasterVariantForm({
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer select-none">
+                      <label className="flex items-center gap-2 text-xs text-text-secondary cursor-pointer select-none">
                         <input
                           type={formData.type === "SINGLE" ? "radio" : "checkbox"}
                           name="default-option"
                           checked={option.isDefault}
                           onChange={(e) => handleOptionChange(index, "isDefault", e.target.checked)}
-                          className="w-3.5 h-3.5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                          className="w-3.5 h-3.5 text-indigo-600 rounded border-border focus:ring-indigo-500"
                         />
                         Terpilih Default
                       </label>
@@ -395,7 +395,7 @@ export function MasterVariantForm({
                   <button
                     type="button"
                     onClick={() => handleRemoveOption(index)}
-                    className="mt-2 p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                    className="mt-2 p-1 text-text-disabled hover:text-red-500 hover:bg-red-50 rounded transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -403,18 +403,18 @@ export function MasterVariantForm({
               ))}
               
               {(!formData.options || formData.options.length === 0) && (
-                <div className="p-8 text-center border-2 border-dashed border-gray-200 rounded-xl">
-                  <p className="text-gray-500 text-sm">Belum ada opsi ditambahkan</p>
+                <div className="p-8 text-center border-2 border-dashed border-border rounded-xl">
+                  <p className="text-text-secondary text-sm">Belum ada opsi ditambahkan</p>
                 </div>
               )}
             </div>
           </div>
           
           {/* Status */}
-           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+           <div className="flex items-center justify-between p-4 bg-background rounded-lg">
             <div>
-              <p className="font-medium text-gray-900">Status Aktif</p>
-              <p className="text-sm text-gray-500">
+              <p className="font-medium text-text-primary">Status Aktif</p>
+              <p className="text-sm text-text-secondary">
                 Varian akan tersedia untuk produk
               </p>
             </div>

@@ -57,7 +57,7 @@ export function MultiSelect({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex items-center gap-2 px-3 py-2 min-h-[40px] border border-border rounded-lg bg-white",
+          "flex items-center gap-2 px-3 py-2 min-h-[40px] border border-border rounded-lg bg-surface",
           "hover:border-primary/50 transition-colors",
           "text-sm font-medium text-text-primary min-w-[180px] justify-between w-full"
         )}
@@ -86,7 +86,7 @@ export function MultiSelect({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-border rounded-lg shadow-card z-50 min-w-full w-max max-h-64 overflow-y-auto py-1">
+        <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-card z-50 min-w-full w-max max-h-64 overflow-y-auto py-1">
           {options.map((option) => {
             const isSelected = value.includes(option.value);
             return (

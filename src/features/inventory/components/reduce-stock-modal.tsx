@@ -47,7 +47,7 @@ export function ReduceStockModal({
         <DialogHeader>
           <DialogTitle>Kurangi Stok</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-text-secondary">
           Mengurangi stok untuk <strong>{materialName}</strong>
           <br />
           <span className="text-xs">Stok saat ini: {new Intl.NumberFormat('id-ID').format(currentStock)} {baseUnit}</span>
@@ -71,7 +71,7 @@ export function ReduceStockModal({
           />
         </div>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-divider">
           <Button variant="outline" onClick={onClose}>Batal</Button>
           <Button onClick={handleSubmit} className="bg-red-600 hover:bg-red-700">Kurangi Stok</Button>
         </div>

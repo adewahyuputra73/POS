@@ -205,7 +205,7 @@ export default function CategorySalesPage() {
       />
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-white rounded-xl border border-border">
+      <div className="flex flex-wrap items-center gap-4 p-4 bg-surface rounded-xl border border-border">
         <DateRangePicker
           value={dateRange}
           onChange={setDateRange}
@@ -237,7 +237,7 @@ export default function CategorySalesPage() {
       </div>
 
       {/* Chart */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Tren Penjualan per Kategori
         </h3>
@@ -284,7 +284,7 @@ export default function CategorySalesPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Penjualan per Kategori
         </h3>

@@ -80,12 +80,12 @@ export function StockOpnameForm({ onSubmit, onCancel }: StockOpnameFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-surface rounded-xl border border-border p-6">
         <h3 className="text-base font-semibold mb-2 flex items-center gap-2">
           <ClipboardCheck className="h-5 w-5 text-blue-600" />
           Stok Opname
         </h3>
-        <p className="text-sm text-gray-500">Masukkan jumlah stok fisik aktual untuk setiap bahan.</p>
+        <p className="text-sm text-text-secondary">Masukkan jumlah stok fisik aktual untuk setiap bahan.</p>
         {changedItems.length > 0 && (
           <div className="mt-4 grid grid-cols-2 gap-3">
             <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5">
@@ -100,7 +100,7 @@ export function StockOpnameForm({ onSubmit, onCancel }: StockOpnameFormProps) {
         )}
       </div>
 
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border space-y-3">
           <Tabs value={materialType} onValueChange={(v) => setMaterialType(v as MaterialType)}>
             <TabsList>
@@ -130,7 +130,7 @@ export function StockOpnameForm({ onSubmit, onCancel }: StockOpnameFormProps) {
 
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50">
+            <TableRow className="bg-background/50">
               <TableHead className="font-semibold text-xs">Nama Bahan Dasar</TableHead>
               <TableHead className="font-semibold text-xs">Kategori</TableHead>
               <TableHead className="font-semibold text-xs text-right">Stok Sistem</TableHead>
@@ -149,7 +149,7 @@ export function StockOpnameForm({ onSubmit, onCancel }: StockOpnameFormProps) {
               return (
                 <TableRow key={m.id} className={hasChanged ? 'bg-yellow-50/50' : ''}>
                   <TableCell className="font-medium text-sm">{m.name}</TableCell>
-                  <TableCell className="text-sm text-gray-600">{m.categoryName}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{m.categoryName}</TableCell>
                   <TableCell className="text-right text-sm">{m.currentStock.toLocaleString('id-ID')} {m.baseUnit}</TableCell>
                   <TableCell>
                     <Input
@@ -159,7 +159,7 @@ export function StockOpnameForm({ onSubmit, onCancel }: StockOpnameFormProps) {
                       className="w-28 text-sm"
                     />
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">{m.baseUnit}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{m.baseUnit}</TableCell>
                   <TableCell className={`text-right text-sm font-medium ${difference < 0 ? 'text-red-600' : difference > 0 ? 'text-green-600' : ''}`}>
                     {hasChanged ? (difference > 0 ? `+${difference.toLocaleString('id-ID')}` : difference.toLocaleString('id-ID')) : '-'}
                   </TableCell>
@@ -171,7 +171,7 @@ export function StockOpnameForm({ onSubmit, onCancel }: StockOpnameFormProps) {
             })}
             {filteredMaterials.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-400">Tidak ada bahan ditemukan</TableCell>
+                <TableCell colSpan={7} className="text-center py-8 text-text-disabled">Tidak ada bahan ditemukan</TableCell>
               </TableRow>
             )}
           </TableBody>

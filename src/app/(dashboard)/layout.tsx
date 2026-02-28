@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { sidebarCollapsed } = useUIStore();
 
   return (
-    <div className="min-h-screen bg-[#fcfcfd]">
+    <div className="min-h-screen bg-background">
       <Sidebar />
 
       <div

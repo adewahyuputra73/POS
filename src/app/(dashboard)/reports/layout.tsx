@@ -73,7 +73,7 @@ export default function ReportsLayout({ children }: ReportsLayoutProps) {
   return (
     <div className="space-y-6">
       {/* Sub Navigation */}
-      <div className="border-b border-border bg-white rounded-t-xl shadow-sm">
+      <div className="border-b border-border bg-surface rounded-t-xl shadow-sm">
         <nav className="flex gap-0 overflow-x-auto scrollbar-hide">
           {reportNavItems.map((item) => {
             const isActive = pathname === item.href;

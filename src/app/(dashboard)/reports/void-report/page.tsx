@@ -224,7 +224,7 @@ export default function VoidReportPage() {
       />
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-white rounded-xl border border-border">
+      <div className="flex flex-wrap items-center gap-4 p-4 bg-surface rounded-xl border border-border">
         <DateRangePicker
           value={dateRange}
           onChange={setDateRange}
@@ -234,7 +234,7 @@ export default function VoidReportPage() {
         <select
           value={selectedStaff}
           onChange={(e) => setSelectedStaff(e.target.value)}
-          className="px-3 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+          className="px-3 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
         >
           {mockStaffOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -275,7 +275,7 @@ export default function VoidReportPage() {
       </div>
 
       {/* Chart */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           {viewMode === "total" ? "Void per Kategori" : "Tren Void Harian"}
         </h3>
@@ -350,7 +350,7 @@ export default function VoidReportPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Detail Pembatalan
         </h3>

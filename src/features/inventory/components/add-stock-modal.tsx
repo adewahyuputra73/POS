@@ -56,7 +56,7 @@ export function AddStockModal({
         <DialogHeader>
           <DialogTitle>Tambah Stok</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-gray-500">Menambah stok untuk <strong>{materialName}</strong></p>
+        <p className="text-sm text-text-secondary">Menambah stok untuk <strong>{materialName}</strong></p>
 
         <div className="space-y-4 py-4">
           <Input
@@ -78,9 +78,9 @@ export function AddStockModal({
             helperText="Harga pembelian per satuan dasar"
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Supplier *</label>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">Supplier *</label>
             <select
-              className="w-full h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
+              className="w-full h-10 px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
               value={supplierId}
               onChange={(e) => setSupplierId(Number(e.target.value))}
             >
@@ -99,7 +99,7 @@ export function AddStockModal({
           />
         </div>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-divider">
           <Button variant="outline" onClick={onClose}>Batal</Button>
           <Button onClick={handleSubmit}>Tambah Stok</Button>
         </div>

@@ -164,7 +164,7 @@ export function UnitConversionModal({
           {/* Unit List */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-semibold text-gray-700">Detail Unit Konversi</h4>
+              <h4 className="text-sm font-semibold text-text-primary">Detail Unit Konversi</h4>
               <Button
                 variant="outline"
                 size="sm"
@@ -187,14 +187,14 @@ export function UnitConversionModal({
               {units.map((unit, index) => (
                 <div
                   key={unit.tempId}
-                  className="border border-gray-200 rounded-lg p-4 space-y-3"
+                  className="border border-border rounded-lg p-4 space-y-3"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-500">Unit #{index + 1}</span>
+                    <span className="text-xs font-medium text-text-secondary">Unit #{index + 1}</span>
                     {units.length > 1 && (
                       <button
                         onClick={() => removeUnit(unit.tempId)}
-                        className="text-gray-400 hover:text-red-500 transition-colors"
+                        className="text-text-disabled hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -221,11 +221,11 @@ export function UnitConversionModal({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      <label className="block text-sm font-medium text-text-primary mb-1.5">
                         Per UOM
                       </label>
                       <select
-                        className="w-full h-10 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
+                        className="w-full h-10 px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
                         value={unit.perUom}
                         onChange={(e) => updateUnit(unit.tempId, 'perUom', e.target.value)}
                       >
@@ -242,7 +242,7 @@ export function UnitConversionModal({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      <label className="block text-sm font-medium text-text-primary mb-1.5">
                         Role Unit
                       </label>
                       <div className="flex gap-2 flex-wrap">
@@ -258,8 +258,8 @@ export function UnitConversionModal({
                                 unit.role === r.value
                                   ? "bg-blue-600 text-white border-blue-600"
                                   : isUsed
-                                    ? "bg-gray-50 text-gray-300 border-gray-200 cursor-not-allowed"
-                                    : "bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600"
+                                    ? "bg-background text-text-disabled border-border cursor-not-allowed"
+                                    : "bg-surface text-text-secondary border-border hover:border-blue-300 hover:text-blue-600"
                               )}
                             >
                               {r.label}
@@ -279,7 +279,7 @@ export function UnitConversionModal({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-divider">
           <Button variant="outline" onClick={onClose}>
             Batal
           </Button>

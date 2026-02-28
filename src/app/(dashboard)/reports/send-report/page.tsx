@@ -246,11 +246,11 @@ export default function SendReportPage() {
         <button
           onClick={() => handleToggleStatus(row.id)}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            row.status === "ACTIVE" ? "bg-success" : "bg-gray-300"
+            row.status === "ACTIVE" ? "bg-success" : "bg-border"
           }`}
         >
           <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+            className={`inline-block h-4 w-4 transform rounded-full bg-surface transition-transform ${
               row.status === "ACTIVE" ? "translate-x-6" : "translate-x-1"
             }`}
           />
@@ -300,7 +300,7 @@ export default function SendReportPage() {
       />
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-white rounded-xl border border-border">
+      <div className="flex flex-wrap items-center gap-4 p-4 bg-surface rounded-xl border border-border">
         {/* Search */}
         <div className="flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl flex-1 max-w-sm">
           <Search className="h-4 w-4 text-text-secondary" />
@@ -322,7 +322,7 @@ export default function SendReportPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as "all" | ScheduleStatus)}
-          className="px-3 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+          className="px-3 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
         >
           <option value="all">Semua Status</option>
           <option value="ACTIVE">Aktif</option>
@@ -331,7 +331,7 @@ export default function SendReportPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white p-6 rounded-xl border border-border">
+      <div className="bg-surface p-6 rounded-xl border border-border">
         <DataTable
           data={filteredSchedules}
           columns={columns}
@@ -349,7 +349,7 @@ export default function SendReportPage() {
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6"
+              className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="text-xl font-bold text-text-primary mb-6">

@@ -94,10 +94,10 @@ export function CategoryTable({
 
   if (categories.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum ada kategori</h3>
-        <p className="text-sm text-gray-500">
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <Package className="h-12 w-12 text-text-disabled mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-text-primary mb-2">Belum ada kategori</h3>
+        <p className="text-sm text-text-secondary">
           Klik tombol &quot;Tambah Kategori&quot; untuk membuat kategori baru
         </p>
       </div>
@@ -105,12 +105,12 @@ export function CategoryTable({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
+          <TableRow className="bg-background/50">
             <TableHead 
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('name')}
             >
               <div className="flex items-center gap-2">
@@ -119,7 +119,7 @@ export function CategoryTable({
               </div>
             </TableHead>
             <TableHead 
-              className="cursor-pointer hover:bg-gray-100 transition-colors text-center"
+              className="cursor-pointer hover:bg-background transition-colors text-center"
               onClick={() => handleSort('productCount')}
             >
               <div className="flex items-center justify-center gap-2">
@@ -128,7 +128,7 @@ export function CategoryTable({
               </div>
             </TableHead>
             <TableHead 
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('updatedAt')}
             >
               <div className="flex items-center gap-2">
@@ -142,13 +142,13 @@ export function CategoryTable({
         </TableHeader>
         <TableBody>
           {paginatedCategories.map((category) => (
-            <TableRow key={category.id} className="hover:bg-gray-50/50">
+            <TableRow key={category.id} className="hover:bg-background/50">
               <TableCell>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Package className="h-5 w-5 text-primary" />
                   </div>
-                  <span className="font-medium text-gray-900">{category.name}</span>
+                  <span className="font-medium text-text-primary">{category.name}</span>
                 </div>
               </TableCell>
               <TableCell className="text-center">
@@ -156,12 +156,12 @@ export function CategoryTable({
                   "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium",
                   category.productCount > 0 
                     ? "bg-blue-50 text-blue-700"
-                    : "bg-gray-100 text-gray-500"
+                    : "bg-background text-text-secondary"
                 )}>
                   {category.productCount} Produk
                 </span>
               </TableCell>
-              <TableCell className="text-gray-500 text-sm">
+              <TableCell className="text-text-secondary text-sm">
                 {formatDate(category.updatedAt)}
               </TableCell>
               <TableCell className="text-center">
@@ -178,7 +178,7 @@ export function CategoryTable({
                     variant="ghost"
                     size="icon"
                     onClick={() => onEdit(category)}
-                    className="h-8 w-8 text-gray-500 hover:text-primary"
+                    className="h-8 w-8 text-text-secondary hover:text-primary"
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -192,7 +192,7 @@ export function CategoryTable({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-secondary">
             Menampilkan {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, categories.length)} dari {categories.length} kategori
           </p>
           <div className="flex items-center gap-2">

@@ -82,10 +82,10 @@ export default function CoinsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Koin Pelanggan</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-text-primary">Koin Pelanggan</h1>
+          <p className="text-sm text-text-secondary mt-1">
             Kelola saldo koin loyalty pelanggan
-            <span className="ml-2 text-xs text-gray-400">(1 koin = {formatCurrency(coinSettings.conversionRate)})</span>
+            <span className="ml-2 text-xs text-text-disabled">(1 koin = {formatCurrency(coinSettings.conversionRate)})</span>
           </p>
         </div>
         <Button
@@ -111,13 +111,13 @@ export default function CoinsPage() {
           { label: 'Total Nilai', value: formatCurrency(totalValue), icon: TrendingUp, color: 'text-green-700 bg-green-50' },
           { label: 'Pending Approval', value: pendingCount.toString(), icon: Clock, color: 'text-orange-700 bg-orange-50' },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl border border-border p-4 flex items-center gap-3">
+          <div key={stat.label} className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
             <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${stat.color}`}>
               <stat.icon className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-lg font-bold text-gray-900 truncate">{stat.value}</p>
-              <p className="text-xs text-gray-500">{stat.label}</p>
+              <p className="text-lg font-bold text-text-primary truncate">{stat.value}</p>
+              <p className="text-xs text-text-secondary">{stat.label}</p>
             </div>
           </div>
         ))}
@@ -125,7 +125,7 @@ export default function CoinsPage() {
 
       {/* Search */}
       <div className="relative w-full md:w-80">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-disabled" />
         <Input
           value={filters.search}
           onChange={(e) => setFilters({ search: e.target.value })}
@@ -144,7 +144,7 @@ export default function CoinsPage() {
         onTransfer={setTransferTarget}
       />
 
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-text-disabled">
         Menampilkan {filtered.length} dari {customers.length} pelanggan
         {selectedIds.length > 0 && <span> · {selectedIds.length} dipilih</span>}
       </p>

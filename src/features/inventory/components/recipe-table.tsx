@@ -62,32 +62,32 @@ export function RecipeTable({ recipes, activeType, onDetail }: RecipeTableProps)
 
   if (recipes.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum ada resep</h3>
-        <p className="text-sm text-gray-500">Resep akan muncul setelah produk atau varian ditambahkan</p>
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <BookOpen className="h-12 w-12 text-text-disabled mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-text-primary mb-2">Belum ada resep</h3>
+        <p className="text-sm text-text-secondary">Resep akan muncul setelah produk atau varian ditambahkan</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('name')}>
+          <TableRow className="bg-background/50">
+            <TableHead className="cursor-pointer hover:bg-background transition-colors" onClick={() => handleSort('name')}>
               <div className="flex items-center gap-2">
                 {activeType === 'menu' ? 'NAMA PRODUK' : 'NAMA OPSI'} <SortIcon field="name" />
               </div>
             </TableHead>
             {activeType === 'menu' && <TableHead>KATEGORI</TableHead>}
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors text-right" onClick={() => handleSort('totalHpp')}>
+            <TableHead className="cursor-pointer hover:bg-background transition-colors text-right" onClick={() => handleSort('totalHpp')}>
               <div className="flex items-center justify-end gap-2">HPP <SortIcon field="totalHpp" /></div>
             </TableHead>
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors text-center" onClick={() => handleSort('ingredientCount')}>
+            <TableHead className="cursor-pointer hover:bg-background transition-colors text-center" onClick={() => handleSort('ingredientCount')}>
               <div className="flex items-center justify-center gap-2">JUMLAH BAHAN <SortIcon field="ingredientCount" /></div>
             </TableHead>
-            <TableHead className="cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('updatedAt')}>
+            <TableHead className="cursor-pointer hover:bg-background transition-colors" onClick={() => handleSort('updatedAt')}>
               <div className="flex items-center gap-2">TERAKHIR DIPERBARUI <SortIcon field="updatedAt" /></div>
             </TableHead>
             <TableHead className="text-center">STATUS</TableHead>
@@ -96,37 +96,37 @@ export function RecipeTable({ recipes, activeType, onDetail }: RecipeTableProps)
         </TableHeader>
         <TableBody>
           {paginatedRecipes.map((recipe) => (
-            <TableRow key={recipe.id} className="hover:bg-gray-50/50">
+            <TableRow key={recipe.id} className="hover:bg-background/50">
               <TableCell>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-lg bg-rose-100 flex items-center justify-center">
                     <BookOpen className="h-5 w-5 text-rose-600" />
                   </div>
-                  <span className="font-medium text-gray-900">{recipe.targetName}</span>
+                  <span className="font-medium text-text-primary">{recipe.targetName}</span>
                 </div>
               </TableCell>
-              {activeType === 'menu' && <TableCell className="text-sm text-gray-500">{recipe.categoryName || '-'}</TableCell>}
-              <TableCell className="text-right text-sm font-medium text-gray-900">{formatCurrency(recipe.totalHpp)}</TableCell>
+              {activeType === 'menu' && <TableCell className="text-sm text-text-secondary">{recipe.categoryName || '-'}</TableCell>}
+              <TableCell className="text-right text-sm font-medium text-text-primary">{formatCurrency(recipe.totalHpp)}</TableCell>
               <TableCell className="text-center">
                 <span className={cn(
                   "px-2.5 py-1 rounded-full text-sm font-medium",
-                  recipe.ingredientCount > 0 ? "bg-rose-50 text-rose-700" : "bg-gray-100 text-gray-500"
+                  recipe.ingredientCount > 0 ? "bg-rose-50 text-rose-700" : "bg-background text-text-secondary"
                 )}>
                   {recipe.ingredientCount} Bahan
                 </span>
               </TableCell>
-              <TableCell className="text-sm text-gray-500">{formatDate(recipe.updatedAt)}</TableCell>
+              <TableCell className="text-sm text-text-secondary">{formatDate(recipe.updatedAt)}</TableCell>
               <TableCell className="text-center">
                 <span className={cn(
                   "px-2.5 py-1 rounded-full text-xs font-medium",
-                  recipe.status === 'active' ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
+                  recipe.status === 'active' ? "bg-green-50 text-green-700" : "bg-background text-text-secondary"
                 )}>
                   {recipe.status === 'active' ? 'Aktif' : 'Draft'}
                 </span>
               </TableCell>
               <TableCell>
                 <div className="flex items-center justify-center">
-                  <Button variant="ghost" size="icon" onClick={() => onDetail(recipe)} className="h-8 w-8 text-gray-500 hover:text-rose-600">
+                  <Button variant="ghost" size="icon" onClick={() => onDetail(recipe)} className="h-8 w-8 text-text-secondary hover:text-rose-600">
                     <Eye className="h-4 w-4" />
                   </Button>
                 </div>
@@ -138,7 +138,7 @@ export function RecipeTable({ recipes, activeType, onDetail }: RecipeTableProps)
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-secondary">
             Menampilkan {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, recipes.length)} dari {recipes.length} resep
           </p>
           <div className="flex items-center gap-2">

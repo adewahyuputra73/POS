@@ -116,7 +116,7 @@ export function LoginForm() {
             <div className="relative flex items-center">
               <input
                 type="checkbox"
-                className="peer h-5 w-5 rounded-lg border-2 border-slate-200 bg-white text-brand-600 focus:ring-0 focus:ring-offset-0 transition-all checked:border-brand-600"
+                className="peer h-5 w-5 rounded-lg border-2 border-slate-200 bg-surface text-brand-600 focus:ring-0 focus:ring-offset-0 transition-all checked:border-brand-600"
                 {...register("remember")}
               />
             </div>
@@ -146,7 +146,7 @@ export function LoginForm() {
           <div className="w-full border-t border-slate-100"></div>
         </div>
         <div className="relative flex justify-center text-xs uppercase font-bold tracking-widest">
-          <span className="bg-white px-4 text-slate-400">Security Verified</span>
+          <span className="bg-surface px-4 text-slate-400">Security Verified</span>
         </div>
       </div>
     </div>

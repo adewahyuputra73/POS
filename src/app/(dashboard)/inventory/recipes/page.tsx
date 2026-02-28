@@ -183,8 +183,8 @@ export default function RecipesPage() {
         ]}
       />
 
-      <div className="bg-white rounded-xl border border-border p-4 space-y-4">
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-lg w-fit">
+      <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
+        <div className="flex gap-1 p-1 bg-background rounded-lg w-fit">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -192,14 +192,14 @@ export default function RecipesPage() {
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
                 activeTab === tab.key
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-surface text-text-primary shadow-sm"
+                  : "text-text-secondary hover:text-text-primary"
               )}
             >
               {tab.label}
               <span className={cn(
                 "px-2 py-0.5 rounded-full text-xs",
-                activeTab === tab.key ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-600"
+                activeTab === tab.key ? "bg-purple-600 text-white" : "bg-background text-text-secondary"
               )}>
                 {recipes.filter((r) => r.targetType === tab.key).length}
               </span>
@@ -214,7 +214,7 @@ export default function RecipesPage() {
             onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
             leftIcon={<Search className="h-4 w-4" />}
             rightIcon={filters.search ? (
-              <button onClick={() => setFilters((prev) => ({ ...prev, search: '' }))} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setFilters((prev) => ({ ...prev, search: '' }))} className="text-text-disabled hover:text-text-secondary">
                 <X className="h-4 w-4" />
               </button>
             ) : undefined}

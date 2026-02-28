@@ -82,34 +82,34 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
         <Button variant="ghost" size="sm" onClick={onCancel} className="gap-1.5">
           <ArrowLeft className="h-4 w-4" /> Kembali
         </Button>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-text-primary">
           {isEditing ? 'Edit Voucher' : 'Tambah Voucher'}
         </h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Section: Informasi Diskon */}
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+        <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2">
             <Info className="h-4 w-4 text-primary" /> Informasi Diskon
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Tipe Diskon */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Tipe Diskon *</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Tipe Diskon *</label>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => updateField('type', 'produk' as VoucherType)}
-                  className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all text-sm font-medium ${form.type === 'produk' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-gray-500 hover:border-gray-300'}`}
+                  className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all text-sm font-medium ${form.type === 'produk' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-text-secondary hover:border-border'}`}
                 >
                   <Tag className="h-4 w-4" /> Produk
                 </button>
                 <button
                   type="button"
                   onClick={() => updateField('type', 'ongkir' as VoucherType)}
-                  className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all text-sm font-medium ${form.type === 'ongkir' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-gray-500 hover:border-gray-300'}`}
+                  className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all text-sm font-medium ${form.type === 'ongkir' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-text-secondary hover:border-border'}`}
                 >
                   <Truck className="h-4 w-4" /> Ongkos Kirim
                 </button>
@@ -118,7 +118,7 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
 
             {/* Kode Diskon */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Kode Diskon *</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Kode Diskon *</label>
               <Input
                 value={form.code}
                 onChange={(e) => updateField('code', e.target.value.toUpperCase())}
@@ -131,7 +131,7 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
 
           {/* Informasi Diskon */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Informasi Diskon * <span className="text-gray-400">({form.description.length}/100)</span></label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Informasi Diskon * <span className="text-text-disabled">({form.description.length}/100)</span></label>
             <Input
               value={form.description}
               onChange={(e) => updateField('description', e.target.value)}
@@ -148,20 +148,20 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
               type="checkbox"
               checked={form.isStackable}
               onChange={(e) => updateField('isStackable', e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
             />
-            <span className="text-sm text-gray-700">Bisa digunakan bersama voucher lain</span>
+            <span className="text-sm text-text-primary">Bisa digunakan bersama voucher lain</span>
           </label>
         </div>
 
         {/* Section: Potongan & Kuota */}
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">Potongan & Kuota Diskon</h3>
+        <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-text-primary">Potongan & Kuota Diskon</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Tipe Potongan */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Jenis Potongan</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Jenis Potongan</label>
               <Select value={form.discountType} onValueChange={(v) => updateField('discountType', v as DiscountType)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -173,7 +173,7 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
 
             {/* Jumlah Potongan */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              <label className="block text-xs font-medium text-text-primary mb-1.5">
                 Jumlah Potongan * {form.discountType === 'percent' ? '(%)' : '(Rp)'}
               </label>
               <Input
@@ -189,8 +189,8 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
             {/* Budget per transaksi */}
             <div>
               <label className="flex items-center gap-2 mb-1.5">
-                <input type="checkbox" checked={enableBudget} onChange={e => setEnableBudget(e.target.checked)} className="h-3.5 w-3.5 rounded border-gray-300 text-primary" />
-                <span className="text-xs font-medium text-gray-700">Budget per Transaksi (Rp)</span>
+                <input type="checkbox" checked={enableBudget} onChange={e => setEnableBudget(e.target.checked)} className="h-3.5 w-3.5 rounded border-border text-primary" />
+                <span className="text-xs font-medium text-text-primary">Budget per Transaksi (Rp)</span>
               </label>
               <Input
                 type="number"
@@ -205,8 +205,8 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
           {/* Kuota */}
           <div className="max-w-xs">
             <label className="flex items-center gap-2 mb-1.5">
-              <input type="checkbox" checked={enableQuota} onChange={e => setEnableQuota(e.target.checked)} className="h-3.5 w-3.5 rounded border-gray-300 text-primary" />
-              <span className="text-xs font-medium text-gray-700">Kuota Diskon</span>
+              <input type="checkbox" checked={enableQuota} onChange={e => setEnableQuota(e.target.checked)} className="h-3.5 w-3.5 rounded border-border text-primary" />
+              <span className="text-xs font-medium text-text-primary">Kuota Diskon</span>
             </label>
             <Input
               type="number"
@@ -220,38 +220,38 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
 
         {/* Section: Produk Diskon (only for type=produk) */}
         {form.type === 'produk' && (
-          <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-gray-900">Produk Diskon</h3>
+          <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+            <h3 className="text-sm font-semibold text-text-primary">Produk Diskon</h3>
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => updateField('productScope', 'all' as ProductScope)}
-                className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.productScope === 'all' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-gray-500'}`}
+                className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.productScope === 'all' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-text-secondary'}`}
               >
                 Semua Produk
               </button>
               <button
                 type="button"
                 onClick={() => updateField('productScope', 'selected' as ProductScope)}
-                className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.productScope === 'selected' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-gray-500'}`}
+                className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${form.productScope === 'selected' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-text-secondary'}`}
               >
                 Sebagian Produk
               </button>
             </div>
             {form.productScope === 'selected' && (
-              <p className="text-xs text-gray-400 italic">Pilihan produk akan tersedia setelah integrasi API</p>
+              <p className="text-xs text-text-disabled italic">Pilihan produk akan tersedia setelah integrasi API</p>
             )}
           </div>
         )}
 
         {/* Section: Kriteria Voucher */}
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">Kriteria Voucher <span className="text-gray-400 font-normal">(Opsional)</span></h3>
+        <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-text-primary">Kriteria Voucher <span className="text-text-disabled font-normal">(Opsional)</span></h3>
 
           <div className="max-w-xs">
             <label className="flex items-center gap-2 mb-1.5">
-              <input type="checkbox" checked={enableMinOrder} onChange={e => setEnableMinOrder(e.target.checked)} className="h-3.5 w-3.5 rounded border-gray-300 text-primary" />
-              <span className="text-xs font-medium text-gray-700">Minimum Total Order (Rp)</span>
+              <input type="checkbox" checked={enableMinOrder} onChange={e => setEnableMinOrder(e.target.checked)} className="h-3.5 w-3.5 rounded border-border text-primary" />
+              <span className="text-xs font-medium text-text-primary">Minimum Total Order (Rp)</span>
             </label>
             <Input
               type="number"
@@ -264,12 +264,12 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
         </div>
 
         {/* Section: Durasi */}
-        <div className="bg-white rounded-xl border border-border p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">Durasi Diskon</h3>
+        <div className="bg-surface rounded-xl border border-border p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-text-primary">Durasi Diskon</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Tanggal & Jam Mulai *</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Tanggal & Jam Mulai *</label>
               <Input
                 type="datetime-local"
                 value={form.startDate ? form.startDate.slice(0, 16) : ''}
@@ -279,7 +279,7 @@ export function VoucherForm({ initialData, onSubmit, onCancel, isEditing }: Vouc
               {errors.startDate && <p className="text-xs text-red-500 mt-1">{errors.startDate}</p>}
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Tanggal & Jam Berakhir *</label>
+              <label className="block text-xs font-medium text-text-primary mb-1.5">Tanggal & Jam Berakhir *</label>
               <Input
                 type="datetime-local"
                 value={form.endDate ? form.endDate.slice(0, 16) : ''}

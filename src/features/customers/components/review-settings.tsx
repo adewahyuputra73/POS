@@ -84,7 +84,7 @@ export function ReviewSettings({ questions: initialQuestions, onSave }: ReviewSe
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-base font-semibold">Pertanyaan Ulasan</h3>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm text-text-secondary mt-0.5">
             Kelola pertanyaan yang muncul saat pelanggan memberi ulasan.
             Maksimal <span className="font-medium">{MAX_QUESTIONS}</span> pertanyaan aktif.
           </p>
@@ -97,7 +97,7 @@ export function ReviewSettings({ questions: initialQuestions, onSave }: ReviewSe
       {/* Active indicator */}
       <div className="flex items-center gap-2">
         <div className={`h-2 w-2 rounded-full ${activeCount >= MAX_QUESTIONS ? 'bg-yellow-500' : 'bg-green-500'}`} />
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-text-secondary">
           {activeCount}/{MAX_QUESTIONS} pertanyaan aktif
         </span>
       </div>
@@ -107,34 +107,34 @@ export function ReviewSettings({ questions: initialQuestions, onSave }: ReviewSe
         {questions.map((question) => (
           <div
             key={question.id}
-            className={`bg-white rounded-xl border p-4 transition-all ${
+            className={`bg-surface rounded-xl border p-4 transition-all ${
               question.isActive ? 'border-primary/20 shadow-sm' : 'border-border opacity-60'
             }`}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="text-sm font-medium text-gray-900">{question.questionText}</p>
+                  <p className="text-sm font-medium text-text-primary">{question.questionText}</p>
                   {question.isActive ? (
                     <Badge variant="success" className="text-[10px]">Aktif</Badge>
                   ) : (
                     <Badge variant="default" className="text-[10px]">Nonaktif</Badge>
                   )}
                 </div>
-                <p className="text-xs text-gray-400">Rating bintang 1-5</p>
+                <p className="text-xs text-text-disabled">Rating bintang 1-5</p>
               </div>
               <div className="flex items-center gap-1 ml-4">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleToggleActive(question.id)}
-                  className={`h-8 text-xs ${question.isActive ? 'text-green-600' : 'text-gray-400'}`}
+                  className={`h-8 text-xs ${question.isActive ? 'text-green-600' : 'text-text-disabled'}`}
                   title={question.isActive ? 'Nonaktifkan' : 'Aktifkan'}
                   disabled={!question.isActive && activeCount >= MAX_QUESTIONS}
                 >
                   <CheckCircle className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleEdit(question)} className="h-8 w-8 p-0 text-gray-400 hover:text-primary">
+                <Button variant="ghost" size="sm" onClick={() => handleEdit(question)} className="h-8 w-8 p-0 text-text-disabled hover:text-primary">
                   <Pencil className="h-4 w-4" />
                 </Button>
                 {deleteConfirmId === question.id ? (
@@ -143,7 +143,7 @@ export function ReviewSettings({ questions: initialQuestions, onSave }: ReviewSe
                     <Button variant="ghost" size="sm" onClick={() => setDeleteConfirmId(null)} className="h-8 text-xs">Batal</Button>
                   </div>
                 ) : (
-                  <Button variant="ghost" size="sm" onClick={() => setDeleteConfirmId(question.id)} className="h-8 w-8 p-0 text-gray-400 hover:text-red-500">
+                  <Button variant="ghost" size="sm" onClick={() => setDeleteConfirmId(question.id)} className="h-8 w-8 p-0 text-text-disabled hover:text-red-500">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 )}
@@ -152,10 +152,10 @@ export function ReviewSettings({ questions: initialQuestions, onSave }: ReviewSe
           </div>
         ))}
         {questions.length === 0 && (
-          <div className="bg-white rounded-xl border border-border p-12 text-center">
+          <div className="bg-surface rounded-xl border border-border p-12 text-center">
             <AlertTriangle className="h-10 w-10 mx-auto mb-3 text-yellow-400" />
-            <h3 className="text-sm font-medium text-gray-900">Belum ada pertanyaan</h3>
-            <p className="mt-1 text-sm text-gray-500">Tambahkan pertanyaan untuk menampilkan form review ke pelanggan</p>
+            <h3 className="text-sm font-medium text-text-primary">Belum ada pertanyaan</h3>
+            <p className="mt-1 text-sm text-text-secondary">Tambahkan pertanyaan untuk menampilkan form review ke pelanggan</p>
           </div>
         )}
       </div>
@@ -182,7 +182,7 @@ export function ReviewSettings({ questions: initialQuestions, onSave }: ReviewSe
                 onChange={(e) => setNewQuestionText(e.target.value)}
                 placeholder="Contoh: Bagaimana rasa makanan kami?"
               />
-              <p className="text-xs text-gray-400">Pelanggan akan menjawab dengan rating bintang 1-5</p>
+              <p className="text-xs text-text-disabled">Pelanggan akan menjawab dengan rating bintang 1-5</p>
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>

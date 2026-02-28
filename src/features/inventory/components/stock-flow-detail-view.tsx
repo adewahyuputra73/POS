@@ -54,14 +54,14 @@ export function StockFlowDetailView({ record, onBack }: StockFlowDetailViewProps
         </Button>
       </div>
 
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-surface rounded-xl border border-border p-6">
         <div className="flex items-start justify-between mb-6">
           <div>
             <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${tc.color} mb-3`}>
               {tc.icon}
               {tc.label}
             </div>
-            <h2 className="text-xl font-bold text-gray-900">{record.referenceNumber}</h2>
+            <h2 className="text-xl font-bold text-text-primary">{record.referenceNumber}</h2>
           </div>
           <Badge variant={sc.variant} className="text-sm px-3 py-1">{sc.label}</Badge>
         </div>
@@ -76,52 +76,52 @@ export function StockFlowDetailView({ record, onBack }: StockFlowDetailViewProps
           </div>
           <div className="flex-1 h-0.5 bg-green-300" />
           <div className="flex items-center gap-2">
-            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${record.status === 'selesai' ? 'bg-green-100' : 'bg-gray-100'}`}>
-              <div className={`h-3 w-3 rounded-full ${record.status === 'selesai' ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${record.status === 'selesai' ? 'bg-green-100' : 'bg-background'}`}>
+              <div className={`h-3 w-3 rounded-full ${record.status === 'selesai' ? 'bg-green-500' : 'bg-border'}`} />
             </div>
-            <span className={`text-sm font-medium ${record.status === 'selesai' ? 'text-green-700' : 'text-gray-400'}`}>Selesai</span>
+            <span className={`text-sm font-medium ${record.status === 'selesai' ? 'text-green-700' : 'text-text-disabled'}`}>Selesai</span>
           </div>
         </div>
 
         {/* Info Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="flex items-center gap-2 text-sm">
-            <User className="h-4 w-4 text-gray-400" />
-            <div><span className="text-gray-500">Dibuat oleh:</span> <span className="font-medium">{record.createdBy}</span></div>
+            <User className="h-4 w-4 text-text-disabled" />
+            <div><span className="text-text-secondary">Dibuat oleh:</span> <span className="font-medium">{record.createdBy}</span></div>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Calendar className="h-4 w-4 text-gray-400" />
-            <div><span className="text-gray-500">Tanggal:</span> <span className="font-medium">{formatDate(record.createdAt)}</span></div>
+            <Calendar className="h-4 w-4 text-text-disabled" />
+            <div><span className="text-text-secondary">Tanggal:</span> <span className="font-medium">{formatDate(record.createdAt)}</span></div>
           </div>
           {record.supplierName && (
             <div className="flex items-center gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-gray-400" />
-              <div><span className="text-gray-500">Supplier:</span> <span className="font-medium">{record.supplierName}</span></div>
+              <MapPin className="h-4 w-4 text-text-disabled" />
+              <div><span className="text-text-secondary">Supplier:</span> <span className="font-medium">{record.supplierName}</span></div>
             </div>
           )}
           {record.outletFrom && record.outletTo && (
             <div className="flex items-center gap-2 text-sm">
-              <ArrowLeftRight className="h-4 w-4 text-gray-400" />
-              <div><span className="text-gray-500">{record.outletFrom}</span> → <span className="font-medium">{record.outletTo}</span></div>
+              <ArrowLeftRight className="h-4 w-4 text-text-disabled" />
+              <div><span className="text-text-secondary">{record.outletFrom}</span> → <span className="font-medium">{record.outletTo}</span></div>
             </div>
           )}
           <div className="text-sm">
-            <span className="text-gray-500">Total Bahan:</span> <span className="font-medium">{record.totalItems} item</span>
+            <span className="text-text-secondary">Total Bahan:</span> <span className="font-medium">{record.totalItems} item</span>
           </div>
           <div className="text-sm">
-            <span className="text-gray-500">Total Harga:</span> <span className="font-medium">{formatCurrency(record.totalPrice)}</span>
+            <span className="text-text-secondary">Total Harga:</span> <span className="font-medium">{formatCurrency(record.totalPrice)}</span>
           </div>
         </div>
       </div>
 
       {/* Detail Items */}
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border">
           <h3 className="text-sm font-semibold">Detail Item</h3>
         </div>
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50">
+            <TableRow className="bg-background/50">
               <TableHead className="font-semibold text-xs">Nama Bahan</TableHead>
               <TableHead className="font-semibold text-xs">Kategori</TableHead>
               <TableHead className="font-semibold text-xs">Tipe</TableHead>
@@ -136,7 +136,7 @@ export function StockFlowDetailView({ record, onBack }: StockFlowDetailViewProps
             {record.items.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium text-sm">{item.materialName}</TableCell>
-                <TableCell className="text-sm text-gray-600">{item.categoryName}</TableCell>
+                <TableCell className="text-sm text-text-secondary">{item.categoryName}</TableCell>
                 <TableCell>
                   <Badge variant="default" className="text-xs">
                     {item.materialType === 'raw' ? 'Mentah' : 'Setengah Jadi'}
@@ -145,7 +145,7 @@ export function StockFlowDetailView({ record, onBack }: StockFlowDetailViewProps
                 <TableCell className={`text-right text-sm font-medium ${item.qty < 0 ? 'text-red-600' : ''}`}>
                   {item.qty > 0 ? `+${item.qty.toLocaleString('id-ID')}` : item.qty.toLocaleString('id-ID')}
                 </TableCell>
-                <TableCell className="text-sm text-gray-600">{item.unit}</TableCell>
+                <TableCell className="text-sm text-text-secondary">{item.unit}</TableCell>
                 <TableCell className={`text-right text-sm font-medium ${item.price < 0 ? 'text-red-600' : ''}`}>
                   {formatCurrency(item.price)}
                 </TableCell>

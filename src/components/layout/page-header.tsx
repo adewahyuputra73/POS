@@ -27,7 +27,7 @@ export function PageHeader({
     <div className={cn("mb-8 items-end justify-between sm:flex", className)}>
       <div className="space-y-3">
         {/* Modern Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+        <nav className="flex items-center gap-2 text-[11px] font-bold text-text-secondary uppercase tracking-widest">
           <Link href="/" className="hover:text-brand-600 transition-colors flex items-center gap-1">
             <Home className="h-3 w-3" />
             <span>Home</span>
@@ -46,16 +46,16 @@ export function PageHeader({
                   {item.label}
                 </Link>
               ) : (
-                <span className="text-slate-600 font-bold">{item.label}</span>
+                <span className="text-text-primary font-bold">{item.label}</span>
               )}
             </div>
           ))}
         </nav>
 
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{title}</h1>
+          <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">{title}</h1>
           {description && (
-            <p className="mt-1.5 text-sm font-medium text-slate-500 max-w-2xl">{description}</p>
+            <p className="mt-1.5 text-sm font-medium text-text-secondary max-w-2xl">{description}</p>
           )}
         </div>
       </div>

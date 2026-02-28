@@ -57,16 +57,16 @@ function TableFormDialog({ initialData, onSubmit, onCancel, isEditing }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-in slide-in-from-bottom-4 duration-300">
-        <button onClick={onCancel} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-in slide-in-from-bottom-4 duration-300">
+        <button onClick={onCancel} className="absolute top-4 right-4 text-text-disabled hover:text-text-secondary">
           <X className="h-5 w-5" />
         </button>
-        <h3 className="text-lg font-semibold text-gray-900 mb-5">
+        <h3 className="text-lg font-semibold text-text-primary mb-5">
           {isEditing ? 'Ubah Meja' : 'Tambah Meja'}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Nama Meja * <span className="text-gray-400">(maks 5 karakter)</span></label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Nama Meja * <span className="text-text-disabled">(maks 5 karakter)</span></label>
             <Input
               value={form.name}
               onChange={(e) => { setForm(prev => ({ ...prev, name: e.target.value })); if (errors.name) setErrors(prev => ({ ...prev, name: '' })); }}
@@ -77,7 +77,7 @@ function TableFormDialog({ initialData, onSubmit, onCancel, isEditing }: {
             {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Area *</label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Area *</label>
             <Select value={String(form.areaId)} onValueChange={(v) => setForm(prev => ({ ...prev, areaId: Number(v) }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -88,7 +88,7 @@ function TableFormDialog({ initialData, onSubmit, onCancel, isEditing }: {
             </Select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Kapasitas</label>
+            <label className="block text-xs font-medium text-text-primary mb-1.5">Kapasitas</label>
             <Input
               type="number"
               value={form.capacity}
@@ -115,23 +115,23 @@ function TableFormDialog({ initialData, onSubmit, onCancel, isEditing }: {
 function QrPreviewDialog({ table, onClose }: { table: RestaurantTable; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center relative animate-in slide-in-from-bottom-4 duration-300">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-sm p-6 text-center relative animate-in slide-in-from-bottom-4 duration-300">
+        <button onClick={onClose} className="absolute top-4 right-4 text-text-disabled hover:text-text-secondary">
           <X className="h-5 w-5" />
         </button>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">QR Code Meja {table.name}</h3>
-        <p className="text-xs text-gray-500 mb-6">{table.areaName}</p>
+        <h3 className="text-lg font-semibold text-text-primary mb-2">QR Code Meja {table.name}</h3>
+        <p className="text-xs text-text-secondary mb-6">{table.areaName}</p>
 
         {/* QR Placeholder */}
-        <div className="mx-auto w-48 h-48 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center mb-4">
+        <div className="mx-auto w-48 h-48 bg-background rounded-xl border-2 border-dashed border-border flex items-center justify-center mb-4">
           <div className="text-center">
-            <QrCode className="h-16 w-16 text-gray-300 mx-auto mb-2" />
-            <p className="text-[10px] text-gray-400 font-mono break-all px-2">{table.qrCode}</p>
+            <QrCode className="h-16 w-16 text-text-disabled mx-auto mb-2" />
+            <p className="text-[10px] text-text-disabled font-mono break-all px-2">{table.qrCode}</p>
           </div>
         </div>
 
-        <p className="text-xs text-gray-400 mb-4">
-          URL: <span className="font-mono text-gray-600">{table.qrCode}</span>
+        <p className="text-xs text-text-disabled mb-4">
+          URL: <span className="font-mono text-text-secondary">{table.qrCode}</span>
         </p>
 
         <Button className="w-full gap-2">
@@ -198,8 +198,8 @@ export default function TablesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Meja</h1>
-          <p className="text-sm text-gray-500 mt-1">Kelola daftar meja untuk semua area</p>
+          <h1 className="text-2xl font-bold text-text-primary">Meja</h1>
+          <p className="text-sm text-text-secondary mt-1">Kelola daftar meja untuk semua area</p>
         </div>
         <Button onClick={() => setShowForm(true)} className="gap-2">
           <Plus className="h-4 w-4" /> Tambah Meja
@@ -208,31 +208,31 @@ export default function TablesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3">
+        <div className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-blue-50 text-blue-700">
             <Layers className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-900">{tables.length}</p>
-            <p className="text-xs text-gray-500">Total Meja</p>
+            <p className="text-2xl font-bold text-text-primary">{tables.length}</p>
+            <p className="text-xs text-text-secondary">Total Meja</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3">
+        <div className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-green-50 text-green-700">
             <UsersIcon className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-900">{tables.reduce((s, t) => s + t.capacity, 0)}</p>
-            <p className="text-xs text-gray-500">Total Kapasitas</p>
+            <p className="text-2xl font-bold text-text-primary">{tables.reduce((s, t) => s + t.capacity, 0)}</p>
+            <p className="text-xs text-text-secondary">Total Kapasitas</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3">
+        <div className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-green-50 text-green-700">
             <Layers className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-900">{tables.filter(t => t.status === 'available').length}</p>
-            <p className="text-xs text-gray-500">Tersedia</p>
+            <p className="text-2xl font-bold text-text-primary">{tables.filter(t => t.status === 'available').length}</p>
+            <p className="text-xs text-text-secondary">Tersedia</p>
           </div>
         </div>
       </div>
@@ -240,7 +240,7 @@ export default function TablesPage() {
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1 md:max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-disabled" />
           <Input
             value={filters.search}
             onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
@@ -266,16 +266,16 @@ export default function TablesPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50">
+            <TableRow className="bg-background/50">
               <TableHead className="w-10">
                 <input
                   type="checkbox"
                   checked={selectedIds.length === filtered.length && filtered.length > 0}
                   onChange={() => setSelectedIds(prev => prev.length === filtered.length ? [] : filtered.map(t => t.id))}
-                  className="h-4 w-4 rounded border-gray-300 text-primary"
+                  className="h-4 w-4 rounded border-border text-primary"
                 />
               </TableHead>
               <TableHead className="font-semibold text-xs">Nama Meja</TableHead>
@@ -290,13 +290,13 @@ export default function TablesPage() {
             {filtered.map((t) => {
               const sc = statusConfig[t.status];
               return (
-                <TableRow key={t.id} className="hover:bg-gray-50/50 transition-colors">
+                <TableRow key={t.id} className="hover:bg-background/50 transition-colors">
                   <TableCell>
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(t.id)}
                       onChange={() => setSelectedIds(prev => prev.includes(t.id) ? prev.filter(x => x !== t.id) : [...prev, t.id])}
-                      className="h-4 w-4 rounded border-gray-300 text-primary"
+                      className="h-4 w-4 rounded border-border text-primary"
                     />
                   </TableCell>
                   <TableCell>
@@ -306,11 +306,11 @@ export default function TablesPage() {
                       }`}>
                         {t.name}
                       </div>
-                      <span className="text-sm font-medium text-gray-900">Meja {t.name}</span>
+                      <span className="text-sm font-medium text-text-primary">Meja {t.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">{t.areaName}</TableCell>
-                  <TableCell className="text-center text-sm text-gray-700">{t.capacity} pax</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{t.areaName}</TableCell>
+                  <TableCell className="text-center text-sm text-text-primary">{t.capacity} pax</TableCell>
                   <TableCell className="text-center">
                     <Badge variant={sc.variant} size="sm">{sc.label}</Badge>
                   </TableCell>
@@ -336,7 +336,7 @@ export default function TablesPage() {
         </Table>
       </div>
 
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-text-disabled">
         Menampilkan {filtered.length} dari {tables.length} meja
         {selectedIds.length > 0 && <span> · {selectedIds.length} dipilih</span>}
       </p>

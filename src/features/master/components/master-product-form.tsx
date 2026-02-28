@@ -162,7 +162,7 @@ export function MasterProductForm({
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="px-6 py-4 border-b border-border sticky top-0 bg-white z-10">
+        <DialogHeader className="px-6 py-4 border-b border-border sticky top-0 bg-surface z-10">
           <DialogTitle className="text-xl font-bold">
             {isEditMode ? "Ubah Master Produk" : "Tambah Master Produk"}
           </DialogTitle>
@@ -171,7 +171,7 @@ export function MasterProductForm({
         <div className="p-6 space-y-8">
           {/* 1. General Info */}
           <section className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-text-primary">
               <Package className="h-5 w-5 text-indigo-500" />
               Informasi Umum
             </h3>
@@ -202,11 +202,11 @@ export function MasterProductForm({
                           "flex items-center gap-2 p-3 text-sm font-medium rounded-lg border transition-all text-left",
                           formData.categoryId === cat.id
                             ? "border-indigo-500 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-500"
-                            : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600"
+                            : "border-border hover:border-border hover:bg-background text-text-secondary"
                         )}
                       >
                          {/* Simple Icon placeholder if not valid URL */}
-                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                        <div className="w-6 h-6 rounded-full bg-background flex items-center justify-center shrink-0">
                            {cat.name.charAt(0)}
                         </div>
                         <span className="truncate">{cat.name}</span>
@@ -229,12 +229,12 @@ export function MasterProductForm({
 
               <div className="space-y-4">
                 <Label>Foto Produk</Label>
-                <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer group">
+                <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-background transition-colors cursor-pointer group">
                   <div className="h-12 w-12 rounded-full bg-indigo-50 flex items-center justify-center mb-3 group-hover:bg-indigo-100 transition-colors">
                     <Upload className="h-6 w-6 text-indigo-600" />
                   </div>
-                  <p className="font-medium text-gray-900">Klik untuk upload foto</p>
-                  <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
+                  <p className="font-medium text-text-primary">Klik untuk upload foto</p>
+                  <p className="text-xs text-text-secondary mt-1">PNG, JPG up to 5MB</p>
                 </div>
                 <Input
                    placeholder="Atau masukkan URL gambar..."
@@ -246,11 +246,11 @@ export function MasterProductForm({
             </div>
           </section>
 
-          <div className="border-t border-gray-100" />
+          <div className="border-t border-divider" />
 
           {/* 2. Pricing & Financials */}
            <section className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-text-primary">
               <DollarSign className="h-5 w-5 text-green-600" />
               Harga & Keuangan
             </h3>
@@ -259,7 +259,7 @@ export function MasterProductForm({
                 <div className="space-y-2">
                   <Label htmlFor="basePrice">Harga Jual (Base)</Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary font-medium">Rp</span>
                     <Input
                       id="basePrice"
                       type="number"
@@ -273,7 +273,7 @@ export function MasterProductForm({
                 <div className="space-y-2">
                   <Label htmlFor="costPrice">Harga Modal (HPP)</Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary font-medium">Rp</span>
                     <Input
                       id="costPrice"
                       type="number"
@@ -284,10 +284,10 @@ export function MasterProductForm({
                   </div>
                 </div>
               
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg md:col-span-2">
+              <div className="flex items-center justify-between p-4 bg-background rounded-lg md:col-span-2">
                  <div className="space-y-0.5">
-                   <Label className="text-base text-gray-900">Pajak (Tax)</Label>
-                   <p className="text-xs text-gray-500">Produk ini dikenakan pajak</p>
+                   <Label className="text-base text-text-primary">Pajak (Tax)</Label>
+                   <p className="text-xs text-text-secondary">Produk ini dikenakan pajak</p>
                  </div>
                  <StatusToggle 
                     checked={formData.hasTax || false}
@@ -295,10 +295,10 @@ export function MasterProductForm({
                  />
               </div>
 
-               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg md:col-span-2 md:col-start-2">
+               <div className="flex items-center justify-between p-4 bg-background rounded-lg md:col-span-2 md:col-start-2">
                  <div className="space-y-0.5">
-                   <Label className="text-base text-gray-900">Service Fee</Label>
-                   <p className="text-xs text-gray-500">Produk ini dikenakan biaya layanan</p>
+                   <Label className="text-base text-text-primary">Service Fee</Label>
+                   <p className="text-xs text-text-secondary">Produk ini dikenakan biaya layanan</p>
                  </div>
                  <StatusToggle 
                     checked={formData.hasServiceFee || false}
@@ -311,12 +311,12 @@ export function MasterProductForm({
               <Label className="text-blue-900 mb-3 block">Harga Layanan Pesan Antar (Opsional)</Label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                  <div className="space-y-1.5">
-                    <span className="text-xs font-medium text-gray-600">GoFood</span>
+                    <span className="text-xs font-medium text-text-secondary">GoFood</span>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">Rp</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled text-xs">Rp</span>
                       <Input
                         type="number"
-                        className="pl-8 h-9 text-sm bg-white"
+                        className="pl-8 h-9 text-sm bg-surface"
                         placeholder="0"
                         value={formData.channelPrices?.goFood}
                         onChange={(e) => handleNestedChange("channelPrices", "goFood", parseInt(e.target.value) || 0)}
@@ -324,12 +324,12 @@ export function MasterProductForm({
                     </div>
                  </div>
                  <div className="space-y-1.5">
-                    <span className="text-xs font-medium text-gray-600">GrabFood</span>
+                    <span className="text-xs font-medium text-text-secondary">GrabFood</span>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">Rp</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled text-xs">Rp</span>
                       <Input
                         type="number"
-                        className="pl-8 h-9 text-sm bg-white"
+                        className="pl-8 h-9 text-sm bg-surface"
                         placeholder="0"
                         value={formData.channelPrices?.grabFood}
                         onChange={(e) => handleNestedChange("channelPrices", "grabFood", parseInt(e.target.value) || 0)}
@@ -337,12 +337,12 @@ export function MasterProductForm({
                     </div>
                  </div>
                  <div className="space-y-1.5">
-                    <span className="text-xs font-medium text-gray-600">ShopeeFood</span>
+                    <span className="text-xs font-medium text-text-secondary">ShopeeFood</span>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">Rp</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled text-xs">Rp</span>
                       <Input
                         type="number"
-                        className="pl-8 h-9 text-sm bg-white"
+                        className="pl-8 h-9 text-sm bg-surface"
                         placeholder="0"
                         value={formData.channelPrices?.shopeeFood}
                         onChange={(e) => handleNestedChange("channelPrices", "shopeeFood", parseInt(e.target.value) || 0)}
@@ -353,12 +353,12 @@ export function MasterProductForm({
             </div>
           </section>
 
-          <div className="border-t border-gray-100" />
+          <div className="border-t border-divider" />
 
            {/* 3. Inventory & Dimensions */}
            <section className="space-y-4">
              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-primary">
                   <Truck className="h-5 w-5 text-orange-600" />
                   Inventori & Pengiriman
                 </h3>
@@ -377,7 +377,7 @@ export function MasterProductForm({
                       <Label>Stok Saat Ini</Label>
                        <Input
                         type="number"
-                        className="bg-white"
+                        className="bg-surface"
                         value={formData.stock}
                         onChange={(e) => handleChange("stock", parseInt(e.target.value) || 0)}
                       />
@@ -386,7 +386,7 @@ export function MasterProductForm({
                       <Label>Minimum Stok (Alert)</Label>
                        <Input
                         type="number"
-                        className="bg-white"
+                        className="bg-surface"
                         value={formData.minStock || 0}
                         onChange={(e) => handleChange("minStock", parseInt(e.target.value) || 0)}
                       />
@@ -396,7 +396,7 @@ export function MasterProductForm({
              
              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-500">Panjang (cm)</Label>
+                  <Label className="text-xs text-text-secondary">Panjang (cm)</Label>
                   <Input 
                     type="number" 
                     className="h-8" 
@@ -406,7 +406,7 @@ export function MasterProductForm({
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-500">Lebar (cm)</Label>
+                  <Label className="text-xs text-text-secondary">Lebar (cm)</Label>
                   <Input 
                     type="number" 
                     className="h-8" 
@@ -416,7 +416,7 @@ export function MasterProductForm({
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-500">Tinggi (cm)</Label>
+                  <Label className="text-xs text-text-secondary">Tinggi (cm)</Label>
                   <Input 
                     type="number" 
                     className="h-8" 
@@ -426,7 +426,7 @@ export function MasterProductForm({
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-500">Berat (gram)</Label>
+                  <Label className="text-xs text-text-secondary">Berat (gram)</Label>
                   <Input 
                     type="number" 
                     className="h-8" 
@@ -438,21 +438,21 @@ export function MasterProductForm({
              </div>
            </section>
 
-           <div className="border-t border-gray-100" />
+           <div className="border-t border-divider" />
            
            {/* 4. Variants & Outlets */}
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Variants */}
               <section className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-primary">
                   <Layers className="h-5 w-5 text-purple-600" />
                   Varian Produk
                 </h3>
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="bg-gray-50 px-4 py-2 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase">
+                <div className="border border-border rounded-xl overflow-hidden">
+                  <div className="bg-background px-4 py-2 border-b border-border text-xs font-medium text-text-secondary uppercase">
                     Pilih Varian yang Tersedia
                   </div>
-                  <div className="divide-y divide-gray-100 max-h-[300px] overflow-y-auto">
+                  <div className="divide-y divide-divider max-h-[300px] overflow-y-auto">
                     {variants.map((variant) => (
                       <label 
                         key={variant.id} 
@@ -463,8 +463,8 @@ export function MasterProductForm({
                           onCheckedChange={() => handleToggleSelection("variantIds", variant.id)}
                         />
                         <div className="flex-1">
-                          <p className="font-medium text-gray-900 text-sm">{variant.name}</p>
-                          <p className="text-xs text-gray-500">{variant.options.length} opsi • {variant.type === 'SINGLE' ? '1 Pilihan' : 'Banyak Pilihan'}</p>
+                          <p className="font-medium text-text-primary text-sm">{variant.name}</p>
+                          <p className="text-xs text-text-secondary">{variant.options.length} opsi • {variant.type === 'SINGLE' ? '1 Pilihan' : 'Banyak Pilihan'}</p>
                         </div>
                         {variant.isMandatory && (
                           <Badge variant="secondary" className="text-[10px]">Wajib</Badge>
@@ -472,7 +472,7 @@ export function MasterProductForm({
                       </label>
                     ))}
                     {variants.length === 0 && (
-                      <div className="p-4 text-center text-sm text-gray-500">
+                      <div className="p-4 text-center text-sm text-text-secondary">
                         Belum ada master varian.
                       </div>
                     )}
@@ -482,15 +482,15 @@ export function MasterProductForm({
 
               {/* Outlets */}
               <section className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-primary">
                   <Store className="h-5 w-5 text-blue-600" />
                   Ketersediaan Outlet
                 </h3>
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="bg-gray-50 px-4 py-2 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase">
+                <div className="border border-border rounded-xl overflow-hidden">
+                  <div className="bg-background px-4 py-2 border-b border-border text-xs font-medium text-text-secondary uppercase">
                     Pilih Outlet yang Menjual
                   </div>
-                   <div className="divide-y divide-gray-100 max-h-[300px] overflow-y-auto">
+                   <div className="divide-y divide-divider max-h-[300px] overflow-y-auto">
                     {outlets.map((outlet) => (
                       <label 
                         key={outlet.id} 
@@ -501,8 +501,8 @@ export function MasterProductForm({
                           onCheckedChange={() => handleToggleSelection("outletIds", outlet.id)}
                         />
                         <div className="flex-1">
-                          <p className="font-medium text-gray-900 text-sm">{outlet.name}</p>
-                          <p className="text-xs text-gray-500">{outlet.address || "Tidak ada alamat"}</p>
+                          <p className="font-medium text-text-primary text-sm">{outlet.name}</p>
+                          <p className="text-xs text-text-secondary">{outlet.address || "Tidak ada alamat"}</p>
                         </div>
                         {outlet.isActive && (
                           <div className="h-2 w-2 rounded-full bg-green-500" />
@@ -510,7 +510,7 @@ export function MasterProductForm({
                       </label>
                     ))}
                     {outlets.length === 0 && (
-                      <div className="p-4 text-center text-sm text-gray-500">
+                      <div className="p-4 text-center text-sm text-text-secondary">
                         Belum ada outlet terdaftar.
                       </div>
                     )}
@@ -520,7 +520,7 @@ export function MasterProductForm({
            </div>
         </div>
 
-        <DialogHeader className="px-6 py-4 border-t border-border bg-gray-50 sticky bottom-0">
+        <DialogHeader className="px-6 py-4 border-t border-border bg-background sticky bottom-0">
            <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-2">
                  <Label>Status Produk</Label>

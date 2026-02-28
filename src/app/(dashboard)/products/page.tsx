@@ -203,7 +203,7 @@ export default function ProductsPage() {
       />
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-border p-4">
+      <div className="bg-surface rounded-xl border border-border p-4">
         {/* Tabs */}
         <div className="flex items-center gap-1 mb-4">
           {tabs.map((tab) => (
@@ -313,7 +313,7 @@ export default function ProductsPage() {
             onClick={() => setDeleteConfirmProduct(null)}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md p-6">
               <h3 className="text-lg font-bold text-text-primary mb-2">
                 Hapus Produk?
               </h3>

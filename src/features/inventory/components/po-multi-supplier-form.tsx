@@ -104,7 +104,7 @@ export function POMultiSupplierForm({ onSubmit, onCancel }: POMultiSupplierFormP
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-surface rounded-xl border border-border p-6">
         <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
           <FileText className="h-5 w-5 text-orange-600" />
           Purchase Order (Multi Supplier)
@@ -129,7 +129,7 @@ export function POMultiSupplierForm({ onSubmit, onCancel }: POMultiSupplierFormP
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border flex justify-between items-center">
           <h4 className="text-sm font-semibold">Daftar Item</h4>
           <Button size="sm" onClick={addRow} className="gap-1.5">
@@ -138,14 +138,14 @@ export function POMultiSupplierForm({ onSubmit, onCancel }: POMultiSupplierFormP
         </div>
 
         {rows.length === 0 ? (
-          <div className="p-12 text-center text-gray-400">
+          <div className="p-12 text-center text-text-disabled">
             <FileText className="h-10 w-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm">Klik &quot;Tambah Item&quot; untuk mulai menambahkan bahan</p>
           </div>
         ) : (
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-50/50">
+              <TableRow className="bg-background/50">
                 <TableHead className="font-semibold text-xs">Bahan Dasar</TableHead>
                 <TableHead className="font-semibold text-xs">Kategori</TableHead>
                 <TableHead className="font-semibold text-xs">Supplier</TableHead>
@@ -169,7 +169,7 @@ export function POMultiSupplierForm({ onSubmit, onCancel }: POMultiSupplierFormP
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">{row.categoryName || '-'}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{row.categoryName || '-'}</TableCell>
                   <TableCell>
                     <Select value={row.supplierId ? row.supplierId.toString() : ''} onValueChange={(v) => updateRow(row.id, 'supplierId', parseInt(v))}>
                       <SelectTrigger className="w-40 text-sm"><SelectValue placeholder="Pilih supplier" /></SelectTrigger>
@@ -183,7 +183,7 @@ export function POMultiSupplierForm({ onSubmit, onCancel }: POMultiSupplierFormP
                   <TableCell>
                     <Input type="number" min={0} value={row.qty || ''} onChange={(e) => updateRow(row.id, 'qty', parseFloat(e.target.value) || 0)} className="w-20 text-sm" placeholder="0" />
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">{row.unit || '-'}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{row.unit || '-'}</TableCell>
                   <TableCell>
                     <Input type="number" min={0} value={row.pricePerUnit || ''} onChange={(e) => updateRow(row.id, 'pricePerUnit', parseInt(e.target.value) || 0)} className="w-28 text-sm" placeholder="Rp 0" />
                   </TableCell>

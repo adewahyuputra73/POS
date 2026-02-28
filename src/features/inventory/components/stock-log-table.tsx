@@ -38,19 +38,19 @@ export function StockLogTable({ logs }: StockLogTableProps) {
 
   if (logs.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-12 text-center">
-        <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum ada riwayat stok</h3>
-        <p className="text-sm text-gray-500">Riwayat mutasi stok akan muncul di sini</p>
+      <div className="bg-surface rounded-xl border border-border p-12 text-center">
+        <FileText className="h-12 w-12 text-text-disabled mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-text-primary mb-2">Belum ada riwayat stok</h3>
+        <p className="text-sm text-text-secondary">Riwayat mutasi stok akan muncul di sini</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-border overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50/50">
+          <TableRow className="bg-background/50">
             <TableHead>DESKRIPSI</TableHead>
             <TableHead>KETERANGAN</TableHead>
             <TableHead className="text-right">HARGA BELI</TableHead>
@@ -63,7 +63,7 @@ export function StockLogTable({ logs }: StockLogTableProps) {
         </TableHeader>
         <TableBody>
           {paginatedLogs.map((log) => (
-            <TableRow key={log.id} className="hover:bg-gray-50/50">
+            <TableRow key={log.id} className="hover:bg-background/50">
               <TableCell>
                 <div className="flex items-center gap-2">
                   <div className={cn(
@@ -72,13 +72,13 @@ export function StockLogTable({ logs }: StockLogTableProps) {
                     log.mutationType === 'reduction' ? "bg-red-500" :
                     log.mutationType === 'sale' ? "bg-blue-500" : "bg-yellow-500"
                   )} />
-                  <span className="text-sm font-medium text-gray-900">{log.description}</span>
+                  <span className="text-sm font-medium text-text-primary">{log.description}</span>
                 </div>
               </TableCell>
-              <TableCell className="text-sm text-gray-500 max-w-[200px] truncate">
+              <TableCell className="text-sm text-text-secondary max-w-[200px] truncate">
                 {log.notes || '-'}
                 {log.supplierName && (
-                  <span className="block text-xs text-gray-400">Supplier: {log.supplierName}</span>
+                  <span className="block text-xs text-text-disabled">Supplier: {log.supplierName}</span>
                 )}
               </TableCell>
               <TableCell className="text-right text-sm">
@@ -92,16 +92,16 @@ export function StockLogTable({ logs }: StockLogTableProps) {
                   {log.quantity > 0 ? '+' : ''}{new Intl.NumberFormat('id-ID').format(log.quantity)}
                 </span>
               </TableCell>
-              <TableCell className="text-right text-sm font-medium text-gray-900">
+              <TableCell className="text-right text-sm font-medium text-text-primary">
                 {new Intl.NumberFormat('id-ID').format(log.newStock)}
               </TableCell>
-              <TableCell className="text-right text-sm text-gray-600">
+              <TableCell className="text-right text-sm text-text-secondary">
                 {formatCurrency(log.stockValue)}
               </TableCell>
-              <TableCell className="text-sm text-gray-500">
+              <TableCell className="text-sm text-text-secondary">
                 {formatDate(log.createdAt)}
               </TableCell>
-              <TableCell className="text-sm text-gray-600">{log.userName}</TableCell>
+              <TableCell className="text-sm text-text-secondary">{log.userName}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -109,7 +109,7 @@ export function StockLogTable({ logs }: StockLogTableProps) {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-secondary">
             Menampilkan {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, logs.length)} dari {logs.length} riwayat
           </p>
           <div className="flex items-center gap-2">

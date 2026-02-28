@@ -35,7 +35,7 @@ export default function ReviewSettingsPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-surface rounded-xl border border-border p-6">
         <ReviewSettings
           questions={mockReviewQuestions}
           onSave={handleSave}

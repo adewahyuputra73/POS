@@ -96,10 +96,10 @@ export function ImportVariantModal({ open, onClose, onImport }: ImportVariantMod
 
               <div className="border rounded-md max-h-[300px] overflow-y-auto p-2 space-y-2">
                 {availableVariants.length === 0 ? (
-                  <p className="text-sm text-gray-500 text-center py-4">Tidak ada varian di outlet ini.</p>
+                  <p className="text-sm text-text-secondary text-center py-4">Tidak ada varian di outlet ini.</p>
                 ) : (
                   availableVariants.map(variant => (
-                    <div key={variant.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg border border-transparent hover:border-gray-100">
+                    <div key={variant.id} className="flex items-center space-x-3 p-2 hover:bg-background rounded-lg border border-transparent hover:border-divider">
                       <Checkbox 
                         id={variant.id} 
                         checked={selectedVariantIds.includes(variant.id)}
@@ -107,7 +107,7 @@ export function ImportVariantModal({ open, onClose, onImport }: ImportVariantMod
                       />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{variant.name}</p>
-                        <p className="text-xs text-gray-500">{variant.options} Opsi Available</p>
+                        <p className="text-xs text-text-secondary">{variant.options} Opsi Available</p>
                       </div>
                     </div>
                   ))
