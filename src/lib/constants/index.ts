@@ -2,7 +2,7 @@ export const APP_NAME = "Fere POS";
 export const APP_DESCRIPTION = "Point of Sale Admin Dashboard";
 
 // API Configuration
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+export const API_BASE_URL = "https://qa-api.ferecorps.com/api/fereapps/v1";
 export const API_TIMEOUT = 30000; // 30 seconds
 
 // Pagination

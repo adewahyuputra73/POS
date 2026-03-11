@@ -89,6 +89,15 @@ export interface ServiceFee {
   isPercentage: boolean;
 }
 
+// API Request Types
+export interface CreateProductRequest {
+  name: string;
+  price: number;
+  category_id?: string;
+  stock_type: "LIMITED" | "UNLIMITED";
+  stock_qty?: number;
+}
+
 // Filter Types
 export type ProductStatusFilter = 'all' | 'active' | 'inactive';
 

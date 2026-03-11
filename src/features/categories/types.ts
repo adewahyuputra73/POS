@@ -10,6 +10,10 @@ export interface Category {
   outletId: number;
 }
 
+export interface CreateCategoryRequest {
+  name: string;
+}
+
 export interface CategoryFormData {
   name: string;
   isActive: boolean;

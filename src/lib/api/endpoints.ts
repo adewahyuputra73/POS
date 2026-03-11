@@ -5,6 +5,7 @@ export const ENDPOINTS = {
     LOGIN: "/auth/login",
     LOGOUT: "/auth/logout",
     REGISTER: "/auth/register",
+    VERIFY_OTP: "/auth/verify-otp",
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
     FORGOT_PASSWORD: "/auth/forgot-password",
@@ -38,6 +39,11 @@ export const ENDPOINTS = {
     DELETE: (id: string | number) => `/customers/${id}`,
   },
 
+  // Categories
+  CATEGORIES: {
+    CREATE: "/categories",
+  },
+
   // Reports
   REPORTS: {
     SALES: "/reports/sales",
@@ -52,6 +58,21 @@ export const ENDPOINTS = {
     STORE: "/settings/store",
     USERS: "/settings/users",
     USER_DETAIL: (id: string | number) => `/settings/users/${id}`,
+  },
+
+  // Outlets
+  OUTLETS: {
+    CREATE: "/outlets",
+  },
+
+  // Stores
+  STORES: {
+    ONBOARDING: "/stores/onboarding",
+  },
+
+  // Orders
+  ORDERS: {
+    CHECKOUT: "/orders/checkout",
   },
 
   // Dashboard

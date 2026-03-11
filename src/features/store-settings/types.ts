@@ -33,6 +33,12 @@ export const BUSINESS_TYPE_LABELS: Record<BusinessType, string> = {
   other: "Lainnya",
 };
 
+export interface StoreOnboardingRequest {
+  name: string;
+  address: string;
+  phone: string;
+}
+
 export interface OperatingHours {
   day: DayOfWeek;
   is_open: boolean;
