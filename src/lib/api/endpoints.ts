@@ -23,6 +23,12 @@ export const ENDPOINTS = {
     CREATE: "/products",
     UPDATE: (id: string | number) => `/products/${id}`,
     DELETE: (id: string | number) => `/products/${id}`,
+    TOGGLE_STATUS: (id: string | number) => `/products/${id}/status`,
+    STOCK: (id: string | number) => `/products/${id}/stock`,
+    STOCK_HISTORY: (id: string | number) => `/products/${id}/stock/history`,
+    PRICES: (id: string | number) => `/products/${id}/prices`,
+    BULK_DELETE: "/products/bulk/delete",
+    BULK_STATUS: "/products/bulk/status",
     CATEGORIES: "/products/categories",
   },
 
@@ -86,6 +92,12 @@ export const ENDPOINTS = {
   // Orders
   ORDERS: {
     CHECKOUT: "/orders/checkout",
+  },
+
+  // Inventory
+  INVENTORY: {
+    IN: "/inventory/in",
+    HISTORY: "/inventory/history",
   },
 
   // Roles
