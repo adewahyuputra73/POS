@@ -111,6 +111,16 @@ export const ENDPOINTS = {
     REMOVE: "/roles/remove",
   },
 
+  // Shift
+  SHIFT: {
+    START: "/shift/start",
+    STATUS: "/shift/status",
+    PREVIEW_END: "/shift/preview-end",
+    END: "/shift/end",
+    DETAIL: (id: string | number) => `/shift/${id}/detail`,
+    HISTORY: "/shift/history",
+  },
+
   // Dashboard
   DASHBOARD: {
     STATS: "/dashboard/stats",
