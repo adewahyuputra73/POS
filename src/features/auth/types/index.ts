@@ -30,13 +30,31 @@ export interface VerifyOtpRequest {
   otp_code: string;
 }
 
-export interface ForgotPasswordRequest {
-  email: string;
+export interface ResendOtpRequest {
+  phone_number: string;
 }
 
-export interface ResetPasswordRequest {
-  token: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
+export interface UpdateProfileRequest {
+  full_name: string;
+  email?: string;
+}
+
+export interface ChangePasswordRequest {
+  old_password: string;
+  new_password: string;
+  new_password_confirm: string;
+}
+
+export interface UpdatePinRequest {
+  pin: string;
+  pin_confirm: string;
+}
+
+export interface ForgotPasswordRequest {
+  phone_number: string;
+}
+
+export interface ForgotPasswordResetRequest {
+  reset_token: string;
+  new_password: string;
 }

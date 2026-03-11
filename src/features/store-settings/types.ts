@@ -33,6 +33,11 @@ export const BUSINESS_TYPE_LABELS: Record<BusinessType, string> = {
   other: "Lainnya",
 };
 
+export interface UpdateStoreRequest {
+  name: string;
+  address: string;
+}
+
 export interface StoreOnboardingRequest {
   name: string;
   address: string;

@@ -14,6 +14,10 @@ export interface CreateCategoryRequest {
   name: string;
 }
 
+export interface UpdateCategoryRequest {
+  name?: string;
+}
+
 export interface CategoryFormData {
   name: string;
   isActive: boolean;

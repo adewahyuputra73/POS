@@ -10,3 +10,8 @@ export interface CreateOutletRequest {
   name: string;
   address: string;
 }
+
+export interface UpdateOutletRequest {
+  name?: string;
+  address?: string;
+}

@@ -6,10 +6,14 @@ export const ENDPOINTS = {
     LOGOUT: "/auth/logout",
     REGISTER: "/auth/register",
     VERIFY_OTP: "/auth/verify-otp",
+    RESEND_OTP: "/auth/resend-otp",
     REFRESH: "/auth/refresh",
-    ME: "/auth/me",
-    FORGOT_PASSWORD: "/auth/forgot-password",
-    RESET_PASSWORD: "/auth/reset-password",
+    PROFILE: "/auth/profile",
+    CHANGE_PASSWORD: "/auth/change-password",
+    UPDATE_PIN: "/auth/update-pin",
+    FORGOT_PASSWORD_REQUEST: "/auth/forgot-password/request",
+    FORGOT_PASSWORD_VERIFY_OTP: "/auth/forgot-password/verify-otp",
+    FORGOT_PASSWORD_RESET: "/auth/forgot-password/reset",
   },
 
   // Products
@@ -41,7 +45,10 @@ export const ENDPOINTS = {
 
   // Categories
   CATEGORIES: {
+    LIST: "/categories",
     CREATE: "/categories",
+    UPDATE: (id: string | number) => `/categories/${id}`,
+    DELETE: (id: string | number) => `/categories/${id}`,
   },
 
   // Reports
@@ -62,17 +69,34 @@ export const ENDPOINTS = {
 
   // Outlets
   OUTLETS: {
+    LIST: "/outlets",
+    DETAIL: (id: string | number) => `/outlets/${id}`,
     CREATE: "/outlets",
+    UPDATE: (id: string | number) => `/outlets/${id}`,
+    TOGGLE_STATUS: (id: string | number) => `/outlets/${id}/status`,
+    DELETE: (id: string | number) => `/outlets/${id}`,
   },
 
   // Stores
   STORES: {
     ONBOARDING: "/stores/onboarding",
+    MY: "/stores/my",
   },
 
   // Orders
   ORDERS: {
     CHECKOUT: "/orders/checkout",
+  },
+
+  // Roles
+  ROLES: {
+    LIST: "/roles",
+    DETAIL: (id: string | number) => `/roles/${id}`,
+    CREATE: "/roles",
+    UPDATE: (id: string | number) => `/roles/${id}`,
+    DELETE: (id: string | number) => `/roles/${id}`,
+    ASSIGN: "/roles/assign",
+    REMOVE: "/roles/remove",
   },
 
   // Dashboard
