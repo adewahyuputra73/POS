@@ -1,8 +1,7 @@
 // Auth feature types
 export interface LoginRequest {
-  email: string;
+  phone_number: string;
   password: string;
-  remember?: boolean;
 }
 
 export interface LoginResponse {
@@ -20,10 +19,15 @@ export interface LoginResponse {
 }
 
 export interface RegisterRequest {
-  name: string;
-  email: string;
+  full_name: string;
+  phone_number: string;
   password: string;
-  password_confirmation: string;
+  password_confirm: string;
+}
+
+export interface VerifyOtpRequest {
+  phone_number: string;
+  otp_code: string;
 }
 
 export interface ForgotPasswordRequest {
