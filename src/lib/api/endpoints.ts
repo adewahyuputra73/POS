@@ -91,7 +91,13 @@ export const ENDPOINTS = {
 
   // Orders
   ORDERS: {
+    LIST: "/orders",
+    DETAIL: (id: string | number) => `/orders/${id}`,
     CHECKOUT: "/orders/checkout",
+    PAY: (id: string | number) => `/orders/${id}/pay`,
+    STATUS: (id: string | number) => `/orders/${id}/status`,
+    VOID: (id: string | number) => `/orders/${id}/void`,
+    SUMMARY_CARDS: "/orders/summary-cards",
   },
 
   // Inventory
