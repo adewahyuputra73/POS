@@ -138,6 +138,21 @@ export const ENDPOINTS = {
     VALIDATE: "/vouchers/validate",
   },
 
+  // Tables
+  TABLES: {
+    LIST: "/tables",
+    DETAIL: (id: string | number) => `/tables/${id}`,
+    CREATE: "/tables",
+    UPDATE: (id: string | number) => `/tables/${id}`,
+    DELETE: (id: string | number) => `/tables/${id}`,
+    STATUS: (id: string | number) => `/tables/${id}/status`,
+    REGENERATE_QR: (id: string | number) => `/tables/${id}/regenerate-qr`,
+    SUMMARY: "/tables/summary",
+    SCAN: (id: string | number) => `/tables/scan/${id}`,
+    AREAS: "/tables/areas",
+    AREA_DETAIL: (id: string | number) => `/tables/areas/${id}`,
+  },
+
   // Dashboard
   DASHBOARD: {
     STATS: "/dashboard/stats",
