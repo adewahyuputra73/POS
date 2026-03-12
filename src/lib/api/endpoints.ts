@@ -175,8 +175,10 @@ export const ENDPOINTS = {
 
   // Dashboard
   DASHBOARD: {
+    TODAY_SUMMARY: "/dashboard",
+    SALES_CHART: "/dashboard/sales-chart",
+    TOP_PRODUCTS: "/dashboard/top-products",
     STATS: "/dashboard/stats",
     RECENT_TRANSACTIONS: "/dashboard/recent-transactions",
-    TOP_PRODUCTS: "/dashboard/top-products",
   },
 } as const;
