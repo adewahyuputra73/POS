@@ -160,6 +160,14 @@ export const ENDPOINTS = {
     READ_ALL: "/notifications/read-all",
   },
 
+  // Wallet
+  WALLET: {
+    BALANCE: "/wallet/balance",
+    HISTORY: "/wallet/history",
+    SHIFT_SUMMARY: "/wallet/shift",
+    TRANSACTIONS: "/wallet/transactions",
+  },
+
   // Dashboard
   DASHBOARD: {
     STATS: "/dashboard/stats",
