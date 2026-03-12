@@ -59,10 +59,15 @@ export const ENDPOINTS = {
 
   // Reports
   REPORTS: {
+    SUMMARY: "/reports/summary",
+    ORDERS: "/reports/orders",
     SALES: "/reports/sales",
     PRODUCTS: "/reports/products",
+    SHIFTS: "/reports/shifts",
     CUSTOMERS: "/reports/customers",
-    EXPORT: "/reports/export",
+    SUMMARY_EXPORT: "/reports/summary/export",
+    ORDERS_EXPORT: "/reports/orders/export",
+    PRODUCTS_EXPORT: "/reports/products/export",
   },
 
   // Settings

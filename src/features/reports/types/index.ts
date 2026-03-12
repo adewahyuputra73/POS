@@ -95,3 +95,137 @@ export interface ProductSalesFilterOptions {
   categories: FilterOption[];
   shifts: FilterOption[];
 }
+
+// ====================================
+// Report Summary Types (Laporan Ringkasan)
+// ====================================
+
+export interface ReportSummaryParams {
+  start_date: string;
+  end_date: string;
+}
+
+export interface ReportSummaryExportParams {
+  start_date: string;
+  end_date: string;
+}
+
+export interface ReportOrdersExportParams {
+  start_date: string;
+  end_date: string;
+}
+
+export interface ReportProductsExportParams {
+  start_date: string;
+  end_date: string;
+}
+
+export interface ReportSummary {
+  period: {
+    start_date: string;
+    end_date: string;
+  };
+  gross_sales: number;
+  discount_total: number;
+  refund_total: number;
+  net_sales: number;
+  total_transactions: number;
+  void_count: number;
+  average_transaction: number;
+  payment_summary: {
+    cash: number;
+    non_cash: number;
+    breakdown: Record<string, number>;
+  };
+}
+
+// ====================================
+// Report Orders Types (Laporan Pesanan)
+// ====================================
+
+export interface ReportOrdersParams {
+  start_date: string;
+  end_date: string;
+  page?: number;
+  limit?: number;
+}
+
+// NOTE: ReportOrderItem fields are guessed — adjust when actual response is known
+export interface ReportOrderItem {
+  id: string;
+  order_number: string;
+  total: number;
+  status: string;
+  payment_method: string;
+  created_at: string;
+}
+
+export interface ReportOrdersResponse {
+  period: {
+    start_date: string;
+    end_date: string;
+  };
+  total: number;
+  page: number;
+  totalPages: number;
+  data: ReportOrderItem[];
+}
+
+// ====================================
+// Report Products Types (Laporan Produk)
+// ====================================
+
+export interface ReportProductsParams {
+  start_date: string;
+  end_date: string;
+}
+
+// NOTE: ReportProductItem fields are guessed — adjust when actual response is known
+export interface ReportProductItem {
+  id: string;
+  product_name: string;
+  category: string;
+  qty_sold: number;
+  total_sales: number;
+}
+
+export interface ReportProductsResponse {
+  period: {
+    start_date: string;
+    end_date: string;
+  };
+  data: ReportProductItem[];
+}
+
+// ====================================
+// Report Shifts Types (Laporan Shift)
+// ====================================
+
+export interface ReportShiftsParams {
+  start_date: string;
+  end_date: string;
+  page?: number;
+  limit?: number;
+}
+
+// NOTE: ReportShiftItem fields are guessed — adjust when actual response is known
+export interface ReportShiftItem {
+  id: string;
+  cashier_name: string;
+  opening_cash: number;
+  closing_cash: number;
+  total_sales: number;
+  started_at: string;
+  ended_at: string;
+}
+
+export interface ReportShiftsResponse {
+  period: {
+    start_date: string;
+    end_date: string;
+  };
+  total: number;
+  page: number;
+  totalPages: number;
+  data: ReportShiftItem[];
+}
