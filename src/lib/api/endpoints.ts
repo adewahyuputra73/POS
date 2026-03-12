@@ -127,6 +127,17 @@ export const ENDPOINTS = {
     HISTORY: "/shift/history",
   },
 
+  // Vouchers
+  VOUCHERS: {
+    LIST: "/vouchers",
+    DETAIL: (id: string | number) => `/vouchers/${id}`,
+    CREATE: "/vouchers",
+    UPDATE: (id: string | number) => `/vouchers/${id}`,
+    DELETE: (id: string | number) => `/vouchers/${id}`,
+    TERMINATE: (id: string | number) => `/vouchers/${id}/terminate`,
+    VALIDATE: "/vouchers/validate",
+  },
+
   // Dashboard
   DASHBOARD: {
     STATS: "/dashboard/stats",
