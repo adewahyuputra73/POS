@@ -1,6 +1,6 @@
 import apiClient from "@/lib/api/client";
 import { ENDPOINTS } from "@/lib/api/endpoints";
-import { LoginRequest, LoginResponse, RegisterRequest, VerifyOtpRequest, ForgotPasswordRequest } from "../types";
+import { LoginRequest, LoginResponse, RegisterRequest, VerifyOtpRequest, ResendOtpRequest, UpdateProfileRequest, ChangePasswordRequest, UpdatePinRequest, ForgotPasswordRequest, ForgotPasswordResetRequest } from "../types";
 import { ApiResponse } from "@/types";
 
 // Auth service functions
@@ -24,11 +24,44 @@ export const authService = {
   },
 
   /**
-   * Get current user
+   * Get current user profile
    */
-  async me(): Promise<LoginResponse["user"]> {
+  async profile(): Promise<LoginResponse["user"]> {
     const response = await apiClient.get<ApiResponse<LoginResponse["user"]>>(
-      ENDPOINTS.AUTH.ME
+      ENDPOINTS.AUTH.PROFILE
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Update user profile
+   */
+  async updateProfile(data: UpdateProfileRequest): Promise<LoginResponse["user"]> {
+    const response = await apiClient.put<ApiResponse<LoginResponse["user"]>>(
+      ENDPOINTS.AUTH.PROFILE,
+      data
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Change password
+   */
+  async changePassword(data: ChangePasswordRequest): Promise<{ message: string }> {
+    const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      ENDPOINTS.AUTH.CHANGE_PASSWORD,
+      data
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Update PIN
+   */
+  async updatePin(data: UpdatePinRequest): Promise<{ message: string }> {
+    const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      ENDPOINTS.AUTH.UPDATE_PIN,
+      data
     );
     return response.data.data;
   },
@@ -38,7 +71,40 @@ export const authService = {
    */
   async forgotPassword(data: ForgotPasswordRequest): Promise<{ message: string }> {
     const response = await apiClient.post<ApiResponse<{ message: string }>>(
-      ENDPOINTS.AUTH.FORGOT_PASSWORD,
+      ENDPOINTS.AUTH.FORGOT_PASSWORD_REQUEST,
+      data
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Forgot password - verify OTP
+   */
+  async forgotPasswordVerifyOtp(data: VerifyOtpRequest): Promise<{ message: string }> {
+    const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      ENDPOINTS.AUTH.FORGOT_PASSWORD_VERIFY_OTP,
+      data
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Forgot password - reset with token
+   */
+  async forgotPasswordReset(data: ForgotPasswordResetRequest): Promise<{ message: string }> {
+    const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      ENDPOINTS.AUTH.FORGOT_PASSWORD_RESET,
+      data
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Resend OTP code
+   */
+  async resendOtp(data: ResendOtpRequest): Promise<{ message: string }> {
+    const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      ENDPOINTS.AUTH.RESEND_OTP,
       data
     );
     return response.data.data;

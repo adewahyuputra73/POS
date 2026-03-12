@@ -329,6 +329,17 @@ export interface POMultiFormData {
   items: POMultiItem[];
 }
 
+// === API Request Types ===
+export interface InventoryInRequest {
+  product_id: string;
+  qty: number;
+  note?: string;
+}
+
+export interface InventoryHistoryParams {
+  page?: number;
+}
+
 // -- Stock Flow Detail (for detail view)
 export interface StockFlowDetailItem {
   id: number;

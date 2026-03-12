@@ -96,6 +96,47 @@ export interface CreateProductRequest {
   category_id?: string;
   stock_type: "LIMITED" | "UNLIMITED";
   stock_qty?: number;
+  description?: string;
+}
+
+export interface UpdateProductRequest {
+  name?: string;
+  price?: number;
+  category_id?: string;
+  stock_type?: "LIMITED" | "UNLIMITED";
+  stock_qty?: number;
+  description?: string;
+}
+
+export interface UpdateStockRequest {
+  qty: number;
+  note?: string;
+}
+
+export interface UpdatePriceRequest {
+  channel: string;
+  price: number;
+}
+
+export interface BulkDeleteRequest {
+  ids: string[];
+}
+
+export interface BulkStatusRequest {
+  ids: string[];
+  is_active: boolean;
+}
+
+export interface StockHistory {
+  id: string;
+  qty: number;
+  note: string;
+  created_at: string;
+}
+
+export interface ProductListParams {
+  page?: number;
+  limit?: number;
 }
 
 // Filter Types
