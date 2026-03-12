@@ -47,6 +47,11 @@ export const ENDPOINTS = {
     CREATE: "/customers",
     UPDATE: (id: string | number) => `/customers/${id}`,
     DELETE: (id: string | number) => `/customers/${id}`,
+    REVIEWS: "/customers/reviews",
+    CREATE_REVIEW: (id: string | number) => `/customers/${id}/reviews`,
+    TOGGLE_REVIEW: (id: string | number) => `/customers/reviews/${id}/toggle`,
+    BULK_TARGETS: "/customers/bulk-targets",
+    BULK_MESSAGE: "/customers/bulk-message",
   },
 
   // Categories

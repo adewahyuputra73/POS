@@ -1,6 +1,19 @@
 // Customer Types
 export type CustomerSegment = 'hot' | 'warm' | 'boil';
 
+export interface CreateCustomerRequest {
+  name: string;
+  phone: string;
+  email?: string;
+}
+
+export interface UpdateCustomerRequest {
+  name?: string;
+  phone?: string;
+  email?: string;
+  whatsapp_opt_in?: boolean;
+}
+
 export interface Customer {
   id: number;
   name: string;
@@ -75,6 +88,33 @@ export interface CustomerFilters {
   totalSpentMin?: number;
   totalSpentMax?: number;
   productId: number | null;
+}
+
+// Bulk Message Types
+// NOTE: BulkTarget fields are guessed — adjust when actual response is known
+export interface BulkTarget {
+  id: string;
+  name: string;
+  phone: string;
+  whatsapp_opt_in: boolean;
+}
+
+export interface SendBulkMessageRequest {
+  customer_ids: string[];
+  message: string;
+  channel: string;
+}
+
+// Review API Types
+export interface CreateReviewRequest {
+  rating: number;
+  comment: string;
+  order_id: string;
+}
+
+export interface ReviewListParams {
+  min_rating?: number;
+  max_rating?: number;
 }
 
 // Review Types
