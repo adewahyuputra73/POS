@@ -153,6 +153,13 @@ export const ENDPOINTS = {
     AREA_DETAIL: (id: string | number) => `/tables/areas/${id}`,
   },
 
+  // Notifications
+  NOTIFICATIONS: {
+    LIST: "/notifications",
+    READ: (id: string | number) => `/notifications/${id}/read`,
+    READ_ALL: "/notifications/read-all",
+  },
+
   // Dashboard
   DASHBOARD: {
     STATS: "/dashboard/stats",
