@@ -76,7 +76,7 @@ export default function CategoriesPage() {
             ? {
                 ...c,
                 name: data.name,
-                isActive: data.isActive,
+                is_active: data.is_active,
                 updatedAt: new Date().toISOString(),
               }
             : c
@@ -86,13 +86,12 @@ export default function CategoriesPage() {
     } else {
       // Add new category
       const newCategory: Category = {
-        id: Math.max(...categories.map((c) => c.id)) + 1,
+        id: crypto.randomUUID(),
+        store_id: 'store-1',
         name: data.name,
-        isActive: data.isActive,
-        productCount: data.productIds.length,
+        is_active: data.is_active,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        outletId: 1,
       };
       setCategories((prev) => [...prev, newCategory]);
       showToast(`Kategori "${data.name}" berhasil ditambahkan`, "success");
@@ -100,16 +99,16 @@ export default function CategoriesPage() {
     handleCloseModal();
   };
 
-  const handleToggleStatus = (categoryId: number, isActive: boolean) => {
+  const handleToggleStatus = (categoryId: string, is_active: boolean) => {
     setCategories((prev) =>
       prev.map((c) =>
         c.id === categoryId
-          ? { ...c, isActive, updatedAt: new Date().toISOString() }
+          ? { ...c, is_active, updatedAt: new Date().toISOString() }
           : c
       )
     );
     const category = categories.find((c) => c.id === categoryId);
-    showToast(`Kategori "${category?.name}" ${isActive ? "diaktifkan" : "dinonaktifkan"}`, "success");
+    showToast(`Kategori "${category?.name}" ${is_active ? "diaktifkan" : "dinonaktifkan"}`, "success");
   };
 
   const handleDeleteConfirm = () => {

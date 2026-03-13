@@ -1,11 +1,15 @@
 // Tables Module Types
 
-// NOTE: Area fields are guessed — adjust when actual response is known
+// CONFIRMED from GET /tables/areas
 export interface Area {
   id: string;
+  store_id: string;
+  outlet_id: string | null;
   name: string;
-  created_at: string;
-  updated_at: string;
+  is_active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  tables: Table[];
 }
 
 export interface CreateAreaRequest {
@@ -14,30 +18,37 @@ export interface CreateAreaRequest {
 
 export type UpdateAreaRequest = CreateAreaRequest;
 
-// NOTE: Table fields are guessed — adjust when actual response is known
+// CONFIRMED from GET /tables
 export interface Table {
   id: string;
+  store_id: string;
   area_id: string;
   name: string;
   capacity: number;
   status: TableStatus;
   qr_code: string;
-  created_at: string;
-  updated_at: string;
+  qr_token: string;
+  is_active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  area?: {
+    id: string;
+    name: string;
+  };
 }
 
-export type TableStatus = "AVAILABLE" | "OCCUPIED" | "RESERVED";
+export type TableStatus = "AVAILABLE" | "OCCUPIED" | "RESERVED" | "UNAVAILABLE";
 
 export interface TableListParams {
   area_id?: string;
 }
 
-// NOTE: TableSummary fields are guessed — adjust when actual response is known
 export interface TableSummary {
+  AVAILABLE: number;
+  OCCUPIED: number;
+  RESERVED: number;
+  UNAVAILABLE: number;
   total: number;
-  available: number;
-  occupied: number;
-  reserved: number;
 }
 
 export interface CreateTableRequest {
@@ -55,10 +66,19 @@ export interface UpdateTableStatusRequest {
   status: TableStatus;
 }
 
-// NOTE: ScanTableResponse fields are guessed — adjust when actual response is known
+// CONFIRMED from GET /tables/scan/:id
 export interface ScanTableResponse {
   id: string;
+  store_id: string;
+  area_id: string;
   name: string;
-  area_name: string;
+  capacity: number;
   status: TableStatus;
+  qr_token: string;
+  is_active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  area: {
+    name: string;
+  };
 }

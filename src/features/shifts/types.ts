@@ -1,46 +1,61 @@
 // Shift Module Types
 
 // === API Response Types ===
-// NOTE: ShiftStatus fields are guessed — adjust when actual response is known
 export interface ShiftStatus {
   id: string;
-  isOpen: boolean;
-  openingCash: number;
-  openedAt: string;
-  openedBy: string;
+  store_id: string;
+  admin_id: string;
+  shift_number: number;
+  opening_cash: string;
+  closing_cash: string | null;
+  cash_deposited: string;
+  expected_cash: string | null;
+  cash_difference: string;
+  closed_by_name: string;
+  start_time: string;
+  end_time: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  outlet_id: string | null;
+  cashier: {
+    id: string;
+    full_name: string;
+    phone_number: string;
+  };
 }
 
-// NOTE: ShiftPreviewEnd fields are guessed — adjust when actual response is known
-export interface ShiftPreviewEnd {
-  openingCash: number;
-  expectedCash: number;
-  totalSales: number;
-  totalTransactions: number;
-}
-
-// NOTE: ShiftDetail fields are guessed — adjust when actual response is known
-export interface ShiftDetail {
-  id: string;
-  openingCash: number;
-  closingCash: number;
-  cashDeposited: number;
-  totalSales: number;
-  totalTransactions: number;
-  note: string;
-  openedAt: string;
-  closedAt: string;
-  openedBy: string;
-}
-
-// NOTE: ShiftHistoryItem fields are guessed — adjust when actual response is known
 export interface ShiftHistoryItem {
   id: string;
-  openingCash: number;
-  closingCash: number;
-  totalSales: number;
-  openedAt: string;
-  closedAt: string;
-  openedBy: string;
+  store_id: string;
+  admin_id: string;
+  shift_number: number;
+  opening_cash: string;
+  closing_cash: string | null;
+  cash_deposited: string;
+  expected_cash: string | null;
+  cash_difference: string;
+  closed_by_name: string;
+  start_time: string;
+  end_time: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  outlet_id: string | null;
+  cashier: {
+    id: string;
+    full_name: string;
+  };
+}
+
+export interface ShiftHistoryResponse {
+  shifts: ShiftHistoryItem[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 // === API Request Types ===

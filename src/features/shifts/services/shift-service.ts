@@ -3,9 +3,7 @@ import { ENDPOINTS } from "@/lib/api/endpoints";
 import type { ApiResponse } from "@/types";
 import type {
   ShiftStatus,
-  ShiftPreviewEnd,
-  ShiftDetail,
-  ShiftHistoryItem,
+  ShiftHistoryResponse,
   StartShiftRequest,
   EndShiftRequest,
   ShiftHistoryParams,
@@ -16,16 +14,9 @@ export const shiftService = {
     await apiClient.post(ENDPOINTS.SHIFT.START, data);
   },
 
-  async status(): Promise<ShiftStatus> {
-    const response = await apiClient.get<ApiResponse<ShiftStatus>>(
+  async status(): Promise<ShiftStatus | null> {
+    const response = await apiClient.get<ApiResponse<ShiftStatus | null>>(
       ENDPOINTS.SHIFT.STATUS
-    );
-    return response.data.data;
-  },
-
-  async previewEnd(): Promise<ShiftPreviewEnd> {
-    const response = await apiClient.get<ApiResponse<ShiftPreviewEnd>>(
-      ENDPOINTS.SHIFT.PREVIEW_END
     );
     return response.data.data;
   },
@@ -34,15 +25,8 @@ export const shiftService = {
     await apiClient.post(ENDPOINTS.SHIFT.END, data);
   },
 
-  async detail(id: string | number): Promise<ShiftDetail> {
-    const response = await apiClient.get<ApiResponse<ShiftDetail>>(
-      ENDPOINTS.SHIFT.DETAIL(id)
-    );
-    return response.data.data;
-  },
-
-  async history(params?: ShiftHistoryParams): Promise<ShiftHistoryItem[]> {
-    const response = await apiClient.get<ApiResponse<ShiftHistoryItem[]>>(
+  async history(params?: ShiftHistoryParams): Promise<ShiftHistoryResponse> {
+    const response = await apiClient.get<ApiResponse<ShiftHistoryResponse>>(
       ENDPOINTS.SHIFT.HISTORY,
       { params }
     );

@@ -13,7 +13,7 @@ import { CustomerDetailView } from "@/features/customers/components/customer-det
 
 export default function CustomersPage() {
   const [view, setView] = useState<'list' | 'detail'>('list');
-  const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [filters, setFilters] = useState<CustomerFilters>({
     search: '',
     segment: 'all',
@@ -30,7 +30,7 @@ export default function CustomersPage() {
     return getCustomerDetail(selectedCustomerId) || null;
   }, [selectedCustomerId]);
 
-  const handleViewDetail = (customer: { id: number }) => {
+  const handleViewDetail = (customer: { id: string }) => {
     setSelectedCustomerId(customer.id);
     setView('detail');
   };
@@ -43,10 +43,9 @@ export default function CustomersPage() {
   // Stats
   const stats = useMemo(() => {
     const total = mockCustomers.length;
-    const hot = mockCustomers.filter(c => c.segment === 'hot').length;
-    const warm = mockCustomers.filter(c => c.segment === 'warm').length;
-    const boil = mockCustomers.filter(c => c.segment === 'boil').length;
-    return { total, hot, warm, boil };
+    const active = mockCustomers.filter(c => c.is_active).length;
+    const inactive = mockCustomers.filter(c => !c.is_active).length;
+    return { total, active, inactive };
   }, []);
 
   if (view === 'detail' && selectedDetail) {
@@ -83,7 +82,7 @@ export default function CustomersPage() {
       />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -97,34 +96,23 @@ export default function CustomersPage() {
         </div>
         <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-red-50 flex items-center justify-center">
-              <span className="text-lg">🔥</span>
+            <div className="h-10 w-10 rounded-lg bg-green-50 flex items-center justify-center">
+              <Users className="h-5 w-5 text-green-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-red-600">{stats.hot}</p>
-              <p className="text-xs text-text-secondary">Hot</p>
+              <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+              <p className="text-xs text-text-secondary">Aktif</p>
             </div>
           </div>
         </div>
         <div className="bg-surface rounded-xl border border-border p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-yellow-50 flex items-center justify-center">
-              <span className="text-lg">🌤</span>
+            <div className="h-10 w-10 rounded-lg bg-gray-50 flex items-center justify-center">
+              <Users className="h-5 w-5 text-gray-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-yellow-600">{stats.warm}</p>
-              <p className="text-xs text-text-secondary">Warm</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-surface rounded-xl border border-border p-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center">
-              <span className="text-lg">❄️</span>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-blue-600">{stats.boil}</p>
-              <p className="text-xs text-text-secondary">Boil</p>
+              <p className="text-2xl font-bold text-gray-400">{stats.inactive}</p>
+              <p className="text-xs text-text-secondary">Tidak Aktif</p>
             </div>
           </div>
         </div>

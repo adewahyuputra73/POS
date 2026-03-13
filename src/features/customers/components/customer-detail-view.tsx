@@ -8,11 +8,10 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  ArrowLeft, Calendar, DollarSign, ShoppingBag, Star, Gift, Coins,
+  ArrowLeft, Calendar, DollarSign, ShoppingBag, Star,
   User, Phone, Mail, MapPin, Clock, MessageSquare,
 } from "lucide-react";
 import { CustomerDetail } from "../types";
-import { segmentConfig } from "../mock-data";
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
@@ -47,15 +46,11 @@ interface CustomerDetailViewProps {
 
 export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps) {
   const [activeTab, setActiveTab] = useState('ringkasan');
-  const seg = segmentConfig[customer.segment];
-
   const summaryCards = [
-    { label: 'Ulang Tahun', value: formatDate(customer.birthdate), icon: <Calendar className="h-5 w-5 text-pink-500" />, bg: 'bg-pink-50' },
-    { label: 'Total Belanja', value: formatCurrency(customer.totalSpent), icon: <DollarSign className="h-5 w-5 text-green-500" />, bg: 'bg-green-50' },
-    { label: 'Reservasi', value: customer.totalReservations.toString(), icon: <ShoppingBag className="h-5 w-5 text-blue-500" />, bg: 'bg-blue-50' },
-    { label: 'Produk Favorit', value: customer.favProducts.toString(), icon: <Gift className="h-5 w-5 text-purple-500" />, bg: 'bg-purple-50' },
+    { label: 'Total Belanja', value: formatCurrency(parseFloat(customer.total_spent)), icon: <DollarSign className="h-5 w-5 text-green-500" />, bg: 'bg-green-50' },
+    { label: 'Total Pesanan', value: customer.total_orders.toString(), icon: <ShoppingBag className="h-5 w-5 text-blue-500" />, bg: 'bg-blue-50' },
+    { label: 'Order Terakhir', value: formatDate(customer.last_order_at), icon: <Calendar className="h-5 w-5 text-pink-500" />, bg: 'bg-pink-50' },
     { label: 'Ulasan', value: `${customer.totalReviews} (${customer.avgRating}★)`, icon: <Star className="h-5 w-5 text-yellow-500" />, bg: 'bg-yellow-50' },
-    { label: 'Sisa Koin', value: customer.coins.toLocaleString('id-ID'), icon: <Coins className="h-5 w-5 text-orange-500" />, bg: 'bg-orange-50' },
   ];
 
   return (
@@ -75,8 +70,8 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <h2 className="text-xl font-bold text-text-primary">{customer.name}</h2>
-                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${seg.color}`}>
-                  {seg.label}
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${customer.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                  {customer.is_active ? 'Aktif' : 'Tidak Aktif'}
                 </span>
               </div>
               <div className="flex items-center gap-4 text-sm text-text-secondary">
@@ -122,19 +117,19 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
             <div className="bg-surface rounded-xl border border-border p-6">
               <h4 className="text-sm font-semibold mb-4">Statistik Transaksi</h4>
               <div className="space-y-3">
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Pesanan Sukses</span><span className="font-medium">{customer.successOrders}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Pesanan</span><span className="font-medium">{customer.total_orders}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Belanja</span><span className="font-medium">{formatCurrency(parseFloat(customer.total_spent))}</span></div>
                 <div className="flex justify-between text-sm"><span className="text-text-secondary">Rata-rata per Pesanan</span><span className="font-medium">{formatCurrency(customer.avgOrderValue)}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Reservasi</span><span className="font-medium">{customer.totalReservations}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Terakhir Datang</span><span className="font-medium">{formatDate(customer.lastVisit)}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Order Terakhir</span><span className="font-medium">{formatDate(customer.last_order_at)}</span></div>
               </div>
             </div>
             <div className="bg-surface rounded-xl border border-border p-6">
-              <h4 className="text-sm font-semibold mb-4">Loyalty</h4>
+              <h4 className="text-sm font-semibold mb-4">Info Lainnya</h4>
               <div className="space-y-3">
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Sisa Koin</span><span className="font-medium text-yellow-600">🪙 {customer.coins.toLocaleString('id-ID')}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Produk Favorit</span><span className="font-medium">{customer.favProducts} produk</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Rating Rata-rata</span><span className="font-medium">{customer.avgRating} ⭐</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Segmentasi</span><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${seg.color}`}>{seg.label}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Rating Rata-rata</span><span className="font-medium">{customer.avgRating} ★</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Ulasan</span><span className="font-medium">{customer.totalReviews}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">WhatsApp Opt-in</span><span className="font-medium">{customer.whatsapp_opt_in ? 'Ya' : 'Tidak'}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Member Sejak</span><span className="font-medium">{formatDate(customer.memberSince)}</span></div>
               </div>
             </div>
           </div>

@@ -1,13 +1,12 @@
 // Category Types
 
 export interface Category {
-  id: number;
+  id: string;
+  store_id: string;
   name: string;
-  isActive: boolean;
-  productCount: number;
+  is_active: boolean;
   createdAt: string;
   updatedAt: string;
-  outletId: number;
 }
 
 export interface CreateCategoryRequest {
@@ -20,7 +19,7 @@ export interface UpdateCategoryRequest {
 
 export interface CategoryFormData {
   name: string;
-  isActive: boolean;
+  is_active: boolean;
   productIds: number[];
 }
 

@@ -32,12 +32,11 @@ export interface PayOrderRequest {
   cash_given?: number;
 }
 
-// NOTE: OrderSummaryCards fields are guessed — adjust when actual response is known
 export interface OrderSummaryCards {
-  totalOrders: number;
-  totalRevenue: number;
-  totalPaid: number;
-  totalUnpaid: number;
+  belum_dibayar: { count: number; potensi: number };
+  siap_diproses: { count: number; potensi: number };
+  dalam_pengiriman: { count: number; potensi: number };
+  selesai_3hari: { count: number; total: number };
 }
 
 export interface OrderListParams {

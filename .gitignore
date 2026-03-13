@@ -42,3 +42,11 @@ next-env.d.ts
 
 # claude
 .claude/
+
+# hoppscotch (contains JWT tokens)
+hoppscotch-env.json
+hoppscotch-collection.json
+*.7z
+
+# local dev notes (tidak perlu di-track)
+CATATAN-API.md

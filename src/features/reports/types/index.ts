@@ -150,14 +150,40 @@ export interface ReportOrdersParams {
   limit?: number;
 }
 
-// NOTE: ReportOrderItem fields are guessed — adjust when actual response is known
+export interface ReportOrderPayment {
+  id: string;
+  order_id: string;
+  payment_method: string;
+  amount: string;
+  change: string;
+  is_cash: boolean;
+  createdAt: string;
+  updatedAt: string;
+  invoice_id: string | null;
+}
+
 export interface ReportOrderItem {
   id: string;
+  store_id: string;
   order_number: string;
-  total: number;
-  status: string;
-  payment_method: string;
-  created_at: string;
+  order_type: string;
+  customer_id: string | null;
+  table_number: string | null;
+  fulfillment_status: string;
+  payment_status: string;
+  source: string;
+  subtotal: string;
+  delivery_fee: string;
+  service_fee: string;
+  rounding: string;
+  tax: string;
+  discount: string;
+  total_amount: string;
+  platform: string;
+  createdAt: string;
+  updatedAt: string;
+  payments: ReportOrderPayment[];
+  kasirDetail: unknown | null;
 }
 
 export interface ReportOrdersResponse {
@@ -180,13 +206,15 @@ export interface ReportProductsParams {
   end_date: string;
 }
 
-// NOTE: ReportProductItem fields are guessed — adjust when actual response is known
 export interface ReportProductItem {
-  id: string;
-  product_name: string;
+  product_id: string;
+  name: string;
+  sku: string | null;
   category: string;
-  qty_sold: number;
-  total_sales: number;
+  price: number;
+  total_qty: number;
+  total_orders: number;
+  total_revenue: number;
 }
 
 export interface ReportProductsResponse {
@@ -208,15 +236,20 @@ export interface ReportShiftsParams {
   limit?: number;
 }
 
-// NOTE: ReportShiftItem fields are guessed — adjust when actual response is known
 export interface ReportShiftItem {
   id: string;
-  cashier_name: string;
+  shift_number: number;
+  cashier: string;
+  start_time: string;
+  end_time: string | null;
+  status: string;
   opening_cash: number;
   closing_cash: number;
+  cash_deposited: number;
+  total_orders: number;
   total_sales: number;
-  started_at: string;
-  ended_at: string;
+  cash_sales: number;
+  non_cash_sales: number;
 }
 
 export interface ReportShiftsResponse {

@@ -1,9 +1,8 @@
 export { shiftService } from "./services";
 export type {
   ShiftStatus,
-  ShiftPreviewEnd,
-  ShiftDetail,
   ShiftHistoryItem,
+  ShiftHistoryResponse,
   StartShiftRequest,
   EndShiftRequest,
   ShiftHistoryParams,

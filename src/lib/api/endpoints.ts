@@ -29,29 +29,6 @@ export const ENDPOINTS = {
     PRICES: (id: string | number) => `/products/${id}/prices`,
     BULK_DELETE: "/products/bulk/delete",
     BULK_STATUS: "/products/bulk/status",
-    CATEGORIES: "/products/categories",
-  },
-
-  // Transactions
-  TRANSACTIONS: {
-    LIST: "/transactions",
-    DETAIL: (id: string | number) => `/transactions/${id}`,
-    CREATE: "/transactions",
-    VOID: (id: string | number) => `/transactions/${id}/void`,
-  },
-
-  // Customers
-  CUSTOMERS: {
-    LIST: "/customers",
-    DETAIL: (id: string | number) => `/customers/${id}`,
-    CREATE: "/customers",
-    UPDATE: (id: string | number) => `/customers/${id}`,
-    DELETE: (id: string | number) => `/customers/${id}`,
-    REVIEWS: "/customers/reviews",
-    CREATE_REVIEW: (id: string | number) => `/customers/${id}/reviews`,
-    TOGGLE_REVIEW: (id: string | number) => `/customers/reviews/${id}/toggle`,
-    BULK_TARGETS: "/customers/bulk-targets",
-    BULK_MESSAGE: "/customers/bulk-message",
   },
 
   // Categories
@@ -62,25 +39,27 @@ export const ENDPOINTS = {
     DELETE: (id: string | number) => `/categories/${id}`,
   },
 
+  // Customers
+  CUSTOMERS: {
+    LIST: "/customers",
+    DETAIL: (id: string | number) => `/customers/${id}`,
+    REVIEWS: "/customers/reviews",
+    CREATE_REVIEW: (id: string | number) => `/customers/${id}/reviews`,
+    TOGGLE_REVIEW: (id: string | number) => `/customers/reviews/${id}/toggle`,
+    BULK_TARGETS: "/customers/bulk-targets",
+    BULK_MESSAGE: "/customers/bulk-message",
+  },
+
+
   // Reports
   REPORTS: {
     SUMMARY: "/reports/summary",
     ORDERS: "/reports/orders",
-    SALES: "/reports/sales",
     PRODUCTS: "/reports/products",
     SHIFTS: "/reports/shifts",
-    CUSTOMERS: "/reports/customers",
     SUMMARY_EXPORT: "/reports/summary/export",
     ORDERS_EXPORT: "/reports/orders/export",
     PRODUCTS_EXPORT: "/reports/products/export",
-  },
-
-  // Settings
-  SETTINGS: {
-    PROFILE: "/settings/profile",
-    STORE: "/settings/store",
-    USERS: "/settings/users",
-    USER_DETAIL: (id: string | number) => `/settings/users/${id}`,
   },
 
   // Outlets
@@ -131,9 +110,7 @@ export const ENDPOINTS = {
   SHIFT: {
     START: "/shift/start",
     STATUS: "/shift/status",
-    PREVIEW_END: "/shift/preview-end",
     END: "/shift/end",
-    DETAIL: (id: string | number) => `/shift/${id}/detail`,
     HISTORY: "/shift/history",
   },
 
@@ -183,7 +160,5 @@ export const ENDPOINTS = {
     TODAY_SUMMARY: "/dashboard",
     SALES_CHART: "/dashboard/sales-chart",
     TOP_PRODUCTS: "/dashboard/top-products",
-    STATS: "/dashboard/stats",
-    RECENT_TRANSACTIONS: "/dashboard/recent-transactions",
   },
 } as const;

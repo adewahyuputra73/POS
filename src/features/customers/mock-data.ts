@@ -21,102 +21,109 @@ import {
 
 export const mockCustomers: Customer[] = [
   {
-    id: 1, name: 'Budi Santoso', phone: '081234567890', birthdate: '1990-03-15',
-    segment: 'hot', totalReservations: 5, successOrders: 28, totalSpent: 4250000,
-    favProducts: 4, coins: 1200, lastVisit: '2026-02-12T10:30:00Z', createdAt: '2025-06-01T09:00:00Z',
+    id: 'c001', store_id: 'store-1', order_id: 'ord-001', name: 'Budi Santoso', phone: '081234567890',
+    email: 'budi.santoso@email.com', total_spent: '4250000.00', total_orders: 28,
+    last_order_at: '2026-02-12T10:30:00Z', whatsapp_opt_in: true, is_active: true,
+    createdAt: '2025-06-01T09:00:00Z', updatedAt: '2026-02-12T10:30:00Z', outlet_id: null,
   },
   {
-    id: 2, name: 'Siti Aminah', phone: '081298765432', birthdate: '1985-07-22',
-    segment: 'hot', totalReservations: 3, successOrders: 22, totalSpent: 3180000,
-    favProducts: 6, coins: 980, lastVisit: '2026-02-11T14:00:00Z', createdAt: '2025-07-15T10:00:00Z',
+    id: 'c002', store_id: 'store-1', order_id: 'ord-002', name: 'Siti Aminah', phone: '081298765432',
+    email: null, total_spent: '3180000.00', total_orders: 22,
+    last_order_at: '2026-02-11T14:00:00Z', whatsapp_opt_in: false, is_active: true,
+    createdAt: '2025-07-15T10:00:00Z', updatedAt: '2026-02-11T14:00:00Z', outlet_id: null,
   },
   {
-    id: 3, name: 'Andi Wijaya', phone: '082112345678', birthdate: '1992-11-08',
-    segment: 'warm', totalReservations: 2, successOrders: 8, totalSpent: 1245000,
-    favProducts: 3, coins: 450, lastVisit: '2026-02-05T18:00:00Z', createdAt: '2025-09-10T11:00:00Z',
+    id: 'c003', store_id: 'store-1', order_id: 'ord-003', name: 'Andi Wijaya', phone: '082112345678',
+    email: null, total_spent: '1245000.00', total_orders: 8,
+    last_order_at: '2026-02-05T18:00:00Z', whatsapp_opt_in: false, is_active: true,
+    createdAt: '2025-09-10T11:00:00Z', updatedAt: '2026-02-05T18:00:00Z', outlet_id: null,
   },
   {
-    id: 4, name: 'Dewi Lestari', phone: '085678901234', birthdate: '1988-02-14',
-    segment: 'warm', totalReservations: 1, successOrders: 5, totalSpent: 780000,
-    favProducts: 2, coins: 200, lastVisit: '2026-01-28T12:00:00Z', createdAt: '2025-10-20T14:00:00Z',
+    id: 'c004', store_id: 'store-1', order_id: 'ord-004', name: 'Dewi Lestari', phone: '085678901234',
+    email: 'dewi@email.com', total_spent: '780000.00', total_orders: 5,
+    last_order_at: '2026-01-28T12:00:00Z', whatsapp_opt_in: true, is_active: true,
+    createdAt: '2025-10-20T14:00:00Z', updatedAt: '2026-01-28T12:00:00Z', outlet_id: null,
   },
   {
-    id: 5, name: 'Rizky Pratama', phone: '087812345678', birthdate: null,
-    segment: 'boil', totalReservations: 0, successOrders: 2, totalSpent: 320000,
-    favProducts: 1, coins: 50, lastVisit: '2025-12-15T16:00:00Z', createdAt: '2025-11-01T09:00:00Z',
+    id: 'c005', store_id: 'store-1', order_id: null, name: 'Rizky Pratama', phone: '087812345678',
+    email: null, total_spent: '320000.00', total_orders: 2,
+    last_order_at: '2025-12-15T16:00:00Z', whatsapp_opt_in: false, is_active: true,
+    createdAt: '2025-11-01T09:00:00Z', updatedAt: '2025-12-15T16:00:00Z', outlet_id: null,
   },
   {
-    id: 6, name: 'Nurul Hidayah', phone: '081345678901', birthdate: '1995-06-30',
-    segment: 'hot', totalReservations: 7, successOrders: 35, totalSpent: 5890000,
-    favProducts: 8, coins: 2100, lastVisit: '2026-02-13T09:00:00Z', createdAt: '2025-04-15T08:00:00Z',
+    id: 'c006', store_id: 'store-1', order_id: 'ord-006', name: 'Nurul Hidayah', phone: '081345678901',
+    email: 'nurul.h@email.com', total_spent: '5890000.00', total_orders: 35,
+    last_order_at: '2026-02-13T09:00:00Z', whatsapp_opt_in: true, is_active: true,
+    createdAt: '2025-04-15T08:00:00Z', updatedAt: '2026-02-13T09:00:00Z', outlet_id: null,
   },
   {
-    id: 7, name: 'Ahmad Fauzi', phone: '082299887766', birthdate: '1993-09-12',
-    segment: 'warm', totalReservations: 1, successOrders: 4, totalSpent: 620000,
-    favProducts: 2, coins: 180, lastVisit: '2026-02-02T20:00:00Z', createdAt: '2025-12-05T13:00:00Z',
+    id: 'c007', store_id: 'store-1', order_id: null, name: 'Ahmad Fauzi', phone: '082299887766',
+    email: null, total_spent: '620000.00', total_orders: 4,
+    last_order_at: '2026-02-02T20:00:00Z', whatsapp_opt_in: false, is_active: true,
+    createdAt: '2025-12-05T13:00:00Z', updatedAt: '2026-02-02T20:00:00Z', outlet_id: null,
   },
   {
-    id: 8, name: 'Putri Rahayu', phone: '085511223344', birthdate: '1997-01-25',
-    segment: 'boil', totalReservations: 0, successOrders: 1, totalSpent: 155000,
-    favProducts: 0, coins: 0, lastVisit: '2025-11-20T11:00:00Z', createdAt: '2025-11-20T11:00:00Z',
+    id: 'c008', store_id: 'store-1', order_id: null, name: 'Putri Rahayu', phone: '085511223344',
+    email: null, total_spent: '155000.00', total_orders: 1,
+    last_order_at: '2025-11-20T11:00:00Z', whatsapp_opt_in: false, is_active: false,
+    createdAt: '2025-11-20T11:00:00Z', updatedAt: '2025-11-20T11:00:00Z', outlet_id: null,
   },
   {
-    id: 9, name: 'Hendri Sutanto', phone: '081456789012', birthdate: '1987-04-18',
-    segment: 'hot', totalReservations: 4, successOrders: 18, totalSpent: 2750000,
-    favProducts: 5, coins: 850, lastVisit: '2026-02-10T15:00:00Z', createdAt: '2025-08-01T10:00:00Z',
+    id: 'c009', store_id: 'store-1', order_id: 'ord-009', name: 'Hendri Sutanto', phone: '081456789012',
+    email: null, total_spent: '2750000.00', total_orders: 18,
+    last_order_at: '2026-02-10T15:00:00Z', whatsapp_opt_in: true, is_active: true,
+    createdAt: '2025-08-01T10:00:00Z', updatedAt: '2026-02-10T15:00:00Z', outlet_id: null,
   },
   {
-    id: 10, name: 'Maya Sari', phone: '089912345678', birthdate: '1991-12-03',
-    segment: 'warm', totalReservations: 2, successOrders: 6, totalSpent: 890000,
-    favProducts: 3, coins: 300, lastVisit: '2026-01-25T17:00:00Z', createdAt: '2025-10-10T12:00:00Z',
+    id: 'c010', store_id: 'store-1', order_id: null, name: 'Maya Sari', phone: '089912345678',
+    email: 'maya@email.com', total_spent: '890000.00', total_orders: 6,
+    last_order_at: '2026-01-25T17:00:00Z', whatsapp_opt_in: false, is_active: true,
+    createdAt: '2025-10-10T12:00:00Z', updatedAt: '2026-01-25T17:00:00Z', outlet_id: null,
   },
   {
-    id: 11, name: 'Joko Widodo', phone: '081567890123', birthdate: '1986-08-05',
-    segment: 'boil', totalReservations: 0, successOrders: 3, totalSpent: 475000,
-    favProducts: 1, coins: 100, lastVisit: '2025-12-28T13:00:00Z', createdAt: '2025-09-25T09:00:00Z',
+    id: 'c011', store_id: 'store-1', order_id: null, name: 'Joko Widodo', phone: '081567890123',
+    email: null, total_spent: '475000.00', total_orders: 3,
+    last_order_at: '2025-12-28T13:00:00Z', whatsapp_opt_in: false, is_active: true,
+    createdAt: '2025-09-25T09:00:00Z', updatedAt: '2025-12-28T13:00:00Z', outlet_id: null,
   },
   {
-    id: 12, name: 'Ratna Dewi', phone: '082334556677', birthdate: '1994-05-20',
-    segment: 'hot', totalReservations: 6, successOrders: 25, totalSpent: 3950000,
-    favProducts: 7, coins: 1500, lastVisit: '2026-02-12T19:00:00Z', createdAt: '2025-05-20T10:00:00Z',
+    id: 'c012', store_id: 'store-1', order_id: 'ord-012', name: 'Ratna Dewi', phone: '082334556677',
+    email: null, total_spent: '3950000.00', total_orders: 25,
+    last_order_at: '2026-02-12T19:00:00Z', whatsapp_opt_in: true, is_active: true,
+    createdAt: '2025-05-20T10:00:00Z', updatedAt: '2026-02-12T19:00:00Z', outlet_id: null,
   },
 ];
 
 export const mockCustomerDetails: CustomerDetail[] = [
   {
-    id: 1, name: 'Budi Santoso', phone: '081234567890', birthdate: '1990-03-15',
-    segment: 'hot', totalReservations: 5, successOrders: 28, totalSpent: 4250000,
-    favProducts: 4, coins: 1200, lastVisit: '2026-02-12T10:30:00Z', createdAt: '2025-06-01T09:00:00Z',
+    id: 'c001', store_id: 'store-1', order_id: 'ord-001', name: 'Budi Santoso', phone: '081234567890',
+    email: 'budi.santoso@email.com', total_spent: '4250000.00', total_orders: 28,
+    last_order_at: '2026-02-12T10:30:00Z', whatsapp_opt_in: true, is_active: true,
+    createdAt: '2025-06-01T09:00:00Z', updatedAt: '2026-02-12T10:30:00Z', outlet_id: null,
     address: 'Jl. Merdeka No. 45, Surabaya', notes: 'Pelanggan setia, suka meja dekat jendela',
-    email: 'budi.santoso@email.com', avgOrderValue: 151786, avgRating: 4.5, totalReviews: 8,
-    memberSince: '2025-06-01',
+    avgOrderValue: 151786, avgRating: 4.5, totalReviews: 8, memberSince: '2025-06-01',
     orders: [
       { id: 1, orderId: 'ORD-2026-0211-001', date: '2026-02-11T10:30:00Z', status: 'success', items: ['Nasi Goreng Spesial', 'Es Teh Manis'], totalAmount: 65000, paymentMethod: 'QRIS' },
       { id: 2, orderId: 'ORD-2026-0209-003', date: '2026-02-09T18:00:00Z', status: 'success', items: ['Mie Ayam Bakso', 'Jus Jeruk', 'Kerupuk'], totalAmount: 82000, paymentMethod: 'Cash' },
       { id: 3, orderId: 'ORD-2026-0205-002', date: '2026-02-05T12:00:00Z', status: 'cancelled', items: ['Rendang Padang'], totalAmount: 45000, paymentMethod: 'Debit' },
-      { id: 4, orderId: 'ORD-2026-0201-004', date: '2026-02-01T19:30:00Z', status: 'success', items: ['Paket Keluarga A', 'Es Campur x2'], totalAmount: 185000, paymentMethod: 'QRIS' },
-      { id: 5, orderId: 'ORD-2026-0128-001', date: '2026-01-28T11:00:00Z', status: 'success', items: ['Soto Ayam', 'Nasi Putih', 'Teh Tarik'], totalAmount: 55000, paymentMethod: 'Cash' },
     ],
     reservations: [
       { id: 1, date: '2026-02-14', time: '18:00', guests: 4, status: 'confirmed', notes: 'Ulang tahun istri', tableNumber: 'A5' },
       { id: 2, date: '2026-02-08', time: '12:00', guests: 2, status: 'completed', notes: '', tableNumber: 'B2' },
-      { id: 3, date: '2026-01-20', time: '19:00', guests: 6, status: 'completed', notes: 'Minta high chair', tableNumber: 'C1' },
     ],
     reviews: [
       { id: 1, orderId: 'ORD-2026-0211-001', date: '2026-02-11T11:00:00Z', rating: 5, comment: 'Makanan selalu enak dan pelayanan ramah!', products: ['Nasi Goreng Spesial'], questionAnswers: [{ question: 'Bagaimana rasa makanan?', rating: 5 }, { question: 'Bagaimana pelayanan?', rating: 5 }] },
-      { id: 2, orderId: 'ORD-2026-0201-004', date: '2026-02-01T20:00:00Z', rating: 4, comment: 'Porsinya banyak, tapi agak lama datangnya', products: ['Paket Keluarga A'], questionAnswers: [{ question: 'Bagaimana rasa makanan?', rating: 4 }, { question: 'Bagaimana pelayanan?', rating: 3 }] },
     ],
   },
   {
-    id: 6, name: 'Nurul Hidayah', phone: '081345678901', birthdate: '1995-06-30',
-    segment: 'hot', totalReservations: 7, successOrders: 35, totalSpent: 5890000,
-    favProducts: 8, coins: 2100, lastVisit: '2026-02-13T09:00:00Z', createdAt: '2025-04-15T08:00:00Z',
+    id: 'c006', store_id: 'store-1', order_id: 'ord-006', name: 'Nurul Hidayah', phone: '081345678901',
+    email: 'nurul.h@email.com', total_spent: '5890000.00', total_orders: 35,
+    last_order_at: '2026-02-13T09:00:00Z', whatsapp_opt_in: true, is_active: true,
+    createdAt: '2025-04-15T08:00:00Z', updatedAt: '2026-02-13T09:00:00Z', outlet_id: null,
     address: 'Jl. Ahmad Yani No. 12, Surabaya', notes: 'VIP customer, sering bawa teman',
-    email: 'nurul.h@email.com', avgOrderValue: 168286, avgRating: 4.8, totalReviews: 12,
-    memberSince: '2025-04-15',
+    avgOrderValue: 168286, avgRating: 4.8, totalReviews: 12, memberSince: '2025-04-15',
     orders: [
       { id: 6, orderId: 'ORD-2026-0213-001', date: '2026-02-13T09:00:00Z', status: 'success', items: ['Bubur Ayam', 'Kopi Hitam'], totalAmount: 42000, paymentMethod: 'QRIS' },
-      { id: 7, orderId: 'ORD-2026-0211-005', date: '2026-02-11T12:30:00Z', status: 'success', items: ['Ayam Geprek Level 5', 'Es Teh', 'Nasi Extra'], totalAmount: 55000, paymentMethod: 'Cash' },
     ],
     reservations: [
       { id: 4, date: '2026-02-15', time: '19:00', guests: 8, status: 'confirmed', notes: 'Arisan kantor', tableNumber: 'VIP-1' },
@@ -149,27 +156,20 @@ export function filterCustomers(customers: Customer[], filters: CustomerFilters)
       const q = filters.search.toLowerCase();
       if (!c.name.toLowerCase().includes(q) && !c.phone.includes(q)) return false;
     }
-    // Segment
-    if (filters.segment !== 'all' && c.segment !== filters.segment) return false;
-    // Birthday month
-    if (filters.birthdayMonth !== null && c.birthdate) {
-      const month = new Date(c.birthdate).getMonth() + 1;
-      if (month !== filters.birthdayMonth) return false;
-    }
-    if (filters.birthdayMonth !== null && !c.birthdate) return false;
     // Total spent
+    const spent = parseFloat(c.total_spent);
     if (filters.totalSpent === 'gt' && filters.totalSpentMin !== undefined) {
-      if (c.totalSpent <= filters.totalSpentMin) return false;
+      if (spent <= filters.totalSpentMin) return false;
     }
     if (filters.totalSpent === 'lt' && filters.totalSpentMax !== undefined) {
-      if (c.totalSpent >= filters.totalSpentMax) return false;
+      if (spent >= filters.totalSpentMax) return false;
     }
     if (filters.totalSpent === 'between' && filters.totalSpentMin !== undefined && filters.totalSpentMax !== undefined) {
-      if (c.totalSpent < filters.totalSpentMin || c.totalSpent > filters.totalSpentMax) return false;
+      if (spent < filters.totalSpentMin || spent > filters.totalSpentMax) return false;
     }
-    // Last visit
-    if (filters.lastVisit !== 'all' && c.lastVisit) {
-      const visitDate = new Date(c.lastVisit);
+    // Last order
+    if (filters.lastVisit !== 'all' && c.last_order_at) {
+      const visitDate = new Date(c.last_order_at);
       const now = new Date();
       if (filters.lastVisit === 'today') {
         if (visitDate.toDateString() !== now.toDateString()) return false;
@@ -188,7 +188,7 @@ export function filterCustomers(customers: Customer[], filters: CustomerFilters)
   });
 }
 
-export function getCustomerDetail(id: number): CustomerDetail | undefined {
+export function getCustomerDetail(id: string): CustomerDetail | undefined {
   return mockCustomerDetails.find(d => d.id === id);
 }
 

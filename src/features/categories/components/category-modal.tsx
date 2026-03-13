@@ -35,7 +35,7 @@ export function CategoryModal({
   
   const [formData, setFormData] = useState<CategoryFormData>({
     name: "",
-    isActive: true,
+    is_active: true,
     productIds: [],
   });
   const [errors, setErrors] = useState<{ name?: string }>({});
@@ -47,13 +47,13 @@ export function CategoryModal({
       if (category) {
         setFormData({
           name: category.name,
-          isActive: category.isActive,
+          is_active: category.is_active,
           productIds: [], // Would be loaded from API in real app
         });
       } else {
         setFormData({
           name: "",
-          isActive: true,
+          is_active: true,
           productIds: [],
         });
       }
@@ -146,8 +146,8 @@ export function CategoryModal({
                 </p>
               </div>
               <StatusToggle
-                checked={formData.isActive}
-                onChange={(checked) => handleChange("isActive", checked)}
+                checked={formData.is_active}
+                onChange={(checked) => handleChange("is_active", checked)}
               />
             </div>
 

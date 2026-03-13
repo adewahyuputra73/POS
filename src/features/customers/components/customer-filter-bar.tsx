@@ -1,13 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { X, Filter } from "lucide-react";
-import { CustomerFilters, CustomerSegment, LastVisitFilter, TotalSpentFilter } from "../types";
-import { monthOptions } from "../mock-data";
+import { CustomerFilters, LastVisitFilter, TotalSpentFilter } from "../types";
 
 interface CustomerFilterBarProps {
   filters: CustomerFilters;
@@ -16,17 +14,10 @@ interface CustomerFilterBarProps {
 }
 
 export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: CustomerFilterBarProps) {
-  const segmentLabels: Record<string, string> = { all: "Semua Tipe", hot: "🔥 Hot", warm: "🌤 Warm", boil: "❄️ Boil" };
   const lastVisitLabels: Record<string, string> = { all: "Semua Waktu", today: "Hari Ini", this_week: "Minggu Ini", this_month: "Bulan Ini" };
   const totalSpentLabels: Record<string, string> = { all: "Semua", gt: "> Rp 1.000.000", lt: "< Rp 500.000" };
 
-  const getBirthdayLabel = (val: number | null) => {
-    if (val === null) return "Semua Bulan";
-    return monthOptions.find(m => m.value === val)?.label || String(val);
-  };
-
-  const hasActiveFilters = filters.segment !== 'all' || filters.birthdayMonth !== null ||
-    filters.totalSpent !== 'all' || filters.lastVisit !== 'all';
+  const hasActiveFilters = filters.totalSpent !== 'all' || filters.lastVisit !== 'all';
 
   const clearAll = () => {
     onFiltersChange({
@@ -45,23 +36,7 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
       <div className="flex items-center gap-2 flex-wrap">
         <Filter className="h-4 w-4 text-text-disabled" />
 
-        {/* Tipe (Segment) */}
-        <Select
-          value={filters.segment}
-          onValueChange={(v: string) => onFiltersChange({ ...filters, segment: v as CustomerSegment | 'all' })}
-        >
-          <SelectTrigger className={`w-36 h-9 text-xs ${filters.segment !== 'all' ? 'border-primary bg-primary/5' : ''}`}>
-            <SelectValue>{segmentLabels[filters.segment]}</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Semua Tipe</SelectItem>
-            <SelectItem value="hot">🔥 Hot</SelectItem>
-            <SelectItem value="warm">🌤 Warm</SelectItem>
-            <SelectItem value="boil">❄️ Boil</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Terakhir Datang */}
+        {/* Order Terakhir */}
         <Select
           value={filters.lastVisit}
           onValueChange={(v: string) => onFiltersChange({ ...filters, lastVisit: v as LastVisitFilter })}
@@ -74,22 +49,6 @@ export function CustomerFilterBar({ filters, onFiltersChange, totalResults }: Cu
             <SelectItem value="today">Hari Ini</SelectItem>
             <SelectItem value="this_week">Minggu Ini</SelectItem>
             <SelectItem value="this_month">Bulan Ini</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Ulang Tahun */}
-        <Select
-          value={filters.birthdayMonth !== null ? filters.birthdayMonth.toString() : 'all'}
-          onValueChange={(v: string) => onFiltersChange({ ...filters, birthdayMonth: v === 'all' ? null : parseInt(v) })}
-        >
-          <SelectTrigger className={`w-36 h-9 text-xs ${filters.birthdayMonth !== null ? 'border-primary bg-primary/5' : ''}`}>
-            <SelectValue>{getBirthdayLabel(filters.birthdayMonth)}</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Semua Bulan</SelectItem>
-            {monthOptions.map(m => (
-              <SelectItem key={m.value} value={m.value.toString()}>{m.label}</SelectItem>
-            ))}
           </SelectContent>
         </Select>
 
