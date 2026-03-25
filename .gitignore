@@ -50,3 +50,6 @@ hoppscotch-collection.json
 
 # local dev notes (tidak perlu di-track)
 CATATAN-API.md
+
+# Claude Code project instructions (local only)
+CLAUDE.md
