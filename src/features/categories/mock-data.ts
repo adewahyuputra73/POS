@@ -3,58 +3,52 @@ import { Category, CategoryFilters, ProductForPicker } from './types';
 // Mock categories data
 export const mockCategories: Category[] = [
   {
-    id: 1,
+    id: '1',
+    store_id: 'store-1',
     name: 'Makanan',
-    isActive: true,
-    productCount: 12,
+    is_active: true,
     createdAt: '2026-01-15T10:00:00Z',
     updatedAt: '2026-01-30T14:30:00Z',
-    outletId: 1,
   },
   {
-    id: 2,
+    id: '2',
+    store_id: 'store-1',
     name: 'Minuman',
-    isActive: true,
-    productCount: 8,
+    is_active: true,
     createdAt: '2026-01-15T10:00:00Z',
     updatedAt: '2026-01-28T09:15:00Z',
-    outletId: 1,
   },
   {
-    id: 3,
+    id: '3',
+    store_id: 'store-1',
     name: 'Snack',
-    isActive: true,
-    productCount: 5,
+    is_active: true,
     createdAt: '2026-01-16T11:00:00Z',
     updatedAt: '2026-01-25T16:45:00Z',
-    outletId: 1,
   },
   {
-    id: 4,
+    id: '4',
+    store_id: 'store-1',
     name: 'Dessert',
-    isActive: true,
-    productCount: 4,
+    is_active: true,
     createdAt: '2026-01-17T09:00:00Z',
     updatedAt: '2026-01-24T11:20:00Z',
-    outletId: 1,
   },
   {
-    id: 5,
+    id: '5',
+    store_id: 'store-1',
     name: 'Paket Hemat',
-    isActive: false,
-    productCount: 3,
+    is_active: false,
     createdAt: '2026-01-18T14:00:00Z',
     updatedAt: '2026-01-20T08:00:00Z',
-    outletId: 1,
   },
   {
-    id: 6,
+    id: '6',
+    store_id: 'store-1',
     name: 'Promo Spesial',
-    isActive: false,
-    productCount: 0,
+    is_active: false,
     createdAt: '2026-01-19T12:00:00Z',
     updatedAt: '2026-01-19T12:00:00Z',
-    outletId: 1,
   },
 ];
 
@@ -81,8 +75,8 @@ export function filterCategories(
 ): Category[] {
   return categories.filter((category) => {
     // Status filter
-    if (filters.status === 'active' && !category.isActive) return false;
-    if (filters.status === 'inactive' && category.isActive) return false;
+    if (filters.status === 'active' && !category.is_active) return false;
+    if (filters.status === 'inactive' && category.is_active) return false;
 
     // Search filter
     if (filters.search) {
@@ -100,7 +94,7 @@ export function filterCategories(
 export function getCategoryStats(categories: Category[]) {
   return {
     total: categories.length,
-    active: categories.filter((c) => c.isActive).length,
-    inactive: categories.filter((c) => !c.isActive).length,
+    active: categories.filter((c) => c.is_active).length,
+    inactive: categories.filter((c) => !c.is_active).length,
   };
 }

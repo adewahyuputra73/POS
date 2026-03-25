@@ -1,76 +1,51 @@
 // Customer Types
 export type CustomerSegment = 'hot' | 'warm' | 'boil';
 
-export interface CreateCustomerRequest {
-  name: string;
-  phone: string;
-  email?: string;
-}
-
-export interface UpdateCustomerRequest {
-  name?: string;
-  phone?: string;
-  email?: string;
-  whatsapp_opt_in?: boolean;
-}
-
 export interface Customer {
-  id: number;
+  id: string;
+  store_id: string;
+  order_id: string | null;
   name: string;
   phone: string;
-  birthdate: string | null; // ISO date string
-  segment: CustomerSegment;
-  totalReservations: number;
-  successOrders: number;
-  totalSpent: number;
-  favProducts: number;
-  coins: number;
-  lastVisit: string | null; // ISO date string
+  email: string | null;
+  total_spent: string;
+  total_orders: number;
+  last_order_at: string;
+  whatsapp_opt_in: boolean;
+  is_active: boolean;
   createdAt: string;
+  updatedAt: string;
+  outlet_id: string | null;
 }
 
-export interface CustomerOrder {
-  id: number;
-  orderId: string;
-  date: string;
-  status: 'success' | 'cancelled' | 'pending';
-  items: string[];
-  totalAmount: number;
-  paymentMethod: string;
+export interface CustomerListResponse {
+  total: number;
+  page: number;
+  totalPages: number;
+  data: Customer[];
 }
 
-export interface CustomerReservation {
-  id: number;
-  date: string;
-  time: string;
-  guests: number;
-  status: 'confirmed' | 'cancelled' | 'completed' | 'no_show';
-  notes: string;
-  tableNumber: string;
+// CONFIRMED from GET /customers/:id
+export interface CustomerRecentOrder {
+  id: string;
+  order_number: string;
+  total_amount: string;
+  fulfillment_status: string;
+  created_at: string;
 }
 
-export interface CustomerReview {
-  id: number;
-  orderId: string;
-  date: string;
-  rating: number; // 1-5
+// NOTE: CustomerDetailReview fields are guessed — adjust when actual response is known
+export interface CustomerDetailReview {
+  id: string;
+  rating: number;
   comment: string;
-  products: string[];
-  questionAnswers: { question: string; rating: number }[];
+  created_at: string;
 }
 
 export interface CustomerDetail extends Customer {
-  address: string;
-  notes: string;
-  email: string;
-  orders: CustomerOrder[];
-  reservations: CustomerReservation[];
-  reviews: CustomerReview[];
-  // Summary stats
-  avgOrderValue: number;
-  avgRating: number;
-  totalReviews: number;
-  memberSince: string;
+  recent_orders: CustomerRecentOrder[];
+  reviews: CustomerDetailReview[];
+  avg_rating: number | null;
 }
 
 // Customer Filters
@@ -91,12 +66,20 @@ export interface CustomerFilters {
 }
 
 // Bulk Message Types
-// NOTE: BulkTarget fields are guessed — adjust when actual response is known
+// CONFIRMED from GET /customers/bulk-targets
 export interface BulkTarget {
   id: string;
   name: string;
   phone: string;
-  whatsapp_opt_in: boolean;
+  email: string | null;
+  total_spent: string;
+  total_orders: number;
+  last_order_at: string;
+}
+
+export interface BulkTargetResponse {
+  total: number;
+  data: BulkTarget[];
 }
 
 export interface SendBulkMessageRequest {

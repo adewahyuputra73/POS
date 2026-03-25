@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from 'react';
-import { RestaurantTable, TableFilters, TableFormData } from '@/features/table-management/types';
-import { mockTables, mockAreas, filterTables } from '@/features/table-management/mock-data';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Table as ApiTable, Area, CreateTableRequest } from '@/features/tables/types';
+import { tableService } from '@/features/tables/services/table-service';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,29 +14,32 @@ import {
   Plus, Search, Download, Pencil, Trash2, X, QrCode, Layers,
   Users as UsersIcon,
 } from 'lucide-react';
+import { useToast } from '@/components/ui/toast';
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'default' }> = {
-  available: { label: 'Tersedia', variant: 'success' },
-  occupied: { label: 'Terisi', variant: 'warning' },
-  reserved: { label: 'Reserved', variant: 'default' },
+  AVAILABLE: { label: 'Tersedia', variant: 'success' },
+  OCCUPIED: { label: 'Terisi', variant: 'warning' },
+  RESERVED: { label: 'Reserved', variant: 'default' },
+  UNAVAILABLE: { label: 'Tidak Tersedia', variant: 'default' },
 };
 
 // ==================
 // Table Form Dialog
 // ==================
-function TableFormDialog({ initialData, onSubmit, onCancel, isEditing }: {
-  initialData?: RestaurantTable;
-  onSubmit: (data: TableFormData) => void;
+function TableFormDialog({ initialData, areas, onSubmit, onCancel, isEditing }: {
+  initialData?: ApiTable;
+  areas: Area[];
+  onSubmit: (data: CreateTableRequest) => void;
   onCancel: () => void;
   isEditing?: boolean;
 }) {
-  const [form, setForm] = useState<TableFormData>({
+  const [form, setForm] = useState<CreateTableRequest>({
     name: initialData?.name || '',
-    areaId: initialData?.areaId || (mockAreas[0]?.id || 0),
+    area_id: initialData?.area_id || (areas[0]?.id || ''),
     capacity: initialData?.capacity || 4,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -78,11 +81,11 @@ function TableFormDialog({ initialData, onSubmit, onCancel, isEditing }: {
           </div>
           <div>
             <label className="block text-xs font-medium text-text-primary mb-1.5">Area *</label>
-            <Select value={String(form.areaId)} onValueChange={(v) => setForm(prev => ({ ...prev, areaId: Number(v) }))}>
+            <Select value={form.area_id} onValueChange={(v) => setForm(prev => ({ ...prev, area_id: v }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {mockAreas.filter(a => a.isActive).map(area => (
-                  <SelectItem key={area.id} value={String(area.id)}>{area.name}</SelectItem>
+                {areas.filter(a => a.is_active).map(area => (
+                  <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -112,7 +115,7 @@ function TableFormDialog({ initialData, onSubmit, onCancel, isEditing }: {
 // ==================
 // QR Preview Dialog
 // ==================
-function QrPreviewDialog({ table, onClose }: { table: RestaurantTable; onClose: () => void }) {
+function QrPreviewDialog({ table, onClose }: { table: ApiTable; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
       <div className="bg-surface rounded-2xl shadow-xl w-full max-w-sm p-6 text-center relative animate-in slide-in-from-bottom-4 duration-300">
@@ -120,18 +123,18 @@ function QrPreviewDialog({ table, onClose }: { table: RestaurantTable; onClose: 
           <X className="h-5 w-5" />
         </button>
         <h3 className="text-lg font-semibold text-text-primary mb-2">QR Code Meja {table.name}</h3>
-        <p className="text-xs text-text-secondary mb-6">{table.areaName}</p>
+        <p className="text-xs text-text-secondary mb-6">{table.area?.name || ''}</p>
 
         {/* QR Placeholder */}
         <div className="mx-auto w-48 h-48 bg-background rounded-xl border-2 border-dashed border-border flex items-center justify-center mb-4">
           <div className="text-center">
             <QrCode className="h-16 w-16 text-text-disabled mx-auto mb-2" />
-            <p className="text-[10px] text-text-disabled font-mono break-all px-2">{table.qrCode}</p>
+            <p className="text-[10px] text-text-disabled font-mono break-all px-2">{table.qr_code}</p>
           </div>
         </div>
 
         <p className="text-xs text-text-disabled mb-4">
-          URL: <span className="font-mono text-text-secondary">{table.qrCode}</span>
+          URL: <span className="font-mono text-text-secondary">{table.qr_code}</span>
         </p>
 
         <Button className="w-full gap-2">
@@ -146,50 +149,95 @@ function QrPreviewDialog({ table, onClose }: { table: RestaurantTable; onClose: 
 // Meja Page
 // ==================
 export default function TablesPage() {
-  const [tables, setTables] = useState<RestaurantTable[]>(mockTables);
-  const [filters, setFilters] = useState<TableFilters>({ search: '', areaId: 'all' });
+  const { showToast } = useToast();
+  const [tables, setTables] = useState<ApiTable[]>([]);
+  const [areas, setAreas] = useState<Area[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
+  const [filters, setFilters] = useState<{ search: string; areaId: string }>({ search: '', areaId: 'all' });
   const [showForm, setShowForm] = useState(false);
-  const [editingTable, setEditingTable] = useState<RestaurantTable | null>(null);
-  const [qrTable, setQrTable] = useState<RestaurantTable | null>(null);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [editingTable, setEditingTable] = useState<ApiTable | null>(null);
+  const [qrTable, setQrTable] = useState<ApiTable | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const filtered = useMemo(() => filterTables(tables, filters), [tables, filters]);
+  // Fetch data
+  const fetchData = useCallback(async () => {
+    setIsFetching(true);
+    try {
+      const [tablesData, areasData] = await Promise.all([
+        tableService.list(),
+        tableService.areas(),
+      ]);
+      setTables(tablesData);
+      setAreas(areasData);
+    } catch {
+      showToast("Gagal memuat data meja", "error");
+    } finally {
+      setIsFetching(false);
+    }
+  }, [showToast]);
 
-  const handleAdd = (data: TableFormData) => {
-    const area = mockAreas.find(a => a.id === data.areaId);
-    const newTable: RestaurantTable = {
-      id: Math.max(...tables.map(t => t.id)) + 1,
-      areaId: data.areaId,
-      areaName: area?.name || '',
-      name: data.name,
-      capacity: data.capacity,
-      shape: 'rectangle',
-      positionX: 50, positionY: 50, width: 80, height: 80, rotation: 0,
-      qrCode: `opaper.app/fere-cafe?meja=${data.name}`,
-      isActive: true, status: 'available',
-      createdAt: new Date().toISOString(),
-    };
-    setTables(prev => [...prev, newTable]);
-    setShowForm(false);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Filter tables
+  const filtered = useMemo(() => {
+    return tables.filter(t => {
+      if (filters.search) {
+        const search = filters.search.toLowerCase();
+        if (!t.name.toLowerCase().includes(search)) return false;
+      }
+      if (filters.areaId !== 'all' && t.area_id !== filters.areaId) return false;
+      return true;
+    });
+  }, [tables, filters]);
+
+  // Stats
+  const stats = useMemo(() => ({
+    total: tables.length,
+    totalCapacity: tables.reduce((s, t) => s + t.capacity, 0),
+    available: tables.filter(t => t.status === 'AVAILABLE').length,
+  }), [tables]);
+
+  const handleAdd = async (data: CreateTableRequest) => {
+    try {
+      await tableService.create(data);
+      showToast("Meja berhasil ditambahkan", "success");
+      await fetchData();
+      setShowForm(false);
+    } catch {
+      showToast("Gagal menambah meja", "error");
+    }
   };
 
-  const handleEdit = (data: TableFormData) => {
+  const handleEdit = async (data: CreateTableRequest) => {
     if (!editingTable) return;
-    const area = mockAreas.find(a => a.id === data.areaId);
-    setTables(prev => prev.map(t => t.id === editingTable.id ? {
-      ...t, name: data.name, areaId: data.areaId, areaName: area?.name || '', capacity: data.capacity,
-      qrCode: `opaper.app/fere-cafe?meja=${data.name}`,
-    } : t));
-    setEditingTable(null);
+    try {
+      await tableService.update(editingTable.id, {
+        name: data.name,
+        capacity: data.capacity,
+      });
+      showToast("Meja berhasil diubah", "success");
+      await fetchData();
+      setEditingTable(null);
+    } catch {
+      showToast("Gagal mengubah meja", "error");
+    }
   };
 
-  const handleDelete = (table: RestaurantTable) => {
-    if (table.status === 'occupied') {
-      alert('Tidak bisa menghapus meja yang sedang terisi.');
+  const handleDelete = async (table: ApiTable) => {
+    if (table.status === 'OCCUPIED') {
+      showToast("Tidak bisa menghapus meja yang sedang terisi", "error");
       return;
     }
-    if (confirm(`Hapus meja "${table.name}" (${table.areaName})?`)) {
-      setTables(prev => prev.filter(t => t.id !== table.id));
+    if (confirm(`Hapus meja "${table.name}" (${table.area?.name || ''})?`)) {
+      try {
+        await tableService.delete(table.id);
+        setTables(prev => prev.filter(t => t.id !== table.id));
+        showToast(`Meja "${table.name}" berhasil dihapus`, "success");
+      } catch {
+        showToast("Gagal menghapus meja", "error");
+      }
     }
   };
 
@@ -213,7 +261,7 @@ export default function TablesPage() {
             <Layers className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-text-primary">{tables.length}</p>
+            <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
             <p className="text-xs text-text-secondary">Total Meja</p>
           </div>
         </div>
@@ -222,7 +270,7 @@ export default function TablesPage() {
             <UsersIcon className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-text-primary">{tables.reduce((s, t) => s + t.capacity, 0)}</p>
+            <p className="text-2xl font-bold text-text-primary">{stats.totalCapacity}</p>
             <p className="text-xs text-text-secondary">Total Kapasitas</p>
           </div>
         </div>
@@ -231,7 +279,7 @@ export default function TablesPage() {
             <Layers className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-text-primary">{tables.filter(t => t.status === 'available').length}</p>
+            <p className="text-2xl font-bold text-text-primary">{stats.available}</p>
             <p className="text-xs text-text-secondary">Tersedia</p>
           </div>
         </div>
@@ -248,18 +296,18 @@ export default function TablesPage() {
             className="pl-9"
           />
         </div>
-        <Select value={String(filters.areaId)} onValueChange={(v) => setFilters(prev => ({ ...prev, areaId: v === 'all' ? 'all' : Number(v) }))}>
+        <Select value={filters.areaId} onValueChange={(v) => setFilters(prev => ({ ...prev, areaId: v }))}>
           <SelectTrigger className="w-48">
             <SelectValue>
-              {filters.areaId === 'all' 
-                ? "Semua Area" 
-                : (mockAreas.find(a => a.id === filters.areaId)?.name || String(filters.areaId))}
+              {filters.areaId === 'all'
+                ? "Semua Area"
+                : (areas.find(a => a.id === filters.areaId)?.name || filters.areaId)}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua Area</SelectItem>
-            {mockAreas.filter(a => a.isActive).map(area => (
-              <SelectItem key={area.id} value={String(area.id)}>{area.name}</SelectItem>
+            {areas.filter(a => a.is_active).map(area => (
+              <SelectItem key={area.id} value={area.id}>{area.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -288,7 +336,7 @@ export default function TablesPage() {
           </TableHeader>
           <TableBody>
             {filtered.map((t) => {
-              const sc = statusConfig[t.status];
+              const sc = statusConfig[t.status] || { label: t.status, variant: 'default' as const };
               return (
                 <TableRow key={t.id} className="hover:bg-background/50 transition-colors">
                   <TableCell>
@@ -301,15 +349,13 @@ export default function TablesPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold ${
-                        t.shape === 'circle' ? 'rounded-full bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'
-                      }`}>
+                      <div className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold bg-purple-50 text-purple-700">
                         {t.name}
                       </div>
                       <span className="text-sm font-medium text-text-primary">Meja {t.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-text-secondary">{t.areaName}</TableCell>
+                  <TableCell className="text-sm text-text-secondary">{t.area?.name || ''}</TableCell>
                   <TableCell className="text-center text-sm text-text-primary">{t.capacity} pax</TableCell>
                   <TableCell className="text-center">
                     <Badge variant={sc.variant} size="sm">{sc.label}</Badge>
@@ -342,8 +388,8 @@ export default function TablesPage() {
       </p>
 
       {/* Dialogs */}
-      {showForm && <TableFormDialog onSubmit={handleAdd} onCancel={() => setShowForm(false)} />}
-      {editingTable && <TableFormDialog initialData={editingTable} onSubmit={handleEdit} onCancel={() => setEditingTable(null)} isEditing />}
+      {showForm && <TableFormDialog areas={areas} onSubmit={handleAdd} onCancel={() => setShowForm(false)} />}
+      {editingTable && <TableFormDialog initialData={editingTable} areas={areas} onSubmit={handleEdit} onCancel={() => setEditingTable(null)} isEditing />}
       {qrTable && <QrPreviewDialog table={qrTable} onClose={() => setQrTable(null)} />}
     </div>
   );

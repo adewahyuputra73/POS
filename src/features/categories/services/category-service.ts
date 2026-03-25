@@ -5,10 +5,12 @@ import type { Category, CreateCategoryRequest, UpdateCategoryRequest } from "../
 
 export const categoryService = {
   async list(): Promise<Category[]> {
-    const response = await apiClient.get<ApiResponse<Category[]>>(
+    const response = await apiClient.get<ApiResponse<any>>(
       ENDPOINTS.CATEGORIES.LIST
     );
-    return response.data.data;
+    const payload = response.data.data;
+    // Handle both: flat array OR nested { categories: [] }
+    return Array.isArray(payload) ? payload : (payload?.categories ?? []);
   },
 
   async create(data: CreateCategoryRequest): Promise<Category> {

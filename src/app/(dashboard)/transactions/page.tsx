@@ -1,20 +1,19 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout";
 import { Button, useToast } from "@/components/ui";
 import { TransactionTable } from "@/features/transactions/components/transaction-table";
 import { TransactionFilterBar } from "@/features/transactions/components/transaction-filters";
 import { TransactionDetail } from "@/features/transactions/components/transaction-detail";
+import { TransactionCreateModal } from "@/features/transactions/components/transaction-create-modal";
 import {
   Order,
+  OrderStatus,
   TransactionFilters,
 } from "@/features/transactions/types";
-import {
-  mockOrders,
-  filterOrders,
-  getOrderStats,
-} from "@/features/transactions/mock-data";
+import { filterOrders, getOrderStats } from "@/features/transactions/mock-data";
+import { orderService } from "@/features/orders/services/order-service";
 import { formatCurrency, formatNumber } from "@/lib/utils/format";
 import { cn } from "@/lib/utils";
 import {
@@ -29,13 +28,61 @@ import {
   X,
   CalendarDays,
   Trash2,
+  Plus,
 } from "lucide-react";
+
+function mapStatus(raw: any): OrderStatus {
+  const pay = (raw.payment_status ?? raw.status ?? "").toUpperCase();
+  const ful = (raw.fulfillment_status ?? "").toUpperCase();
+  if (ful === "COMPLETED") return "completed";
+  if (ful === "CANCELLED" || pay === "CANCELLED") return "failed";
+  if (pay === "UNPAID") return "unpaid";
+  if (ful === "READY" || ful === "DELIVERED") return "ready";
+  if (ful === "PENDING") return "unpaid";
+  return "unpaid";
+}
+
+function mapApiOrder(raw: any): Order {
+  const firstPayment = (raw.payments ?? [])[0];
+  const paymentMethod = (
+    firstPayment?.payment_method ?? raw.payment_method ?? "cash"
+  ).toLowerCase() as Order["paymentMethod"];
+
+  return {
+    id: raw.id,
+    orderNumber: raw.order_number ?? raw.id,
+    customerName: raw.customer?.name ?? raw.customer_name ?? "Tamu",
+    customerPhone: raw.customer?.phone ?? raw.customer_phone ?? "",
+    fulfillmentType: ((raw.order_type ?? "dine_in") as string).toLowerCase() as Order["fulfillmentType"],
+    orderDate: raw.createdAt ?? raw.created_at ?? "",
+    completedAt: raw.updatedAt ?? raw.updated_at ?? undefined,
+    totalPrice: Number(raw.total_amount ?? raw.total ?? 0),
+    subtotal: Number(raw.subtotal ?? 0),
+    discount: Number(raw.discount ?? 0),
+    tax: Number(raw.tax ?? 0),
+    serviceFee: Number(raw.service_fee ?? 0),
+    shippingFee: Number(raw.delivery_fee ?? raw.shipping_fee ?? 0),
+    paymentMethod,
+    status: mapStatus(raw),
+    items: (raw.items ?? []).map((item: any) => ({
+      id: item.id ?? 0,
+      productId: item.product_id ?? 0,
+      productName: item.product_name ?? item.name ?? "",
+      quantity: item.qty ?? item.quantity ?? 1,
+      price: Number(item.price ?? 0),
+      discount: Number(item.discount ?? 0),
+      subtotal: Number(item.subtotal ?? item.price ?? 0),
+    })),
+    cashierName: raw.kasirDetail?.name ?? raw.cashier_name ?? "",
+  };
+}
 
 export default function TransactionsPage() {
   const { showToast } = useToast();
 
   // Data state
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // View state
   const [view, setView] = useState<"list" | "detail">("list");
@@ -53,7 +100,10 @@ export default function TransactionsPage() {
   });
 
   // Selection state
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // Create modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<Order | null>(null);
@@ -63,6 +113,21 @@ export default function TransactionsPage() {
   const [changeDateTarget, setChangeDateTarget] = useState<boolean>(false);
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
+
+  const fetchData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const raw = await orderService.list({ limit: 100 });
+      const mapped = (Array.isArray(raw) ? raw : []).map(mapApiOrder);
+      setOrders(mapped);
+    } catch {
+      showToast("Gagal memuat transaksi", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [showToast]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   // Computed
   const mergedFilters = useMemo(
@@ -88,9 +153,10 @@ export default function TransactionsPage() {
     setSelectedOrder(null);
   };
 
-  const handleToggleSelect = (id: number) => {
+  const handleToggleSelect = (id: string | number) => {
+    const sid = String(id);
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(sid) ? prev.filter((x) => x !== sid) : [...prev, sid]
     );
   };
 
@@ -98,7 +164,7 @@ export default function TransactionsPage() {
     if (selectedIds.length === filteredOrders.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(filteredOrders.map((o) => o.id));
+      setSelectedIds(filteredOrders.map((o) => String(o.id)));
     }
   };
 
@@ -111,23 +177,22 @@ export default function TransactionsPage() {
     setDeleteTarget(order);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!deleteTarget) return;
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === deleteTarget.id
-          ? { ...o, deletedAt: new Date().toISOString(), deletedBy: "Admin" }
-          : o
-      )
-    );
-    setOrders((prev) => prev.filter((o) => o.id !== deleteTarget.id));
-    showToast(`Pesanan ${deleteTarget.orderNumber} berhasil dihapus`, "success");
-    setDeleteTarget(null);
-    setSelectedIds((prev) => prev.filter((id) => id !== deleteTarget.id));
+    try {
+      await orderService.void(deleteTarget.id, { reason: "Dihapus oleh admin" });
+      await fetchData();
+      showToast(`Pesanan ${deleteTarget.orderNumber} berhasil di-void`, "success");
+    } catch {
+      showToast("Gagal menghapus pesanan", "error");
+    } finally {
+      setDeleteTarget(null);
+      setSelectedIds((prev) => prev.filter((id) => id !== String(deleteTarget.id)));
+    }
   };
 
   const handleBulkDelete = () => {
-    const selected = orders.filter((o) => selectedIds.includes(o.id));
+    const selected = orders.filter((o) => selectedIds.includes(String(o.id)));
     const invalid = selected.filter(
       (o) => o.status !== "completed" && o.status !== "failed"
     );
@@ -141,15 +206,23 @@ export default function TransactionsPage() {
     setBulkDeleteConfirm(true);
   };
 
-  const confirmBulkDelete = () => {
-    setOrders((prev) => prev.filter((o) => !selectedIds.includes(o.id)));
-    showToast(`${selectedIds.length} pesanan berhasil dihapus`, "success");
-    setSelectedIds([]);
-    setBulkDeleteConfirm(false);
+  const confirmBulkDelete = async () => {
+    try {
+      await Promise.all(
+        selectedIds.map((id) => orderService.void(id, { reason: "Dihapus oleh admin" }))
+      );
+      await fetchData();
+      showToast(`${selectedIds.length} pesanan berhasil di-void`, "success");
+    } catch {
+      showToast("Gagal menghapus beberapa pesanan", "error");
+    } finally {
+      setSelectedIds([]);
+      setBulkDeleteConfirm(false);
+    }
   };
 
   const handleChangeDate = () => {
-    const selected = orders.filter((o) => selectedIds.includes(o.id));
+    const selected = orders.filter((o) => selectedIds.includes(String(o.id)));
     const invalid = selected.filter((o) => o.status !== "completed");
     if (invalid.length > 0) {
       showToast("Hanya pesanan Selesai yang bisa diubah tanggalnya", "error");
@@ -165,16 +238,7 @@ export default function TransactionsPage() {
       showToast("Tanggal dan jam harus diisi", "error");
       return;
     }
-    const newCompletedAt = `${newDate}T${newTime}:00Z`;
-    setOrders((prev) =>
-      prev.map((o) =>
-        selectedIds.includes(o.id) ? { ...o, completedAt: newCompletedAt } : o
-      )
-    );
-    showToast(
-      `Tanggal selesai ${selectedIds.length} pesanan berhasil diubah`,
-      "success"
-    );
+    showToast("Fitur ubah tanggal belum tersedia di API", "error");
     setChangeDateTarget(false);
     setSelectedIds([]);
   };
@@ -242,7 +306,16 @@ export default function TransactionsPage() {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
   return (
+    <>
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
@@ -253,9 +326,14 @@ export default function TransactionsPage() {
           { label: "Transaksi" },
         ]}
         actions={
-          <Button variant="outline" className="gap-1.5">
-            <Download className="h-4 w-4" /> Ekspor
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-1.5">
+              <Download className="h-4 w-4" /> Ekspor
+            </Button>
+            <Button onClick={() => setShowCreateModal(true)} className="gap-1.5">
+              <Plus className="h-4 w-4" /> Tambah Transaksi
+            </Button>
+          </div>
         }
       />
 
@@ -481,5 +559,13 @@ export default function TransactionsPage() {
         </>
       )}
     </div>
+
+    {showCreateModal && (
+      <TransactionCreateModal
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => { setShowCreateModal(false); fetchData(); }}
+      />
+    )}
+    </>
   );
 }

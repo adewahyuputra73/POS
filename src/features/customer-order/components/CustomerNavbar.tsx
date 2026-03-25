@@ -13,11 +13,11 @@ export function CustomerNavbar() {
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-divider shadow-sm">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 <Link href="/order" className="flex items-center gap-2 group">
-                    <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 transform group-hover:rotate-6 transition-all duration-300">
+                    <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-lg transform group-hover:rotate-6 transition-all duration-300" style={{ backgroundColor: '#1C0A00' }}>
                         <Store className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                        <span className="text-xl font-bold tracking-tight text-text-primary">
+                        <span className="text-xl font-[700] tracking-tight text-text-primary font-[family-name:var(--font-fraunces)]">
                             {mockStoreInfo.name || APP_NAME}
                         </span>
                     </div>
@@ -25,7 +25,7 @@ export function CustomerNavbar() {
 
                 <Link
                     href="/order/cart"
-                    className="relative p-2.5 rounded-full hover:bg-primary-light text-text-primary hover:text-primary transition-all duration-200"
+                    className="relative p-2.5 rounded-full hover:bg-[#FEF3C7] text-text-primary hover:text-[#D97706] transition-all duration-200"
                 >
                     <ShoppingCart className="h-6 w-6" />
                     {itemCount > 0 && (

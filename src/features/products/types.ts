@@ -1,6 +1,6 @@
 // Product Types
 export interface ProductImage {
-  id: number;
+  id: string;
   url: string;
   isPrimary: boolean;
 }
@@ -11,12 +11,12 @@ export interface ChannelPrice {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   price: number;
   comparePrice?: number;
-  categoryId?: number;
+  categoryId?: string;
   categoryName?: string;
   isActive: boolean;
   barcode?: string;
@@ -50,7 +50,7 @@ export interface VariantOption {
   useStock: boolean;
   stockQuantity?: number;
   isActive: boolean;
-  sourceProductId?: number; // Only for 'product' sourceType
+  sourceProductId?: string; // Only for 'product' sourceType
 }
 
 export interface Variant {
@@ -68,7 +68,7 @@ export interface Variant {
 
 // Category Types
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   productCount: number;
@@ -89,22 +89,36 @@ export interface ServiceFee {
   isPercentage: boolean;
 }
 
+export interface ProductPriceRequest {
+  channel: string;
+  price: number;
+  compare_price?: number | null;
+}
+
 // API Request Types
 export interface CreateProductRequest {
   name: string;
-  price: number;
+  price?: number;
+  prices?: ProductPriceRequest[];
+  unit?: string;
   category_id?: string;
+  is_active?: boolean;
   stock_type: "LIMITED" | "UNLIMITED";
   stock_qty?: number;
+  stock_limit?: number;
   description?: string;
 }
 
 export interface UpdateProductRequest {
   name?: string;
   price?: number;
+  prices?: ProductPriceRequest[];
+  unit?: string;
   category_id?: string;
+  is_active?: boolean;
   stock_type?: "LIMITED" | "UNLIMITED";
   stock_qty?: number;
+  stock_limit?: number;
   description?: string;
 }
 
@@ -145,7 +159,7 @@ export type ProductStatusFilter = 'all' | 'active' | 'inactive';
 export interface ProductFilters {
   status: ProductStatusFilter;
   search: string;
-  categoryId?: number;
+  categoryId?: string;
 }
 
 export interface VariantFilters {
@@ -159,7 +173,7 @@ export interface ProductFormData {
   description: string;
   price: number;
   comparePrice: number;
-  categoryId: number | null;
+  categoryId: string | null;
   isActive: boolean;
   barcode: string;
   sku: string;
@@ -203,5 +217,5 @@ export interface VariantOptionFormData {
   useStock: boolean;
   stockQuantity: number;
   isActive: boolean;
-  sourceProductId?: number;
+  sourceProductId?: string;
 }

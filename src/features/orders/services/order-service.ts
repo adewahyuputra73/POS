@@ -5,11 +5,12 @@ import type { Order, OrderSummaryCards, CheckoutRequest, PayOrderRequest, Update
 
 export const orderService = {
   async list(params?: OrderListParams): Promise<Order[]> {
-    const response = await apiClient.get<ApiResponse<Order[]>>(
-      ENDPOINTS.ORDERS.LIST,
-      { params }
-    );
-    return response.data.data;
+    const response = await apiClient.get<ApiResponse<any>>(ENDPOINTS.ORDERS.LIST, { params });
+    const payload = response.data.data;
+    // API returns { total_data, total_page, current_page, data: [] }
+    return Array.isArray(payload)
+      ? payload
+      : (payload?.data ?? payload?.orders ?? []);
   },
 
   async detail(id: string | number): Promise<Order> {

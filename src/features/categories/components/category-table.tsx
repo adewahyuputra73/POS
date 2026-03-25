@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { 
-  ChevronUp, 
-  ChevronDown, 
+import {
+  ChevronUp,
+  ChevronDown,
   Pencil,
+  Trash2,
   ChevronLeft,
   ChevronRight,
   Package,
@@ -25,10 +26,11 @@ import { StatusToggle } from "@/features/products/components/status-toggle";
 interface CategoryTableProps {
   categories: Category[];
   onEdit: (category: Category) => void;
-  onToggleStatus: (categoryId: number, isActive: boolean) => void;
+  onDelete: (category: Category) => void;
+  onToggleStatus: (categoryId: string, is_active: boolean) => void;
 }
 
-type SortField = 'name' | 'productCount' | 'updatedAt';
+type SortField = 'name' | 'updatedAt';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE = 10;
@@ -36,6 +38,7 @@ const ITEMS_PER_PAGE = 10;
 export function CategoryTable({
   categories,
   onEdit,
+  onDelete,
   onToggleStatus,
 }: CategoryTableProps) {
   const [sortField, setSortField] = useState<SortField>('name');
@@ -50,9 +53,6 @@ export function CategoryTable({
       switch (sortField) {
         case 'name':
           comparison = a.name.localeCompare(b.name);
-          break;
-        case 'productCount':
-          comparison = a.productCount - b.productCount;
           break;
         case 'updatedAt':
           comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
@@ -118,16 +118,7 @@ export function CategoryTable({
                 <SortIcon field="name" />
               </div>
             </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-background transition-colors text-center"
-              onClick={() => handleSort('productCount')}
-            >
-              <div className="flex items-center justify-center gap-2">
-                JUMLAH PRODUK
-                <SortIcon field="productCount" />
-              </div>
-            </TableHead>
-            <TableHead 
+            <TableHead
               className="cursor-pointer hover:bg-background transition-colors"
               onClick={() => handleSort('updatedAt')}
             >
@@ -151,29 +142,19 @@ export function CategoryTable({
                   <span className="font-medium text-text-primary">{category.name}</span>
                 </div>
               </TableCell>
-              <TableCell className="text-center">
-                <span className={cn(
-                  "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium",
-                  category.productCount > 0 
-                    ? "bg-blue-50 text-blue-700"
-                    : "bg-background text-text-secondary"
-                )}>
-                  {category.productCount} Produk
-                </span>
-              </TableCell>
               <TableCell className="text-text-secondary text-sm">
                 {formatDate(category.updatedAt)}
               </TableCell>
               <TableCell className="text-center">
                 <div className="flex justify-center">
                   <StatusToggle
-                    checked={category.isActive}
+                    checked={category.is_active}
                     onChange={(checked) => onToggleStatus(category.id, checked)}
                   />
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center gap-1">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -181,6 +162,14 @@ export function CategoryTable({
                     className="h-8 w-8 text-text-secondary hover:text-primary"
                   >
                     <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDelete(category)}
+                    className="h-8 w-8 text-text-secondary hover:text-error"
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </TableCell>

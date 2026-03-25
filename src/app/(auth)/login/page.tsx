@@ -17,27 +17,14 @@ export default function LoginPage() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-text-primary">Welcome back</h2>
+        <h2 className="text-2xl font-bold text-text-primary">Selamat Datang</h2>
         <p className="text-text-secondary mt-2">
-          Sign in to your account to continue
+          Masuk ke akun Anda untuk melanjutkan
         </p>
       </div>
 
       {/* Login Form */}
       <LoginForm />
-
-      {/* Footer */}
-      <div className="mt-6 text-center text-sm text-text-secondary">
-        <p>
-          Don&apos;t have an account?{" "}
-          <a
-            href="/register"
-            className="text-indigo-600 hover:text-indigo-700 font-medium"
-          >
-            Sign up
-          </a>
-        </p>
-      </div>
     </div>
   );
 }

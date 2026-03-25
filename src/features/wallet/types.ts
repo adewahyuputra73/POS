@@ -19,13 +19,26 @@ export interface WalletBalanceParams {
   end_date?: string;
 }
 
-// NOTE: WalletHistoryItem fields are guessed — adjust when actual response is known
+// CONFIRMED from GET /wallet/history
 export interface WalletHistoryItem {
   id: string;
-  type: string;
-  amount: number;
-  description: string;
-  created_at: string;
+  store_id: string;
+  shift_id: string | null;
+  order_id: string | null;
+  admin_id: string;
+  wallet_type: WalletType;
+  type: WalletTransactionType;
+  amount: string;
+  note: string | null;
+  edc_bank: string | null;
+  edc_ref_number: string | null;
+  cashless_provider: string | null;
+  cashless_ref: string | null;
+  createdAt: string;
+  updatedAt: string;
+  admin: {
+    full_name: string;
+  };
 }
 
 export interface WalletHistoryResponse {
@@ -56,12 +69,33 @@ export interface CreateWalletTransactionRequest {
   edc_ref_number?: string;
 }
 
-// NOTE: WalletShiftSummary fields are guessed — adjust when actual response is known
-export interface WalletShiftSummary {
+// CONFIRMED from GET /wallet/shift
+// WalletShiftTransaction = WalletHistoryItem tanpa embed admin{}
+export interface WalletShiftTransaction {
   id: string;
+  store_id: string;
   shift_id: string;
-  total_cash: number;
-  total_cashless: number;
-  total_edc: number;
-  created_at: string;
+  order_id: string | null;
+  admin_id: string;
+  wallet_type: WalletType;
+  type: WalletTransactionType;
+  amount: string;
+  note: string | null;
+  edc_bank: string | null;
+  edc_ref_number: string | null;
+  cashless_provider: string | null;
+  cashless_ref: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WalletShiftSummary {
+  shift_id: string;
+  shift_number: number;
+  summary: {
+    CASH: WalletChannel;
+    CASHLESS: WalletChannel;
+    EDC: WalletChannel;
+  };
+  transactions: WalletShiftTransaction[];
 }

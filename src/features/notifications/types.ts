@@ -1,14 +1,18 @@
 // Notifications Module Types
 
-// NOTE: Notification fields are guessed — adjust when actual response is known
+// CONFIRMED from GET /notifications
 export interface Notification {
   id: string;
-  title: string;
-  message: string;
+  store_id: string;
+  admin_id: string | null;
   type: string;
+  title: string;
+  body: string;
+  data: Record<string, string> | null;
   is_read: boolean;
-  created_at: string;
-  updated_at: string;
+  read_at: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface NotificationListResponse {

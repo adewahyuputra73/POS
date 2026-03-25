@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { AxiosError } from "axios";
 import { PageHeader } from "@/components/layout";
 import { Button, useToast } from "@/components/ui";
 import { ProductTable } from "@/features/products/components/product-table";
 import { ProductModal } from "@/features/products/components/product-modal";
-import { Product, ProductStatusFilter, ProductFormData } from "@/features/products/types";
-import { mockProducts, mockCategories, filterProducts } from "@/features/products/mock-data";
+import { Product, ProductFormData } from "@/features/products/types";
+import { productService } from "@/features/products/services/product-service";
+import { categoryService } from "@/features/categories/services/category-service";
 import { cn } from "@/lib/utils";
-import { 
-  Plus, 
-  Search, 
-  Filter,
+import {
+  Plus,
+  Search,
   X,
   Package,
 } from "lucide-react";
@@ -20,21 +21,58 @@ type TabStatus = "all" | "active" | "inactive";
 
 export default function ProductsPage() {
   const { showToast } = useToast();
-  
+
   // Data state
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  
+  const [products, setProducts] = useState<Product[]>([]);
+  const [apiCategories, setApiCategories] = useState<{ id: string; name: string }[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
+
   // Filter state
   const [activeTab, setActiveTab] = useState<TabStatus>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<number | undefined>();
-  const [showFilters, setShowFilters] = useState(false);
-  
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
+
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deleteConfirmProduct, setDeleteConfirmProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch data
+  const fetchData = useCallback(async () => {
+    setIsFetching(true);
+    try {
+      const [productData, categoryData] = await Promise.all([
+        productService.list(),
+        categoryService.list().catch(() => []),
+      ]);
+      setProducts(productData);
+      // categoryService returns Category[] with id, name, is_active
+      const cats = Array.isArray(categoryData)
+        ? (categoryData as any[]).map((c) => ({ id: String(c.id), name: c.name }))
+        : [];
+      setApiCategories(cats);
+    } catch {
+      showToast("Gagal memuat data produk", "error");
+    } finally {
+      setIsFetching(false);
+    }
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Derive categories from products
+  const derivedCategories = useMemo(() => {
+    const catMap = new Map<string, string>();
+    products.forEach(p => {
+      if (p.categoryId && p.categoryName) {
+        catMap.set(String(p.categoryId), p.categoryName);
+      }
+    });
+    return Array.from(catMap.entries()).map(([id, name]) => ({ id, name }));
+  }, [products]);
 
   // Tab counts
   const tabCounts = useMemo(() => ({
@@ -45,10 +83,19 @@ export default function ProductsPage() {
 
   // Filtered products
   const filteredProducts = useMemo(() => {
-    return filterProducts(products, {
-      status: activeTab,
-      search: searchQuery,
-      categoryId: selectedCategory,
+    return products.filter(p => {
+      if (activeTab === 'active' && !p.isActive) return false;
+      if (activeTab === 'inactive' && p.isActive) return false;
+      if (searchQuery) {
+        const search = searchQuery.toLowerCase();
+        if (!p.name.toLowerCase().includes(search) &&
+            !p.sku?.toLowerCase().includes(search) &&
+            !p.barcode?.toLowerCase().includes(search)) {
+          return false;
+        }
+      }
+      if (selectedCategory && String(p.categoryId) !== selectedCategory) return false;
+      return true;
     });
   }, [products, activeTab, searchQuery, selectedCategory]);
 
@@ -63,99 +110,80 @@ export default function ProductsPage() {
     setEditingProduct(null);
   };
 
-  const handleSaveProduct = async (data: ProductFormData, productId?: number) => {
+  const handleSaveProduct = async (data: ProductFormData, productId?: string) => {
     setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Build prices array — API uses uppercase channel names
+      const prices = [
+        { channel: "POS", price: data.price },
+        ...(data.channelPrices.gofood > 0
+          ? [{ channel: "GOFOOD", price: data.channelPrices.gofood }]
+          : []),
+        ...(data.channelPrices.grabfood > 0
+          ? [{ channel: "GRABFOOD", price: data.channelPrices.grabfood }]
+          : []),
+        ...(data.channelPrices.shopeefood > 0
+          ? [{ channel: "SHOPEEFOOD", price: data.channelPrices.shopeefood }]
+          : []),
+      ];
 
-    if (productId) {
-      // Update
-      setProducts(prev => prev.map(p => 
-        p.id === productId 
-          ? { 
-              ...p, 
-              name: data.name,
-              description: data.description,
-              price: data.price,
-              comparePrice: data.comparePrice || undefined,
-              categoryId: data.categoryId || undefined,
-              categoryName: mockCategories.find(c => c.id === data.categoryId)?.name,
-              isActive: data.isActive,
-              barcode: data.barcode || undefined,
-              sku: data.sku || undefined,
-              useStock: data.useStock,
-              stockQuantity: data.stockQuantity,
-              stockLimit: data.stockLimit,
-              taxId: data.taxId || undefined,
-              serviceFeeId: data.serviceFeeId || undefined,
-              takeawayFee: data.takeawayFee || undefined,
-              useDimension: data.useDimension,
-              weight: data.weight || undefined,
-              length: data.length || undefined,
-              width: data.width || undefined,
-              height: data.height || undefined,
-              variantIds: data.variantIds,
-              updatedAt: new Date().toISOString(),
-            } 
-          : p
-      ));
-      showToast("Produk berhasil diperbarui", "success");
-    } else {
-      // Create
-      const newProduct: Product = {
-        id: Math.max(...products.map(p => p.id)) + 1,
+      const payload = {
         name: data.name,
-        description: data.description,
         price: data.price,
-        comparePrice: data.comparePrice || undefined,
-        categoryId: data.categoryId || undefined,
-        categoryName: mockCategories.find(c => c.id === data.categoryId)?.name,
-        isActive: data.isActive,
-        barcode: data.barcode || undefined,
-        sku: data.sku || undefined,
-        useStock: data.useStock,
-        stockQuantity: data.stockQuantity,
-        stockLimit: data.stockLimit,
-        taxId: data.taxId || undefined,
-        serviceFeeId: data.serviceFeeId || undefined,
-        takeawayFee: data.takeawayFee || undefined,
-        useDimension: data.useDimension,
-        weight: data.weight || undefined,
-        length: data.length || undefined,
-        width: data.width || undefined,
-        height: data.height || undefined,
-        images: [],
-        channelPrices: [
-          { channel: 'pos', price: data.price },
-          ...(data.channelPrices.gofood ? [{ channel: 'gofood' as const, price: data.channelPrices.gofood }] : []),
-          ...(data.channelPrices.grabfood ? [{ channel: 'grabfood' as const, price: data.channelPrices.grabfood }] : []),
-          ...(data.channelPrices.shopeefood ? [{ channel: 'shopeefood' as const, price: data.channelPrices.shopeefood }] : []),
-        ],
-        variantIds: data.variantIds,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        prices,
+        unit: "Pcs",
+        is_active: data.isActive,
+        ...(data.categoryId ? { category_id: data.categoryId } : {}),
+        stock_type: data.useStock ? "LIMITED" as const : "UNLIMITED" as const,
+        ...(data.useStock ? { stock_qty: data.stockQuantity } : {}),
+        ...(data.useStock && data.stockLimit ? { stock_limit: data.stockLimit } : {}),
+        ...(data.description ? { description: data.description } : {}),
       };
-      setProducts(prev => [newProduct, ...prev]);
-      showToast("Produk berhasil ditambahkan", "success");
+      console.log("[save product] payload:", JSON.stringify(payload, null, 2));
+      if (productId) {
+        await productService.update(productId, payload);
+        showToast("Produk berhasil diperbarui", "success");
+      } else {
+        await productService.create(payload);
+        showToast("Produk berhasil ditambahkan", "success");
+      }
+      await fetchData();
+      handleCloseModal();
+    } catch (err) {
+      const apiErr = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>;
+      const apiMsg = apiErr.response?.data?.message;
+      const apiErrors = apiErr.response?.data?.errors;
+      const status = apiErr.response?.status;
+      console.error("[save product] status:", status, "body:", apiErr.response?.data);
+      const detail = apiErrors
+        ? Object.values(apiErrors).flat().join(", ")
+        : apiMsg ?? "Periksa konsol untuk detail error";
+      showToast(`Gagal menyimpan: ${detail}`, "error");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
-    handleCloseModal();
   };
 
   const handleToggleStatus = async (product: Product) => {
     // Optimistic update
-    setProducts(prev => prev.map(p => 
+    setProducts(prev => prev.map(p =>
       p.id === product.id ? { ...p, isActive: !p.isActive } : p
     ));
-    
-    showToast(
-      product.isActive 
-        ? `${product.name} tidak dijual` 
-        : `${product.name} aktif dijual`,
-      "success"
-    );
+    try {
+      await productService.toggleStatus(product.id);
+      showToast(
+        product.isActive
+          ? `${product.name} tidak dijual`
+          : `${product.name} aktif dijual`,
+        "success"
+      );
+    } catch {
+      // Revert on failure
+      setProducts(prev => prev.map(p =>
+        p.id === product.id ? { ...p, isActive: product.isActive } : p
+      ));
+      showToast("Gagal mengubah status produk", "error");
+    }
   };
 
   const handleDeleteProduct = async (product: Product) => {
@@ -164,14 +192,20 @@ export default function ProductsPage() {
 
   const confirmDelete = async () => {
     if (!deleteConfirmProduct) return;
-    
-    // Soft delete - just mark as inactive
-    setProducts(prev => prev.map(p => 
-      p.id === deleteConfirmProduct.id ? { ...p, isActive: false } : p
-    ));
-    
-    showToast(`${deleteConfirmProduct.name} berhasil dihapus`, "success");
-    setDeleteConfirmProduct(null);
+    try {
+      await productService.delete(deleteConfirmProduct.id);
+      // Re-fetch from API to confirm actual deletion (not just optimistic removal)
+      await fetchData();
+      showToast(`${deleteConfirmProduct.name} berhasil dihapus`, "success");
+    } catch (err) {
+      const apiErr = err as AxiosError<{ message?: string }>;
+      const status = apiErr.response?.status;
+      const apiMsg = apiErr.response?.data?.message;
+      console.error("[delete product] status:", status, "body:", apiErr.response?.data);
+      showToast(`Gagal menghapus: ${apiMsg ?? `HTTP ${status}`}`, "error");
+    } finally {
+      setDeleteConfirmProduct(null);
+    }
   };
 
   const clearFilters = () => {
@@ -255,11 +289,11 @@ export default function ProductsPage() {
           {/* Category Filter */}
           <select
             value={selectedCategory || ""}
-            onChange={(e) => setSelectedCategory(e.target.value ? Number(e.target.value) : undefined)}
+            onChange={(e) => setSelectedCategory(e.target.value || undefined)}
             className="px-4 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           >
             <option value="">Semua Kategori</option>
-            {mockCategories.map((cat) => (
+            {derivedCategories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>
@@ -294,6 +328,7 @@ export default function ProductsPage() {
         onEdit={handleOpenModal}
         onDelete={handleDeleteProduct}
         onToggleStatus={handleToggleStatus}
+        isLoading={isFetching}
       />
 
       {/* Product Modal */}
@@ -303,6 +338,7 @@ export default function ProductsPage() {
         onSave={handleSaveProduct}
         product={editingProduct}
         isLoading={isLoading}
+        categories={apiCategories}
       />
 
       {/* Delete Confirmation Modal */}
@@ -318,8 +354,8 @@ export default function ProductsPage() {
                 Hapus Produk?
               </h3>
               <p className="text-text-secondary mb-6">
-                Apakah Anda yakin ingin menghapus <strong>{deleteConfirmProduct.name}</strong>? 
-                Produk akan dipindahkan ke status Tidak Aktif dan tidak muncul di menu penjualan.
+                Apakah Anda yakin ingin menghapus <strong>{deleteConfirmProduct.name}</strong>?
+                Produk akan dihapus secara permanen.
               </p>
               <div className="flex items-center justify-end gap-3">
                 <Button variant="outline" onClick={() => setDeleteConfirmProduct(null)}>

@@ -31,15 +31,29 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: !!user,
         }),
 
-      setToken: (token) => set({ token }),
+      setToken: (token) => {
+        if (typeof window !== "undefined") {
+          if (token) {
+            localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+          } else {
+            localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+          }
+        }
+        set({ token });
+      },
 
-      login: (user, token) =>
+      login: (user, token) => {
+        // Write token to the key that apiClient reads from
+        if (typeof window !== "undefined") {
+          localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+        }
         set({
           user,
           token,
           isAuthenticated: true,
           isLoading: false,
-        }),
+        });
+      },
 
       logout: () => {
         // Clear localStorage

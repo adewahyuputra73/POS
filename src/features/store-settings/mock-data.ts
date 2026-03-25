@@ -8,8 +8,8 @@ import {
 
 export const mockStoreInfo: StoreInfo = {
   id: "STORE-001",
-  name: "Fere Café",
-  slug: "fere-cafe",
+  name: "Fere Coffee",
+  slug: "fere-coffee",
   description:
     "Kafe modern dengan suasana nyaman dan menu kopi spesial dari biji pilihan nusantara. Menyediakan berbagai minuman, makanan ringan, dan pastry.",
   address: "Jl. Sudirman No. 123, Blok A Lt. 2",
@@ -78,7 +78,7 @@ export const mockPaymentMethods: PaymentMethodConfig[] = [
     type: "bank_transfer",
     is_enabled: true,
     icon: "Building2",
-    account_name: "PT Fere Café Indonesia",
+    account_name: "PT Fere Coffee Indonesia",
     account_number: "1234567890",
     fee_percentage: 0,
     fee_fixed: 0,
@@ -89,7 +89,7 @@ export const mockPaymentMethods: PaymentMethodConfig[] = [
     type: "bank_transfer",
     is_enabled: true,
     icon: "Building2",
-    account_name: "PT Fere Café Indonesia",
+    account_name: "PT Fere Coffee Indonesia",
     account_number: "0987654321",
     fee_percentage: 0,
     fee_fixed: 0,

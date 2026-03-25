@@ -4,8 +4,7 @@ import type { ApiResponse } from "@/types";
 import type {
   Customer,
   CustomerDetail,
-  CreateCustomerRequest,
-  UpdateCustomerRequest,
+  CustomerListResponse,
   Review,
   CreateReviewRequest,
   ReviewListParams,
@@ -14,8 +13,8 @@ import type {
 } from "../types";
 
 export const customerService = {
-  async list(): Promise<Customer[]> {
-    const response = await apiClient.get<ApiResponse<Customer[]>>(
+  async list(): Promise<CustomerListResponse> {
+    const response = await apiClient.get<ApiResponse<CustomerListResponse>>(
       ENDPOINTS.CUSTOMERS.LIST
     );
     return response.data.data;
@@ -26,26 +25,6 @@ export const customerService = {
       ENDPOINTS.CUSTOMERS.DETAIL(id)
     );
     return response.data.data;
-  },
-
-  async create(data: CreateCustomerRequest): Promise<Customer> {
-    const response = await apiClient.post<ApiResponse<Customer>>(
-      ENDPOINTS.CUSTOMERS.CREATE,
-      data
-    );
-    return response.data.data;
-  },
-
-  async update(id: string | number, data: UpdateCustomerRequest): Promise<Customer> {
-    const response = await apiClient.put<ApiResponse<Customer>>(
-      ENDPOINTS.CUSTOMERS.UPDATE(id),
-      data
-    );
-    return response.data.data;
-  },
-
-  async delete(id: string | number): Promise<void> {
-    await apiClient.delete(ENDPOINTS.CUSTOMERS.DELETE(id));
   },
 
   async reviews(params?: ReviewListParams): Promise<Review[]> {
