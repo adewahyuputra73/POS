@@ -56,7 +56,7 @@ function getOrderStatusLabel(status: string): string {
 }
 
 function getOrderStatusVariant(status: string): "success" | "warning" | "error" | "default" {
-  const s = status.toUpperCase();
+  const s = (status ?? "").toUpperCase();
   if (s === "COMPLETED") return "success";
   if (s === "PENDING" || s === "PROCESSING" || s === "READY") return "warning";
   if (s === "CANCELLED") return "error";
@@ -161,7 +161,7 @@ export default function DashboardPage() {
   const filteredProducts = useMemo(() => {
     if (!searchQuery) return topProducts;
     return topProducts.filter((product) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      (product.name ?? "").toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [topProducts, searchQuery]);
 
