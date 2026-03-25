@@ -31,34 +31,39 @@ import {
   Plus,
 } from "lucide-react";
 
-function mapStatus(raw: string): OrderStatus {
-  const map: Record<string, OrderStatus> = {
-    UNPAID: "unpaid", READY: "ready", SHIPPED: "shipped",
-    COMPLETED: "completed", CANCELLED: "failed", FAILED: "failed",
-    unpaid: "unpaid", ready: "ready", shipped: "shipped",
-    completed: "completed", cancelled: "failed", failed: "failed",
-    PROCESSING: "ready", processing: "ready",
-  };
-  return map[raw] ?? "unpaid";
+function mapStatus(raw: any): OrderStatus {
+  const pay = (raw.payment_status ?? raw.status ?? "").toUpperCase();
+  const ful = (raw.fulfillment_status ?? "").toUpperCase();
+  if (ful === "COMPLETED") return "completed";
+  if (ful === "CANCELLED" || pay === "CANCELLED") return "failed";
+  if (pay === "UNPAID") return "unpaid";
+  if (ful === "READY" || ful === "DELIVERED") return "ready";
+  if (ful === "PENDING") return "unpaid";
+  return "unpaid";
 }
 
 function mapApiOrder(raw: any): Order {
+  const firstPayment = (raw.payments ?? [])[0];
+  const paymentMethod = (
+    firstPayment?.payment_method ?? raw.payment_method ?? "cash"
+  ).toLowerCase() as Order["paymentMethod"];
+
   return {
     id: raw.id,
     orderNumber: raw.order_number ?? raw.id,
-    customerName: raw.customer_name ?? raw.customerName ?? raw.customer?.name ?? "",
-    customerPhone: raw.customer_phone ?? raw.customerPhone ?? raw.customer?.phone ?? "",
-    fulfillmentType: ((raw.order_type ?? raw.fulfillment_type ?? "dine_in") as string).toLowerCase() as Order["fulfillmentType"],
-    orderDate: raw.created_at ?? raw.createdAt ?? "",
-    completedAt: raw.completed_at ?? raw.completedAt ?? undefined,
-    totalPrice: Number(raw.total ?? raw.total_price ?? 0),
-    subtotal: Number(raw.subtotal ?? raw.total ?? 0),
+    customerName: raw.customer?.name ?? raw.customer_name ?? "",
+    customerPhone: raw.customer?.phone ?? raw.customer_phone ?? "",
+    fulfillmentType: ((raw.order_type ?? "dine_in") as string).toLowerCase() as Order["fulfillmentType"],
+    orderDate: raw.createdAt ?? raw.created_at ?? "",
+    completedAt: raw.updatedAt ?? raw.updated_at ?? undefined,
+    totalPrice: Number(raw.total_amount ?? raw.total ?? 0),
+    subtotal: Number(raw.subtotal ?? 0),
     discount: Number(raw.discount ?? 0),
     tax: Number(raw.tax ?? 0),
     serviceFee: Number(raw.service_fee ?? 0),
-    shippingFee: Number(raw.shipping_fee ?? 0),
-    paymentMethod: ((raw.payment_method ?? "cash") as string).toLowerCase() as Order["paymentMethod"],
-    status: mapStatus(raw.status ?? ""),
+    shippingFee: Number(raw.delivery_fee ?? raw.shipping_fee ?? 0),
+    paymentMethod,
+    status: mapStatus(raw),
     items: (raw.items ?? []).map((item: any) => ({
       id: item.id ?? 0,
       productId: item.product_id ?? 0,
@@ -68,7 +73,7 @@ function mapApiOrder(raw: any): Order {
       discount: Number(item.discount ?? 0),
       subtotal: Number(item.subtotal ?? item.price ?? 0),
     })),
-    cashierName: raw.cashier_name ?? raw.cashier?.name ?? "",
+    cashierName: raw.kasirDetail?.name ?? raw.cashier_name ?? "",
   };
 }
 
