@@ -64,6 +64,12 @@ function toApiRequest(data: VoucherFormData): CreateVoucherRequest {
   };
 }
 
+function toDateTimeLocal(dateStr: string | null | undefined): string {
+  if (!dateStr) return '';
+  if (dateStr.includes('T')) return dateStr.slice(0, 16);
+  return `${dateStr}T00:00`;
+}
+
 function toFormData(v: ApiVoucher): VoucherFormData {
   return {
     code: v.code,
@@ -80,8 +86,8 @@ function toFormData(v: ApiVoucher): VoucherFormData {
     specificDelivery: null,
     specificPayment: null,
     specificCustomerSegment: null,
-    startDate: v.valid_from,
-    endDate: v.valid_until,
+    startDate: toDateTimeLocal(v.valid_from),
+    endDate: toDateTimeLocal(v.valid_until),
   };
 }
 
