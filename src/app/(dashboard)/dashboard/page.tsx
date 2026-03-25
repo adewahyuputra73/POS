@@ -142,12 +142,13 @@ export default function DashboardPage() {
 
   const filteredOrders = useMemo(() => {
     return recentOrders.filter((order) => {
-      const shortId = order.id.slice(0, 8).toLowerCase();
+      const shortId = (order.id ?? "").slice(0, 8).toLowerCase();
+      const orderType = (order.order_type ?? "").toLowerCase();
       const matchesSearch =
         shortId.includes(searchQuery.toLowerCase()) ||
-        order.order_type.toLowerCase().includes(searchQuery.toLowerCase());
+        orderType.includes(searchQuery.toLowerCase());
 
-      const orderStatusNormalized = order.status.toLowerCase();
+      const orderStatusNormalized = (order.status ?? "").toLowerCase();
       const matchesStatus =
         statusFilter === "all" ||
         (statusFilter === "completed" && orderStatusNormalized === "completed") ||
