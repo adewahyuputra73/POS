@@ -15,6 +15,8 @@ export interface CheckoutRequest {
   voucher_code?: string;
   payment_method?: PaymentMethod;
   cash_given?: number;
+  customer_name?: string;
+  customer_phone?: string;
 }
 
 export type FulfillmentStatus = "PROCESSING" | "READY" | "DELIVERED" | "COMPLETED" | "CANCELLED";

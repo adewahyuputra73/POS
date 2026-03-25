@@ -55,6 +55,8 @@ export default function CheckoutPage() {
                     notes: item.notes || undefined,
                 })),
                 payment_method: formData.paymentMethod,
+                customer_name: formData.customerName || undefined,
+                customer_phone: formData.customerPhone || undefined,
             });
             clearCart();
             const params = new URLSearchParams({
