@@ -6,6 +6,7 @@ import { Button, useToast } from "@/components/ui";
 import { TransactionTable } from "@/features/transactions/components/transaction-table";
 import { TransactionFilterBar } from "@/features/transactions/components/transaction-filters";
 import { TransactionDetail } from "@/features/transactions/components/transaction-detail";
+import { TransactionCreateModal } from "@/features/transactions/components/transaction-create-modal";
 import {
   Order,
   OrderStatus,
@@ -27,6 +28,7 @@ import {
   X,
   CalendarDays,
   Trash2,
+  Plus,
 } from "lucide-react";
 
 function mapStatus(raw: string): OrderStatus {
@@ -94,6 +96,9 @@ export default function TransactionsPage() {
 
   // Selection state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // Create modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<Order | null>(null);
@@ -305,6 +310,7 @@ export default function TransactionsPage() {
   }
 
   return (
+    <>
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
@@ -315,9 +321,14 @@ export default function TransactionsPage() {
           { label: "Transaksi" },
         ]}
         actions={
-          <Button variant="outline" className="gap-1.5">
-            <Download className="h-4 w-4" /> Ekspor
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-1.5">
+              <Download className="h-4 w-4" /> Ekspor
+            </Button>
+            <Button onClick={() => setShowCreateModal(true)} className="gap-1.5">
+              <Plus className="h-4 w-4" /> Tambah Transaksi
+            </Button>
+          </div>
         }
       />
 
@@ -543,5 +554,13 @@ export default function TransactionsPage() {
         </>
       )}
     </div>
+
+    {showCreateModal && (
+      <TransactionCreateModal
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => { setShowCreateModal(false); fetchData(); }}
+      />
+    )}
+    </>
   );
 }

@@ -23,23 +23,27 @@ export function formatNumber(num: number): string {
 /**
  * Format date to Indonesian format
  */
-export function formatDate(date: Date | string, formatStr: string = "dd MMM yyyy"): string {
+export function formatDate(date: Date | string | null | undefined, formatStr: string = "dd MMM yyyy"): string {
+  if (!date) return "-";
   const dateObj = typeof date === "string" ? parseISO(date) : date;
+  if (isNaN(dateObj.getTime())) return "-";
   return format(dateObj, formatStr, { locale: localeID });
 }
 
 /**
  * Format date to relative time (e.g., "2 hours ago")
  */
-export function formatRelativeTime(date: Date | string): string {
+export function formatRelativeTime(date: Date | string | null | undefined): string {
+  if (!date) return "-";
   const dateObj = typeof date === "string" ? parseISO(date) : date;
+  if (isNaN(dateObj.getTime())) return "-";
   return formatDistanceToNow(dateObj, { addSuffix: true, locale: localeID });
 }
 
 /**
  * Format datetime with time
  */
-export function formatDateTime(date: Date | string): string {
+export function formatDateTime(date: Date | string | null | undefined): string {
   return formatDate(date, "dd MMM yyyy, HH:mm");
 }
 
