@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, User, MapPin, ShoppingBag, ClipboardList, ReceiptText, Send } from "lucide-react";
@@ -9,19 +9,29 @@ import { formatCurrency } from "@/lib/utils/format";
 import { mockTaxSettings } from "@/features/store-settings/mock-data";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { orderService } from "@/features/orders/services/order-service";
+import { tableService } from "@/features/tables/services/table-service";
+import type { Table } from "@/features/tables/types";
+import type { PaymentMethod } from "@/features/orders/types";
 
 export default function CheckoutPage() {
     const router = useRouter();
     const { items, getSubtotal, getTax, getServiceFee, getTotal, clearCart } = useCustomerCartStore();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [tables, setTables] = useState<Table[]>([]);
 
     const [formData, setFormData] = useState({
         customerName: "",
         customerPhone: "",
         fulfillmentType: "dine_in" as "dine_in" | "takeaway",
-        tableNumber: "",
+        tableId: "",
         notes: "",
+        paymentMethod: "CASH" as PaymentMethod,
     });
+
+    useEffect(() => {
+        tableService.list().then(setTables).catch(() => {});
+    }, []);
 
     const subtotal = getSubtotal();
     const tax = getTax(mockTaxSettings.tax_rate);
@@ -33,17 +43,29 @@ export default function CheckoutPage() {
         return null;
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setTimeout(() => {
-            const params = new URLSearchParams({
-                orderNumber: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
-                name: formData.customerName,
+        try {
+            const order = await orderService.checkout({
+                order_type: formData.fulfillmentType === "dine_in" ? "DINE_IN" : "TAKEAWAY",
+                table_id: formData.fulfillmentType === "dine_in" && formData.tableId ? formData.tableId : undefined,
+                items: items.map((item) => ({
+                    product_id: item.product.id,
+                    qty: item.quantity,
+                    notes: item.notes || undefined,
+                })),
+                payment_method: formData.paymentMethod,
             });
             clearCart();
+            const params = new URLSearchParams({
+                orderNumber: order.id ?? `ORD-${Date.now()}`,
+                name: formData.customerName,
+            });
             router.push(`/order/confirmation?${params.toString()}`);
-        }, 1200);
+        } catch {
+            setIsSubmitting(false);
+        }
     };
 
     // Shared input style helpers
@@ -235,27 +257,71 @@ export default function CheckoutPage() {
                                 </button>
                             </div>
 
-                            {/* Table number (conditional) */}
+                            {/* Table selector (conditional) */}
                             {formData.fulfillmentType === 'dine_in' && (
                                 <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
                                     <label className="text-[11px] font-black uppercase tracking-widest" style={{ color: '#9C7D58' }}>
-                                        Nomor Meja
+                                        Pilih Meja
                                     </label>
-                                    <Input
+                                    <select
                                         required
-                                        placeholder="Contoh: Meja 04"
-                                        className="h-12 rounded-2xl text-base font-black border-2 transition-colors px-5"
+                                        value={formData.tableId}
+                                        onChange={(e) => setFormData({ ...formData, tableId: e.target.value })}
+                                        className="w-full h-12 rounded-2xl text-sm font-semibold border-2 px-5 focus:outline-none transition-colors"
                                         style={inputBaseStyle}
-                                        onFocus={onInputFocus}
-                                        onBlur={onInputBlur}
-                                        value={formData.tableNumber}
-                                        onChange={(e) => setFormData({ ...formData, tableNumber: e.target.value })}
-                                    />
+                                    >
+                                        <option value="">-- Pilih meja --</option>
+                                        {tables.map((t) => (
+                                            <option key={t.id} value={t.id}>
+                                                {t.name}{t.area?.name ? ` · ${t.area.name}` : ""}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             )}
                         </div>
 
-                        {/* Section 3 — Notes */}
+                        {/* Section 3 — Payment Method */}
+                        <div
+                            className="rounded-[22px] p-6"
+                            style={{
+                                backgroundColor: '#FFFFFF',
+                                border: '1.5px solid rgba(124,74,30,0.1)',
+                                boxShadow: '0 2px 12px rgba(28,10,0,0.04)',
+                            }}
+                        >
+                            <div className="flex items-center gap-3 mb-5">
+                                <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#FEF3C7' }}>
+                                    <ReceiptText className="h-4 w-4" style={{ color: '#D97706' }} />
+                                </div>
+                                <h2 className="text-[15px] font-black tracking-tight" style={{ color: '#1C0A00' }}>
+                                    Metode Pembayaran
+                                </h2>
+                            </div>
+                            <div className="grid grid-cols-3 gap-3">
+                                {([
+                                    { value: "CASH", label: "Tunai" },
+                                    { value: "TRANSFER", label: "Transfer" },
+                                    { value: "QRIS", label: "QRIS" },
+                                ] as { value: PaymentMethod; label: string }[]).map((m) => (
+                                    <button
+                                        key={m.value}
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, paymentMethod: m.value })}
+                                        className="py-3 rounded-2xl border-2 text-[13px] font-black transition-all"
+                                        style={
+                                            formData.paymentMethod === m.value
+                                                ? { backgroundColor: '#FEF3C7', borderColor: '#F59E0B', color: '#92400E' }
+                                                : { backgroundColor: '#FEFAF5', borderColor: 'rgba(124,74,30,0.14)', color: '#6B4C2A' }
+                                        }
+                                    >
+                                        {m.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Section 4 — Notes */}
                         <div
                             className="rounded-[22px] p-6"
                             style={{
