@@ -51,7 +51,7 @@ function mapApiOrder(raw: any): Order {
   return {
     id: raw.id,
     orderNumber: raw.order_number ?? raw.id,
-    customerName: raw.customer?.name ?? raw.customer_name ?? "",
+    customerName: raw.customer?.name ?? raw.customer_name ?? "Tamu",
     customerPhone: raw.customer?.phone ?? raw.customer_phone ?? "",
     fulfillmentType: ((raw.order_type ?? "dine_in") as string).toLowerCase() as Order["fulfillmentType"],
     orderDate: raw.createdAt ?? raw.created_at ?? "",
