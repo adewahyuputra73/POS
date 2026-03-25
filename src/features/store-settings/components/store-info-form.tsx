@@ -37,7 +37,7 @@ import { StoreInfo, BUSINESS_TYPE_LABELS, BusinessType } from "../types";
 
 interface StoreInfoFormProps {
   store: StoreInfo;
-  onSave: (data: Partial<StoreInfo>) => void;
+  onSave: (data: Partial<StoreInfo>) => Promise<void>;
 }
 
 export function StoreInfoForm({ store, onSave }: StoreInfoFormProps) {
@@ -49,11 +49,15 @@ export function StoreInfoForm({ store, onSave }: StoreInfoFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    onSave(formData);
-    showToast("Informasi toko berhasil diperbarui", "success");
-    setIsSubmitting(false);
-    setIsEditing(false);
+    try {
+      await onSave(formData);
+      showToast("Informasi toko berhasil diperbarui", "success");
+      setIsEditing(false);
+    } catch {
+      showToast("Gagal memperbarui informasi toko", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: keyof StoreInfo, value: string | boolean) => {

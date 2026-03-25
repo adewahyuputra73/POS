@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/layout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Store, Clock, Receipt, CreditCard } from "lucide-react";
@@ -11,6 +11,7 @@ import {
   PaymentMethodsConfig,
 } from "@/features/store-settings/components";
 import { useStoreSettingsStore } from "@/stores/storeSettingsStore";
+import { storeSettingsService } from "@/features/store-settings/services/store-settings-service";
 import type {
   StoreInfo,
   OperatingHours,
@@ -21,8 +22,8 @@ import type {
 
 export default function StoreSettingsPage() {
   const [activeTab, setActiveTab] = useState("store-info");
+  const [loadingStore, setLoadingStore] = useState(true);
 
-  // Use persisted Zustand store instead of local useState
   const storeInfo = useStoreSettingsStore((s) => s.storeInfo);
   const operatingHours = useStoreSettingsStore((s) => s.operatingHours);
   const taxSettings = useStoreSettingsStore((s) => s.taxSettings);
@@ -34,6 +35,23 @@ export default function StoreSettingsPage() {
   const updateTaxSettings = useStoreSettingsStore((s) => s.updateTaxSettings);
   const updateReceiptSettings = useStoreSettingsStore((s) => s.updateReceiptSettings);
   const updatePaymentMethods = useStoreSettingsStore((s) => s.updatePaymentMethods);
+
+  // Load real store data from API on mount
+  useEffect(() => {
+    storeSettingsService.my()
+      .then((data) => updateStoreInfo(data))
+      .catch(() => {}) // keep existing Zustand data if API fails
+      .finally(() => setLoadingStore(false));
+  }, [updateStoreInfo]);
+
+  // Save name + address to API, full data to Zustand
+  const handleSaveStoreInfo = async (data: Partial<StoreInfo>) => {
+    await storeSettingsService.update({
+      name: data.name ?? storeInfo.name,
+      address: data.address ?? storeInfo.address,
+    });
+    updateStoreInfo(data);
+  };
 
   return (
     <div className="space-y-6">
@@ -64,7 +82,13 @@ export default function StoreSettingsPage() {
         </TabsList>
 
         <TabsContent value="store-info">
-          <StoreInfoForm store={storeInfo} onSave={updateStoreInfo} />
+          {loadingStore ? (
+            <div className="flex items-center justify-center h-40">
+              <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+            </div>
+          ) : (
+            <StoreInfoForm store={storeInfo} onSave={handleSaveStoreInfo} />
+          )}
         </TabsContent>
 
         <TabsContent value="operating-hours">
