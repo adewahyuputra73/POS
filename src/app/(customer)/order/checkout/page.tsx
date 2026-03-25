@@ -38,10 +38,9 @@ export default function CheckoutPage() {
     const serviceFee = getServiceFee(mockTaxSettings.service_charge_rate);
     const total = getTotal(mockTaxSettings.tax_rate, mockTaxSettings.service_charge_rate);
 
-    if (items.length === 0) {
-        if (typeof window !== "undefined") router.push("/order");
-        return null;
-    }
+    useEffect(() => {
+        if (items.length === 0) router.push("/order");
+    }, [items.length, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
