@@ -60,7 +60,7 @@ export default function CheckoutPage() {
                 })),
                 payments: [{
                     method: formData.paymentMethod,
-                    amount: formData.cashAmount ? Number(formData.cashAmount) : undefined,
+                    amount: Number(formData.cashAmount) || total,
                 }],
                 customer_name: formData.customerName || undefined,
                 customer_phone: formData.customerPhone || undefined,

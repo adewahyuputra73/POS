@@ -129,7 +129,7 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
       })),
       payments: [{
         method: paymentMethod,
-        amount: cashGiven ? Number(cashGiven) : undefined,
+        amount: Number(cashGiven) || total,
       }],
     };
 
