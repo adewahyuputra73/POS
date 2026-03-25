@@ -43,6 +43,7 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
 
   const [orderType, setOrderType] = useState<OrderType>("DINE_IN");
   const [tableId, setTableId] = useState<string>("");
+  const [tableName, setTableName] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
   const [cashGiven, setCashGiven] = useState<string>("");
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -120,14 +121,16 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
 
     const payload: CheckoutRequest = {
       order_type: orderType,
-      table_id: orderType === "DINE_IN" ? tableId : undefined,
+      table_number: orderType === "DINE_IN" && tableName ? tableName : undefined,
       items: cart.map((i) => ({
         product_id: i.product.id,
         qty: i.qty,
         notes: i.notes || undefined,
       })),
-      payment_method: paymentMethod,
-      cash_given: paymentMethod === "CASH" && cashGiven ? Number(cashGiven) : undefined,
+      payments: [{
+        method: paymentMethod,
+        amount: cashGiven ? Number(cashGiven) : undefined,
+      }],
     };
 
     try {
@@ -186,7 +189,11 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
                 <label className="text-sm font-medium text-text-primary mb-2 block">Meja</label>
                 <select
                   value={tableId}
-                  onChange={(e) => setTableId(e.target.value)}
+                  onChange={(e) => {
+                    const sel = tables.find(t => t.id === e.target.value);
+                    setTableId(e.target.value);
+                    setTableName(sel?.name ?? "");
+                  }}
                   className="w-full border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-surface"
                 >
                   <option value="">-- Pilih Meja --</option>

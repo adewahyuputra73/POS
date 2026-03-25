@@ -25,8 +25,10 @@ export default function CheckoutPage() {
         customerPhone: "",
         fulfillmentType: "dine_in" as "dine_in" | "takeaway",
         tableId: "",
+        tableName: "",
         notes: "",
         paymentMethod: "CASH" as PaymentMethod,
+        cashAmount: "",
     });
 
     useEffect(() => {
@@ -48,13 +50,16 @@ export default function CheckoutPage() {
         try {
             const order = await orderService.checkout({
                 order_type: formData.fulfillmentType === "dine_in" ? "DINE_IN" : "TAKEAWAY",
-                table_id: formData.fulfillmentType === "dine_in" && formData.tableId ? formData.tableId : undefined,
+                table_number: formData.fulfillmentType === "dine_in" && formData.tableName ? formData.tableName : undefined,
                 items: items.map((item) => ({
                     product_id: item.product.id,
                     qty: item.quantity,
                     notes: item.notes || undefined,
                 })),
-                payment_method: formData.paymentMethod,
+                payments: [{
+                    method: formData.paymentMethod,
+                    amount: formData.cashAmount ? Number(formData.cashAmount) : undefined,
+                }],
                 customer_name: formData.customerName || undefined,
                 customer_phone: formData.customerPhone || undefined,
             });
@@ -267,7 +272,10 @@ export default function CheckoutPage() {
                                     <select
                                         required
                                         value={formData.tableId}
-                                        onChange={(e) => setFormData({ ...formData, tableId: e.target.value })}
+                                        onChange={(e) => {
+                                            const selected = tables.find(t => t.id === e.target.value);
+                                            setFormData({ ...formData, tableId: e.target.value, tableName: selected?.name ?? "" });
+                                        }}
                                         className="w-full h-12 rounded-2xl text-sm font-semibold border-2 px-5 focus:outline-none transition-colors"
                                         style={inputBaseStyle}
                                     >

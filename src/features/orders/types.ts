@@ -8,13 +8,17 @@ export interface OrderItem {
   notes?: string;
 }
 
+export interface CheckoutPayment {
+  method: PaymentMethod;
+  amount?: number;
+}
+
 export interface CheckoutRequest {
   order_type: OrderType;
-  table_id?: string;
+  table_number?: string;
   items: OrderItem[];
   voucher_code?: string;
-  payment_method?: PaymentMethod;
-  cash_given?: number;
+  payments?: CheckoutPayment[];
   customer_name?: string;
   customer_phone?: string;
 }
