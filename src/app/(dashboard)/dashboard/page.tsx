@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { PageHeader } from "@/components/layout";
 import {
   Card,
@@ -8,149 +8,191 @@ import {
   CardHeader,
   CardTitle,
   Badge,
-  Button,
+  Spinner,
+  useToast,
 } from "@/components/ui";
-import { formatCurrency, formatNumber, cn } from "@/lib/utils";
+import { formatCurrency, formatNumber, formatRelativeTime, cn } from "@/lib/utils";
 import {
-  TrendingUp,
-  TrendingDown,
   DollarSign,
   ShoppingCart,
   Package,
-  Users,
-  ArrowUpRight,
-  ArrowDownRight,
   MoreVertical,
   Search,
   Filter,
   X,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
 } from "lucide-react";
-
-// Demo data - Consistent with previous demo but with better types
-const stats = [
-  {
-    title: "Total Revenue",
-    value: formatCurrency(125000000),
-    change: 12.5,
-    trend: "up" as const,
-    icon: DollarSign,
-    color: "text-success",
-    bgColor: "bg-success-light",
-  },
-  {
-    title: "Transactions",
-    value: formatNumber(1234),
-    change: 8.2,
-    trend: "up" as const,
-    icon: ShoppingCart,
-    color: "text-primary",
-    bgColor: "bg-primary-light",
-  },
-  {
-    title: "Available Products",
-    value: formatNumber(456),
-    change: -2.4,
-    trend: "down" as const,
-    icon: Package,
-    color: "text-purple",
-    bgColor: "bg-purple/10",
-  },
-  {
-    title: "Active Customers",
-    value: formatNumber(892),
-    change: 15.3,
-    trend: "up" as const,
-    icon: Users,
-    color: "text-warning",
-    bgColor: "bg-warning-light",
-  },
-];
-
-const recentTransactions = [
-  {
-    id: "INV-001",
-    customer: "John Doe",
-    amount: 250000,
-    status: "completed",
-    time: "2 min ago",
-  },
-  {
-    id: "INV-002",
-    customer: "Jane Smith",
-    amount: 180000,
-    status: "completed",
-    time: "15 min ago",
-  },
-  {
-    id: "INV-003",
-    customer: "Bob Wilson",
-    amount: 320000,
-    status: "pending",
-    time: "1 hour ago",
-  },
-  {
-    id: "INV-004",
-    customer: "Alice Brown",
-    amount: 95000,
-    status: "completed",
-    time: "2 hours ago",
-  },
-  {
-    id: "INV-005",
-    customer: "Charlie Davis",
-    amount: 450000,
-    status: "completed",
-    time: "3 hours ago",
-  },
-];
-
-const topProducts = [
-  { name: "Kopi Latte", sold: 234, revenue: 7020000, image: "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=50&h=50&fit=crop" },
-  { name: "Nasi Goreng Special", sold: 189, revenue: 5670000, image: "https://images.unsplash.com/photo-1512058560366-cd2427ffaa64?w=50&h=50&fit=crop" },
-  { name: "Cappuccino", sold: 156, revenue: 4680000, image: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=50&h=50&fit=crop" },
-  { name: "Mie Ayam Jamur", sold: 142, revenue: 4260000, image: "https://images.unsplash.com/photo-1552611052-33e04de081de?w=50&h=50&fit=crop" },
-  { name: "Es Teh Manis", sold: 128, revenue: 1280000, image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=50&h=50&fit=crop" },
-];
+import { dashboardService } from "@/features/dashboard/services";
+import { orderService } from "@/features/orders/services/order-service";
+import type { DashboardTodaySummary, TopProductItem } from "@/features/dashboard/types";
+import type { Order } from "@/features/orders/types";
 
 type StatusFilter = "all" | "completed" | "pending";
 
+const RANK_COLORS = [
+  "bg-yellow-500",
+  "bg-slate-400",
+  "bg-amber-600",
+  "bg-primary",
+  "bg-secondary",
+];
+
+function getOrderStatusLabel(status: string): string {
+  const map: Record<string, string> = {
+    COMPLETED: "Selesai",
+    PROCESSING: "Diproses",
+    READY: "Siap",
+    PENDING: "Pending",
+    CANCELLED: "Dibatalkan",
+    completed: "Selesai",
+    processing: "Diproses",
+    ready: "Siap",
+    pending: "Pending",
+    cancelled: "Dibatalkan",
+  };
+  return map[status] ?? status;
+}
+
+function getOrderStatusVariant(status: string): "success" | "warning" | "error" | "default" {
+  const s = status.toUpperCase();
+  if (s === "COMPLETED") return "success";
+  if (s === "PENDING" || s === "PROCESSING" || s === "READY") return "warning";
+  if (s === "CANCELLED") return "error";
+  return "default";
+}
+
+function getOrderTypeLabel(orderType: string): string {
+  if (orderType === "DINE_IN") return "Dine In";
+  if (orderType === "TAKEAWAY") return "Takeaway";
+  return orderType;
+}
+
 export default function DashboardPage() {
+  const { showToast } = useToast();
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [summary, setSummary] = useState<DashboardTodaySummary | null>(null);
+  const [topProducts, setTopProducts] = useState<TopProductItem[]>([]);
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
-  // Filter transactions based on search and status
-  const filteredTransactions = useMemo(() => {
-    return recentTransactions.filter((tx) => {
-      const matchesSearch = 
-        tx.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tx.id.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesStatus = statusFilter === "all" || tx.status === statusFilter;
-      
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      setFetchError(null);
+      try {
+        const [summaryData, productsData, ordersData] = await Promise.all([
+          dashboardService.todaySummary(),
+          dashboardService.topProducts({ limit: 5 }),
+          orderService.list({ limit: 5 }),
+        ]);
+        setSummary(summaryData);
+        setTopProducts(productsData);
+        setRecentOrders(ordersData);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Gagal memuat data dashboard";
+        setFetchError(message);
+        showToast("Gagal memuat data dashboard. Silakan coba lagi.", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [showToast]);
+
+  const stats = useMemo(() => {
+    if (!summary) return [];
+    return [
+      {
+        title: "Pendapatan Hari Ini",
+        value: formatCurrency(summary.payment_summary.total_revenue),
+        icon: DollarSign,
+        color: "text-success",
+        bgColor: "bg-success-light",
+      },
+      {
+        title: "Transaksi Hari Ini",
+        value: formatNumber(summary.order_summary.total_today),
+        icon: ShoppingCart,
+        color: "text-primary",
+        bgColor: "bg-primary-light",
+      },
+      {
+        title: "Pesanan Pending",
+        value: formatNumber(summary.order_summary.pending),
+        icon: Clock,
+        color: "text-warning",
+        bgColor: "bg-warning-light",
+      },
+      {
+        title: "Pesanan Selesai",
+        value: formatNumber(summary.order_summary.completed),
+        icon: CheckCircle,
+        color: "text-success",
+        bgColor: "bg-success-light",
+      },
+    ];
+  }, [summary]);
+
+  const filteredOrders = useMemo(() => {
+    return recentOrders.filter((order) => {
+      const shortId = order.id.slice(0, 8).toLowerCase();
+      const matchesSearch =
+        shortId.includes(searchQuery.toLowerCase()) ||
+        order.order_type.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const orderStatusNormalized = order.status.toLowerCase();
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "completed" && orderStatusNormalized === "completed") ||
+        (statusFilter === "pending" && (orderStatusNormalized === "pending" || orderStatusNormalized === "processing"));
+
       return matchesSearch && matchesStatus;
     });
-  }, [searchQuery, statusFilter]);
+  }, [recentOrders, searchQuery, statusFilter]);
 
-  // Filter products based on search
   const filteredProducts = useMemo(() => {
     if (!searchQuery) return topProducts;
     return topProducts.filter((product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
+  }, [topProducts, searchQuery]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <Spinner size="lg" />
+        <p className="text-text-secondary font-medium">Memuat data dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
-        title="Store Overview"
-        description="Monitoring your business performance in real-time."
-        actions={
-          <Button className="rounded-xl shadow-lg shadow-primary/20">
-            <TrendingUp className="h-4 w-4 mr-2" />
-            Download Report
-          </Button>
-        }
+        title="Dashboard"
+        description="Ringkasan penjualan hari ini"
       />
+
+      {/* Inline error notice */}
+      {fetchError && (
+        <div className="flex items-center gap-3 p-4 bg-error-light border border-error/20 rounded-xl text-sm text-error font-medium">
+          <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+          <span>{fetchError}</span>
+          <button
+            onClick={() => setFetchError(null)}
+            className="ml-auto text-error/70 hover:text-error transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -165,7 +207,7 @@ export default function DashboardPage() {
                   <MoreVertical className="h-5 w-5" />
                 </button>
               </div>
-              
+
               <div>
                 <p className="text-sm font-semibold text-text-secondary mb-1">
                   {stat.title}
@@ -173,17 +215,6 @@ export default function DashboardPage() {
                 <h3 className="text-2xl font-bold text-text-primary tracking-tight">
                   {stat.value}
                 </h3>
-              </div>
-
-              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-divider">
-                <div className={cn(
-                  "flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold",
-                  stat.trend === "up" ? "bg-success-light text-success" : "bg-error-light text-error"
-                )}>
-                  {stat.trend === "up" ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                  {Math.abs(stat.change)}%
-                </div>
-                <span className="text-xs text-text-secondary font-medium">vs last month</span>
               </div>
             </CardContent>
           </Card>
@@ -244,32 +275,29 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Recent Transactions - Improved Table Style */}
+        {/* Recent Orders Table */}
         <Card className="lg:col-span-8 border-none shadow-card">
           <CardHeader className="flex flex-row items-center justify-between pb-2 border-none">
             <div>
-              <CardTitle className="text-lg">Recent Transactions</CardTitle>
+              <CardTitle className="text-lg">Transaksi Terbaru</CardTitle>
               <p className="text-xs text-text-secondary font-medium mt-1">
-                {filteredTransactions.length} transaksi ditemukan
+                {filteredOrders.length} transaksi ditemukan
               </p>
             </div>
-            <button className="text-sm text-primary hover:text-primary-dark font-bold px-3 py-1.5 hover:bg-primary-light rounded-lg transition-all">
-              View All
-            </button>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-background border-y border-divider">
-                    <th className="px-6 py-3 text-[11px] font-bold text-text-secondary uppercase tracking-wider">Invoice / Customer</th>
-                    <th className="px-6 py-3 text-[11px] font-bold text-text-secondary uppercase tracking-wider">Amount</th>
+                    <th className="px-6 py-3 text-[11px] font-bold text-text-secondary uppercase tracking-wider">ID / Tipe</th>
+                    <th className="px-6 py-3 text-[11px] font-bold text-text-secondary uppercase tracking-wider">Total</th>
                     <th className="px-6 py-3 text-[11px] font-bold text-text-secondary uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-[11px] font-bold text-text-secondary uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-[11px] font-bold text-text-secondary uppercase tracking-wider">Waktu</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-divider">
-                  {filteredTransactions.length === 0 ? (
+                  {filteredOrders.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="px-6 py-12 text-center">
                         <Search className="h-8 w-8 text-text-secondary mx-auto mb-2" />
@@ -277,32 +305,38 @@ export default function DashboardPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredTransactions.map((tx) => (
-                      <tr key={tx.id} className="hover:bg-background/50 transition-colors group">
+                    filteredOrders.map((order) => (
+                      <tr key={order.id} className="hover:bg-background/50 transition-colors group">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold text-xs">
-                              {tx.customer.split(" ").map(n => n[0]).join("")}
+                              {order.order_type === "DINE_IN" ? "DI" : "TA"}
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-text-primary leading-none">{tx.customer}</p>
-                              <p className="text-[11px] font-medium text-text-secondary mt-1">{tx.id}</p>
+                              <p className="text-sm font-bold text-text-primary leading-none">
+                                {getOrderTypeLabel(order.order_type)}
+                              </p>
+                              <p className="text-[11px] font-medium text-text-secondary mt-1">
+                                #{order.id.slice(0, 8)}
+                              </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-text-primary">{formatCurrency(tx.amount)}</span>
+                          <span className="text-sm font-bold text-text-primary">{formatCurrency(order.total)}</span>
                         </td>
                         <td className="px-6 py-4">
                           <Badge
-                            variant={tx.status === "completed" ? "success" : "warning"}
+                            variant={getOrderStatusVariant(order.status)}
                             className="rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
                           >
-                            {tx.status === "completed" ? "Selesai" : "Pending"}
+                            {getOrderStatusLabel(order.status)}
                           </Badge>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-xs font-medium text-text-secondary">{tx.time}</span>
+                          <span className="text-xs font-medium text-text-secondary">
+                            {formatRelativeTime(order.created_at)}
+                          </span>
                         </td>
                       </tr>
                     ))
@@ -331,16 +365,14 @@ export default function DashboardPage() {
               ) : (
                 filteredProducts.map((product, index) => (
                   <div
-                    key={product.name}
+                    key={product.product_id}
                     className="flex items-center gap-4 px-6 py-4 hover:bg-background/50 transition-all group"
                   >
-                    <div className="relative">
-                      <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        className="h-12 w-12 rounded-xl object-cover ring-2 ring-transparent group-hover:ring-primary/20 transition-all"
-                      />
-                      <div className="absolute -top-1.5 -left-1.5 h-5 w-5 rounded-full bg-secondary border-2 border-surface flex items-center justify-center text-[10px] font-bold text-white">
+                    <div className="relative flex-shrink-0">
+                      <div className={cn(
+                        "h-12 w-12 rounded-xl flex items-center justify-center text-white font-bold text-lg",
+                        RANK_COLORS[index] ?? "bg-text-secondary"
+                      )}>
                         {index + 1}
                       </div>
                     </div>
@@ -349,18 +381,18 @@ export default function DashboardPage() {
                         {product.name}
                       </p>
                       <p className="text-xs font-medium text-text-secondary mt-0.5">
-                        {product.sold} sales
+                        {formatNumber(product.total_qty)} terjual
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-bold text-text-primary">
-                        {formatCurrency(product.revenue)}
+                        {formatCurrency(product.total_revenue)}
                       </p>
                       <div className="flex justify-end mt-1">
                         <div className="h-1.5 w-16 bg-background rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-primary rounded-full" 
-                            style={{ width: `${100 - (index * 15)}%` }}
+                          <div
+                            className="h-full bg-primary rounded-full"
+                            style={{ width: `${100 - index * 15}%` }}
                           />
                         </div>
                       </div>

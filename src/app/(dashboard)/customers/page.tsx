@@ -1,17 +1,21 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui";
 import { Search, Download, Users } from "lucide-react";
-import { CustomerFilters } from "@/features/customers/types";
-import { mockCustomers, filterCustomers, getCustomerDetail, mockCustomerDetails } from "@/features/customers/mock-data";
+import { CustomerFilters, Customer, CustomerDetail } from "@/features/customers/types";
+import { filterCustomers } from "@/features/customers/mock-data";
+import { customerService } from "@/features/customers/services";
 import { CustomerTable } from "@/features/customers/components/customer-table";
 import { CustomerFilterBar } from "@/features/customers/components/customer-filter-bar";
 import { CustomerDetailView } from "@/features/customers/components/customer-detail-view";
 
 export default function CustomersPage() {
+  const { showToast } = useToast();
+
   const [view, setView] = useState<'list' | 'detail'>('list');
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [filters, setFilters] = useState<CustomerFilters>({
@@ -23,16 +27,44 @@ export default function CustomersPage() {
     productId: null,
   });
 
-  const filteredCustomers = useMemo(() => filterCustomers(mockCustomers, filters), [filters]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedDetail, setSelectedDetail] = useState<CustomerDetail | null>(null);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
 
-  const selectedDetail = useMemo(() => {
-    if (!selectedCustomerId) return null;
-    return getCustomerDetail(selectedCustomerId) || null;
-  }, [selectedCustomerId]);
+  // Fetch customer list on mount
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      setIsLoading(true);
+      try {
+        const response = await customerService.list();
+        setCustomers(response.data);
+      } catch {
+        showToast("Gagal memuat data pelanggan", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleViewDetail = (customer: { id: string }) => {
+    fetchCustomers();
+  }, [showToast]);
+
+  const filteredCustomers = useMemo(() => filterCustomers(customers, filters), [customers, filters]);
+
+  const handleViewDetail = async (customer: Customer) => {
     setSelectedCustomerId(customer.id);
+    setSelectedDetail(null);
+    setIsDetailLoading(true);
     setView('detail');
+    try {
+      const detail = await customerService.detail(customer.id);
+      setSelectedDetail(detail);
+    } catch {
+      showToast("Gagal memuat detail pelanggan", "error");
+      setView('list');
+    } finally {
+      setIsDetailLoading(false);
+    }
   };
 
   const handleWhatsApp = (customer: { phone: string }) => {
@@ -40,29 +72,50 @@ export default function CustomersPage() {
     window.open(`https://wa.me/${cleanPhone}`, '_blank');
   };
 
-  // Stats
+  // Stats derived from fetched list
   const stats = useMemo(() => {
-    const total = mockCustomers.length;
-    const active = mockCustomers.filter(c => c.is_active).length;
-    const inactive = mockCustomers.filter(c => !c.is_active).length;
+    const total = customers.length;
+    const active = customers.filter(c => c.is_active).length;
+    const inactive = customers.filter(c => !c.is_active).length;
     return { total, active, inactive };
-  }, []);
+  }, [customers]);
 
-  if (view === 'detail' && selectedDetail) {
-    return (
-      <div className="space-y-6">
-        <PageHeader
-          title="Detail Pelanggan"
-          description={selectedDetail.name}
-          breadcrumbs={[
-            { label: "Home", href: "/dashboard" },
-            { label: "Pelanggan", href: "/customers" },
-            { label: selectedDetail.name },
-          ]}
-        />
-        <CustomerDetailView customer={selectedDetail} onBack={() => setView('list')} />
-      </div>
-    );
+  if (view === 'detail') {
+    if (isDetailLoading) {
+      return (
+        <div className="space-y-6">
+          <PageHeader
+            title="Detail Pelanggan"
+            description="Memuat data..."
+            breadcrumbs={[
+              { label: "Home", href: "/dashboard" },
+              { label: "Pelanggan", href: "/customers" },
+              { label: "Detail" },
+            ]}
+          />
+          <div className="flex items-center justify-center py-24">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          </div>
+        </div>
+      );
+    }
+
+    if (selectedDetail) {
+      return (
+        <div className="space-y-6">
+          <PageHeader
+            title="Detail Pelanggan"
+            description={selectedDetail.name}
+            breadcrumbs={[
+              { label: "Home", href: "/dashboard" },
+              { label: "Pelanggan", href: "/customers" },
+              { label: selectedDetail.name },
+            ]}
+          />
+          <CustomerDetailView customer={selectedDetail} onBack={() => setView('list')} />
+        </div>
+      );
+    }
   }
 
   return (
@@ -137,11 +190,17 @@ export default function CustomersPage() {
       </div>
 
       {/* Customer Table */}
-      <CustomerTable
-        customers={filteredCustomers}
-        onViewDetail={handleViewDetail}
-        onWhatsApp={handleWhatsApp}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-24">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      ) : (
+        <CustomerTable
+          customers={filteredCustomers}
+          onViewDetail={handleViewDetail}
+          onWhatsApp={handleWhatsApp}
+        />
+      )}
     </div>
   );
 }

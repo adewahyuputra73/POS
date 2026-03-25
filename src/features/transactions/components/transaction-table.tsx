@@ -30,8 +30,8 @@ import {
 
 interface TransactionTableProps {
   orders: Order[];
-  selectedIds: number[];
-  onToggleSelect: (id: number) => void;
+  selectedIds: (string | number)[];
+  onToggleSelect: (id: string | number) => void;
   onToggleSelectAll: () => void;
   onViewDetail: (order: Order) => void;
   onDelete: (order: Order) => void;
