@@ -2,11 +2,11 @@ import { Product, Variant, Category, Tax, ServiceFee } from './types';
 
 // Mock Categories
 export const mockCategories: Category[] = [
-  { id: 1, name: 'Makanan', description: 'Kategori makanan utama', productCount: 15, isActive: true },
-  { id: 2, name: 'Minuman', description: 'Kategori minuman', productCount: 12, isActive: true },
-  { id: 3, name: 'Snack', description: 'Kategori camilan', productCount: 8, isActive: true },
-  { id: 4, name: 'Dessert', description: 'Kategori makanan penutup', productCount: 5, isActive: true },
-  { id: 5, name: 'Paket', description: 'Paket hemat', productCount: 3, isActive: false },
+  { id: '1', name: 'Makanan', description: 'Kategori makanan utama', productCount: 15, isActive: true },
+  { id: '2', name: 'Minuman', description: 'Kategori minuman', productCount: 12, isActive: true },
+  { id: '3', name: 'Snack', description: 'Kategori camilan', productCount: 8, isActive: true },
+  { id: '4', name: 'Dessert', description: 'Kategori makanan penutup', productCount: 5, isActive: true },
+  { id: '5', name: 'Paket', description: 'Paket hemat', productCount: 3, isActive: false },
 ];
 
 // Mock Taxes
@@ -24,12 +24,12 @@ export const mockServiceFees: ServiceFee[] = [
 // Mock Products
 export const mockProducts: Product[] = [
   {
-    id: 1,
+    id: '1',
     name: 'Nasi Goreng Spesial',
     description: 'Nasi goreng dengan telur, ayam, dan sayuran segar',
     price: 35000,
     comparePrice: 40000,
-    categoryId: 1,
+    categoryId: '1',
     categoryName: 'Makanan',
     isActive: true,
     barcode: '8991234567890',
@@ -42,7 +42,7 @@ export const mockProducts: Product[] = [
     takeawayFee: 2000,
     useDimension: false,
     images: [
-      { id: 1, url: '/images/products/nasi-goreng.jpg', isPrimary: true },
+      { id: '1', url: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=400&fit=crop', isPrimary: true },
     ],
     channelPrices: [
       { channel: 'pos', price: 35000 },
@@ -55,11 +55,11 @@ export const mockProducts: Product[] = [
     updatedAt: '2024-01-20T14:30:00Z',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Mie Goreng Seafood',
     description: 'Mie goreng dengan udang, cumi, dan sayuran',
     price: 38000,
-    categoryId: 1,
+    categoryId: '1',
     categoryName: 'Makanan',
     isActive: true,
     sku: 'MIG-002',
@@ -69,7 +69,7 @@ export const mockProducts: Product[] = [
     taxId: 1,
     useDimension: false,
     images: [
-      { id: 2, url: '/images/products/mie-goreng.jpg', isPrimary: true },
+      { id: '2', url: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&h=400&fit=crop', isPrimary: true },
     ],
     channelPrices: [
       { channel: 'pos', price: 38000 },
@@ -81,18 +81,18 @@ export const mockProducts: Product[] = [
     updatedAt: '2024-01-18T11:00:00Z',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Es Teh Manis',
     description: 'Teh manis dingin segar',
     price: 8000,
-    categoryId: 2,
+    categoryId: '2',
     categoryName: 'Minuman',
     isActive: true,
     sku: 'ETM-001',
     useStock: false,
     useDimension: false,
     images: [
-      { id: 3, url: '/images/products/es-teh.jpg', isPrimary: true },
+      { id: '3', url: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop', isPrimary: true },
     ],
     channelPrices: [
       { channel: 'pos', price: 8000 },
@@ -104,12 +104,12 @@ export const mockProducts: Product[] = [
     updatedAt: '2024-01-10T08:00:00Z',
   },
   {
-    id: 4,
+    id: '4',
     name: 'Ayam Bakar Madu',
     description: 'Ayam bakar dengan saus madu special',
     price: 45000,
     comparePrice: 50000,
-    categoryId: 1,
+    categoryId: '1',
     categoryName: 'Makanan',
     isActive: true,
     sku: 'ABM-001',
@@ -120,7 +120,7 @@ export const mockProducts: Product[] = [
     serviceFeeId: 1,
     useDimension: false,
     images: [
-      { id: 4, url: '/images/products/ayam-bakar.jpg', isPrimary: true },
+      { id: '4', url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=400&fit=crop', isPrimary: true },
     ],
     channelPrices: [
       { channel: 'pos', price: 45000 },
@@ -132,17 +132,19 @@ export const mockProducts: Product[] = [
     updatedAt: '2024-01-22T16:00:00Z',
   },
   {
-    id: 5,
+    id: '5',
     name: 'Es Jeruk Segar',
     description: 'Jus jeruk segar dengan es',
     price: 12000,
-    categoryId: 2,
+    categoryId: '2',
     categoryName: 'Minuman',
     isActive: true,
     sku: 'EJS-001',
     useStock: false,
     useDimension: false,
-    images: [],
+    images: [
+      { id: '5', url: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=400&fit=crop', isPrimary: true },
+    ],
     channelPrices: [
       { channel: 'pos', price: 12000 },
       { channel: 'gofood', price: 15000 },
@@ -152,18 +154,18 @@ export const mockProducts: Product[] = [
     updatedAt: '2024-01-11T09:00:00Z',
   },
   {
-    id: 6,
+    id: '6',
     name: 'Cappuccino',
     description: 'Kopi cappuccino dengan foam lembut',
     price: 25000,
-    categoryId: 2,
+    categoryId: '2',
     categoryName: 'Minuman',
     isActive: false,
     sku: 'CAP-001',
     useStock: false,
     useDimension: false,
     images: [
-      { id: 5, url: '/images/products/cappuccino.jpg', isPrimary: true },
+      { id: '6', url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=400&fit=crop', isPrimary: true },
     ],
     channelPrices: [
       { channel: 'pos', price: 25000 },
@@ -173,11 +175,11 @@ export const mockProducts: Product[] = [
     updatedAt: '2024-01-25T09:00:00Z',
   },
   {
-    id: 7,
+    id: '7',
     name: 'Kentang Goreng',
     description: 'French fries crispy',
     price: 18000,
-    categoryId: 3,
+    categoryId: '3',
     categoryName: 'Snack',
     isActive: true,
     sku: 'KTG-001',
@@ -186,7 +188,7 @@ export const mockProducts: Product[] = [
     stockLimit: 10,
     useDimension: false,
     images: [
-      { id: 6, url: '/images/products/kentang-goreng.jpg', isPrimary: true },
+      { id: '7', url: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=400&fit=crop', isPrimary: true },
     ],
     channelPrices: [
       { channel: 'pos', price: 18000 },
@@ -197,11 +199,11 @@ export const mockProducts: Product[] = [
     updatedAt: '2024-01-14T11:00:00Z',
   },
   {
-    id: 8,
+    id: '8',
     name: 'Brownies Coklat',
     description: 'Brownies coklat lembut dengan topping',
     price: 22000,
-    categoryId: 4,
+    categoryId: '4',
     categoryName: 'Dessert',
     isActive: false,
     sku: 'BRW-001',
@@ -209,7 +211,9 @@ export const mockProducts: Product[] = [
     stockQuantity: 15,
     stockLimit: 5,
     useDimension: false,
-    images: [],
+    images: [
+      { id: '8', url: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&h=400&fit=crop', isPrimary: true },
+    ],
     channelPrices: [
       { channel: 'pos', price: 22000 },
     ],
@@ -277,8 +281,8 @@ export const mockVariants: Variant[] = [
     isRequired: false,
     sourceType: 'product',
     options: [
-      { id: 13, name: 'Single Shot', price: 5000, useStock: false, isActive: true, sourceProductId: 101 },
-      { id: 14, name: 'Double Shot', price: 10000, useStock: false, isActive: true, sourceProductId: 102 },
+      { id: 13, name: 'Single Shot', price: 5000, useStock: false, isActive: true, sourceProductId: '101' },
+      { id: 14, name: 'Double Shot', price: 10000, useStock: false, isActive: true, sourceProductId: '102' },
     ],
     appliedProductCount: 1,
     isActive: true,
@@ -292,9 +296,9 @@ export const mockVariants: Variant[] = [
     maxOptions: 2,
     sourceType: 'product',
     options: [
-      { id: 15, name: 'Es Teh Manis', price: 8000, useStock: false, isActive: true, sourceProductId: 3 },
-      { id: 16, name: 'Es Jeruk Segar', price: 12000, useStock: false, isActive: true, sourceProductId: 5 },
-      { id: 17, name: 'Kentang Goreng', price: 18000, useStock: true, stockQuantity: 0, isActive: true, sourceProductId: 7 },
+      { id: 15, name: 'Es Teh Manis', price: 8000, useStock: false, isActive: true, sourceProductId: '3' },
+      { id: 16, name: 'Es Jeruk Segar', price: 12000, useStock: false, isActive: true, sourceProductId: '5' },
+      { id: 17, name: 'Kentang Goreng', price: 18000, useStock: true, stockQuantity: 0, isActive: true, sourceProductId: '7' },
     ],
     appliedProductCount: 0,
     isActive: false,
@@ -304,7 +308,7 @@ export const mockVariants: Variant[] = [
 ];
 
 // Helper functions
-export function getProductById(id: number): Product | undefined {
+export function getProductById(id: string): Product | undefined {
   return mockProducts.find(p => p.id === id);
 }
 
@@ -312,13 +316,13 @@ export function getVariantById(id: number): Variant | undefined {
   return mockVariants.find(v => v.id === id);
 }
 
-export function getCategoryById(id: number): Category | undefined {
+export function getCategoryById(id: string): Category | undefined {
   return mockCategories.find(c => c.id === id);
 }
 
 export function filterProducts(
   products: Product[],
-  filters: { status: 'all' | 'active' | 'inactive'; search: string; categoryId?: number }
+  filters: { status: 'all' | 'active' | 'inactive'; search: string; categoryId?: string }
 ): Product[] {
   return products.filter(p => {
     // Status filter

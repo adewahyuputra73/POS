@@ -100,19 +100,14 @@ export const mockCustomerDetails: CustomerDetail[] = [
     email: 'budi.santoso@email.com', total_spent: '4250000.00', total_orders: 28,
     last_order_at: '2026-02-12T10:30:00Z', whatsapp_opt_in: true, is_active: true,
     createdAt: '2025-06-01T09:00:00Z', updatedAt: '2026-02-12T10:30:00Z', outlet_id: null,
-    address: 'Jl. Merdeka No. 45, Surabaya', notes: 'Pelanggan setia, suka meja dekat jendela',
-    avgOrderValue: 151786, avgRating: 4.5, totalReviews: 8, memberSince: '2025-06-01',
-    orders: [
-      { id: 1, orderId: 'ORD-2026-0211-001', date: '2026-02-11T10:30:00Z', status: 'success', items: ['Nasi Goreng Spesial', 'Es Teh Manis'], totalAmount: 65000, paymentMethod: 'QRIS' },
-      { id: 2, orderId: 'ORD-2026-0209-003', date: '2026-02-09T18:00:00Z', status: 'success', items: ['Mie Ayam Bakso', 'Jus Jeruk', 'Kerupuk'], totalAmount: 82000, paymentMethod: 'Cash' },
-      { id: 3, orderId: 'ORD-2026-0205-002', date: '2026-02-05T12:00:00Z', status: 'cancelled', items: ['Rendang Padang'], totalAmount: 45000, paymentMethod: 'Debit' },
-    ],
-    reservations: [
-      { id: 1, date: '2026-02-14', time: '18:00', guests: 4, status: 'confirmed', notes: 'Ulang tahun istri', tableNumber: 'A5' },
-      { id: 2, date: '2026-02-08', time: '12:00', guests: 2, status: 'completed', notes: '', tableNumber: 'B2' },
+    avg_rating: 4.5,
+    recent_orders: [
+      { id: 'o1', order_number: 'ORD-2026-0211-001', total_amount: '65000.00', fulfillment_status: 'completed', created_at: '2026-02-11T10:30:00Z' },
+      { id: 'o2', order_number: 'ORD-2026-0209-003', total_amount: '82000.00', fulfillment_status: 'completed', created_at: '2026-02-09T18:00:00Z' },
+      { id: 'o3', order_number: 'ORD-2026-0205-002', total_amount: '45000.00', fulfillment_status: 'cancelled', created_at: '2026-02-05T12:00:00Z' },
     ],
     reviews: [
-      { id: 1, orderId: 'ORD-2026-0211-001', date: '2026-02-11T11:00:00Z', rating: 5, comment: 'Makanan selalu enak dan pelayanan ramah!', products: ['Nasi Goreng Spesial'], questionAnswers: [{ question: 'Bagaimana rasa makanan?', rating: 5 }, { question: 'Bagaimana pelayanan?', rating: 5 }] },
+      { id: 'r1', rating: 5, comment: 'Makanan selalu enak dan pelayanan ramah!', created_at: '2026-02-11T11:00:00Z' },
     ],
   },
   {
@@ -120,16 +115,12 @@ export const mockCustomerDetails: CustomerDetail[] = [
     email: 'nurul.h@email.com', total_spent: '5890000.00', total_orders: 35,
     last_order_at: '2026-02-13T09:00:00Z', whatsapp_opt_in: true, is_active: true,
     createdAt: '2025-04-15T08:00:00Z', updatedAt: '2026-02-13T09:00:00Z', outlet_id: null,
-    address: 'Jl. Ahmad Yani No. 12, Surabaya', notes: 'VIP customer, sering bawa teman',
-    avgOrderValue: 168286, avgRating: 4.8, totalReviews: 12, memberSince: '2025-04-15',
-    orders: [
-      { id: 6, orderId: 'ORD-2026-0213-001', date: '2026-02-13T09:00:00Z', status: 'success', items: ['Bubur Ayam', 'Kopi Hitam'], totalAmount: 42000, paymentMethod: 'QRIS' },
-    ],
-    reservations: [
-      { id: 4, date: '2026-02-15', time: '19:00', guests: 8, status: 'confirmed', notes: 'Arisan kantor', tableNumber: 'VIP-1' },
+    avg_rating: 4.8,
+    recent_orders: [
+      { id: 'o6', order_number: 'ORD-2026-0213-001', total_amount: '42000.00', fulfillment_status: 'completed', created_at: '2026-02-13T09:00:00Z' },
     ],
     reviews: [
-      { id: 3, orderId: 'ORD-2026-0213-001', date: '2026-02-13T10:00:00Z', rating: 5, comment: 'Bubur ayamnya best di kota!', products: ['Bubur Ayam'], questionAnswers: [{ question: 'Bagaimana rasa makanan?', rating: 5 }, { question: 'Bagaimana pelayanan?', rating: 5 }] },
+      { id: 'r3', rating: 5, comment: 'Bubur ayamnya best di kota!', created_at: '2026-02-13T10:00:00Z' },
     ],
   },
 ];

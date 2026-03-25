@@ -65,7 +65,7 @@ export function VariantModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showProductPicker, setShowProductPicker] = useState(false);
   const [productSearch, setProductSearch] = useState("");
-  const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [hasLimitOptions, setHasLimitOptions] = useState(false);
 
   const isEditing = !!variant;

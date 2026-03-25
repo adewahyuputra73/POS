@@ -15,7 +15,23 @@ apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Only access localStorage on client side
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+      // Primary: dedicated auth_token key (written on login)
+      let token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+
+      // Fallback: read from Zustand persist storage if primary is missing
+      if (!token) {
+        try {
+          const zustandRaw = localStorage.getItem("auth-storage");
+          if (zustandRaw) {
+            token = JSON.parse(zustandRaw)?.state?.token ?? null;
+            // Sync back so future requests use the primary key
+            if (token) localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+          }
+        } catch {
+          // ignore JSON parse errors
+        }
+      }
+
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }

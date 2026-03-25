@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { 
-  ChevronUp, 
-  ChevronDown, 
+import {
+  ChevronUp,
+  ChevronDown,
   Pencil,
+  Trash2,
   ChevronLeft,
   ChevronRight,
   Package,
@@ -25,6 +26,7 @@ import { StatusToggle } from "@/features/products/components/status-toggle";
 interface CategoryTableProps {
   categories: Category[];
   onEdit: (category: Category) => void;
+  onDelete: (category: Category) => void;
   onToggleStatus: (categoryId: string, is_active: boolean) => void;
 }
 
@@ -36,6 +38,7 @@ const ITEMS_PER_PAGE = 10;
 export function CategoryTable({
   categories,
   onEdit,
+  onDelete,
   onToggleStatus,
 }: CategoryTableProps) {
   const [sortField, setSortField] = useState<SortField>('name');
@@ -151,7 +154,7 @@ export function CategoryTable({
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center gap-1">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -159,6 +162,14 @@ export function CategoryTable({
                     className="h-8 w-8 text-text-secondary hover:text-primary"
                   >
                     <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDelete(category)}
+                    className="h-8 w-8 text-text-secondary hover:text-error"
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </TableCell>

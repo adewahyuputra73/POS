@@ -50,7 +50,7 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
     { label: 'Total Belanja', value: formatCurrency(parseFloat(customer.total_spent)), icon: <DollarSign className="h-5 w-5 text-green-500" />, bg: 'bg-green-50' },
     { label: 'Total Pesanan', value: customer.total_orders.toString(), icon: <ShoppingBag className="h-5 w-5 text-blue-500" />, bg: 'bg-blue-50' },
     { label: 'Order Terakhir', value: formatDate(customer.last_order_at), icon: <Calendar className="h-5 w-5 text-pink-500" />, bg: 'bg-pink-50' },
-    { label: 'Ulasan', value: `${customer.totalReviews} (${customer.avgRating}★)`, icon: <Star className="h-5 w-5 text-yellow-500" />, bg: 'bg-yellow-50' },
+    { label: 'Ulasan', value: `${customer.reviews.length} (${customer.avg_rating ?? 0}★)`, icon: <Star className="h-5 w-5 text-yellow-500" />, bg: 'bg-yellow-50' },
   ];
 
   return (
@@ -78,14 +78,13 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
                 <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {customer.phone}</span>
                 {customer.email && <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {customer.email}</span>}
               </div>
-              {customer.address && (
-                <p className="flex items-center gap-1 text-sm text-text-disabled mt-1"><MapPin className="h-3.5 w-3.5" /> {customer.address}</p>
+              {customer.outlet_id && (
+                <p className="flex items-center gap-1 text-sm text-text-disabled mt-1"><MapPin className="h-3.5 w-3.5" /> Outlet #{customer.outlet_id}</p>
               )}
             </div>
           </div>
           <div className="text-right text-sm text-text-secondary">
-            <p className="flex items-center gap-1 justify-end"><Clock className="h-3.5 w-3.5" /> Member sejak {formatDate(customer.memberSince)}</p>
-            {customer.notes && <p className="mt-1 text-xs text-text-disabled italic">&quot;{customer.notes}&quot;</p>}
+            <p className="flex items-center gap-1 justify-end"><Clock className="h-3.5 w-3.5" /> Member sejak {formatDate(customer.createdAt)}</p>
           </div>
         </div>
 
@@ -107,8 +106,7 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="ringkasan">Ringkasan</TabsTrigger>
-          <TabsTrigger value="pesanan">Pesanan ({customer.orders.length})</TabsTrigger>
-          <TabsTrigger value="reservasi">Reservasi ({customer.reservations.length})</TabsTrigger>
+          <TabsTrigger value="pesanan">Pesanan ({customer.recent_orders.length})</TabsTrigger>
           <TabsTrigger value="ulasan">Ulasan ({customer.reviews.length})</TabsTrigger>
         </TabsList>
 
@@ -119,17 +117,17 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
               <div className="space-y-3">
                 <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Pesanan</span><span className="font-medium">{customer.total_orders}</span></div>
                 <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Belanja</span><span className="font-medium">{formatCurrency(parseFloat(customer.total_spent))}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Rata-rata per Pesanan</span><span className="font-medium">{formatCurrency(customer.avgOrderValue)}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Rata-rata per Pesanan</span><span className="font-medium">{customer.total_orders > 0 ? formatCurrency(parseFloat(customer.total_spent) / customer.total_orders) : '-'}</span></div>
                 <div className="flex justify-between text-sm"><span className="text-text-secondary">Order Terakhir</span><span className="font-medium">{formatDate(customer.last_order_at)}</span></div>
               </div>
             </div>
             <div className="bg-surface rounded-xl border border-border p-6">
               <h4 className="text-sm font-semibold mb-4">Info Lainnya</h4>
               <div className="space-y-3">
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Rating Rata-rata</span><span className="font-medium">{customer.avgRating} ★</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Ulasan</span><span className="font-medium">{customer.totalReviews}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Rating Rata-rata</span><span className="font-medium">{customer.avg_rating ?? '-'} ★</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Total Ulasan</span><span className="font-medium">{customer.reviews.length}</span></div>
                 <div className="flex justify-between text-sm"><span className="text-text-secondary">WhatsApp Opt-in</span><span className="font-medium">{customer.whatsapp_opt_in ? 'Ya' : 'Tidak'}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-text-secondary">Member Sejak</span><span className="font-medium">{formatDate(customer.memberSince)}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-text-secondary">Member Sejak</span><span className="font-medium">{formatDate(customer.createdAt)}</span></div>
               </div>
             </div>
           </div>
@@ -140,67 +138,27 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
             <Table>
               <TableHeader>
                 <TableRow className="bg-background/50">
-                  <TableHead className="font-semibold text-xs">Order ID</TableHead>
+                  <TableHead className="font-semibold text-xs">No. Order</TableHead>
                   <TableHead className="font-semibold text-xs">Tanggal</TableHead>
-                  <TableHead className="font-semibold text-xs">Item</TableHead>
                   <TableHead className="font-semibold text-xs text-right">Total</TableHead>
-                  <TableHead className="font-semibold text-xs">Pembayaran</TableHead>
                   <TableHead className="font-semibold text-xs">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {customer.orders.map((order) => (
+                {customer.recent_orders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-mono text-xs text-text-secondary">{order.orderId}</TableCell>
-                    <TableCell className="text-sm">{formatDateTime(order.date)}</TableCell>
-                    <TableCell className="text-sm">{order.items.join(', ')}</TableCell>
-                    <TableCell className="text-right text-sm font-medium">{formatCurrency(order.totalAmount)}</TableCell>
-                    <TableCell className="text-sm">{order.paymentMethod}</TableCell>
+                    <TableCell className="font-mono text-xs text-text-secondary">{order.order_number}</TableCell>
+                    <TableCell className="text-sm">{formatDateTime(order.created_at)}</TableCell>
+                    <TableCell className="text-right text-sm font-medium">{formatCurrency(parseFloat(order.total_amount))}</TableCell>
                     <TableCell>
-                      <Badge variant={order.status === 'success' ? 'success' : order.status === 'cancelled' ? 'warning' : 'default'}>
-                        {order.status === 'success' ? 'Sukses' : order.status === 'cancelled' ? 'Batal' : 'Pending'}
+                      <Badge variant={order.fulfillment_status === 'completed' ? 'success' : order.fulfillment_status === 'cancelled' ? 'warning' : 'default'}>
+                        {order.fulfillment_status === 'completed' ? 'Selesai' : order.fulfillment_status === 'cancelled' ? 'Batal' : order.fulfillment_status}
                       </Badge>
                     </TableCell>
                   </TableRow>
                 ))}
-                {customer.orders.length === 0 && (
-                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-text-disabled">Belum ada pesanan</TableCell></TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="reservasi">
-          <div className="bg-surface rounded-xl border border-border overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-background/50">
-                  <TableHead className="font-semibold text-xs">Tanggal</TableHead>
-                  <TableHead className="font-semibold text-xs">Waktu</TableHead>
-                  <TableHead className="font-semibold text-xs">Meja</TableHead>
-                  <TableHead className="font-semibold text-xs text-center">Tamu</TableHead>
-                  <TableHead className="font-semibold text-xs">Catatan</TableHead>
-                  <TableHead className="font-semibold text-xs">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {customer.reservations.map((res) => (
-                  <TableRow key={res.id}>
-                    <TableCell className="text-sm">{formatDate(res.date)}</TableCell>
-                    <TableCell className="text-sm font-medium">{res.time}</TableCell>
-                    <TableCell className="text-sm">{res.tableNumber}</TableCell>
-                    <TableCell className="text-center text-sm">{res.guests} orang</TableCell>
-                    <TableCell className="text-sm text-text-secondary">{res.notes || '-'}</TableCell>
-                    <TableCell>
-                      <Badge variant={res.status === 'completed' ? 'success' : res.status === 'confirmed' ? 'info' : res.status === 'cancelled' ? 'warning' : 'default'}>
-                        {res.status === 'completed' ? 'Selesai' : res.status === 'confirmed' ? 'Dikonfirmasi' : res.status === 'cancelled' ? 'Batal' : 'No Show'}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {customer.reservations.length === 0 && (
-                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-text-disabled">Belum ada reservasi</TableCell></TableRow>
+                {customer.recent_orders.length === 0 && (
+                  <TableRow><TableCell colSpan={4} className="text-center py-8 text-text-disabled">Belum ada pesanan</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -212,28 +170,10 @@ export function CustomerDetailView({ customer, onBack }: CustomerDetailViewProps
             {customer.reviews.map((review) => (
               <div key={review.id} className="bg-surface rounded-xl border border-border p-5">
                 <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="text-xs text-text-secondary mb-1">Order: {review.orderId}</p>
-                    <StarRating rating={review.rating} />
-                  </div>
-                  <p className="text-xs text-text-disabled">{formatDateTime(review.date)}</p>
+                  <StarRating rating={review.rating} />
+                  <p className="text-xs text-text-disabled">{formatDateTime(review.created_at)}</p>
                 </div>
-                {review.comment && <p className="text-sm text-text-primary mb-3">{review.comment}</p>}
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {review.products.map((p, i) => (
-                    <span key={i} className="text-xs bg-background text-text-secondary px-2 py-0.5 rounded-full">{p}</span>
-                  ))}
-                </div>
-                {review.questionAnswers.length > 0 && (
-                  <div className="border-t border-border pt-3 space-y-1.5">
-                    {review.questionAnswers.map((qa, i) => (
-                      <div key={i} className="flex items-center justify-between text-sm">
-                        <span className="text-text-secondary">{qa.question}</span>
-                        <StarRating rating={qa.rating} />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {review.comment && <p className="text-sm text-text-primary">{review.comment}</p>}
               </div>
             ))}
             {customer.reviews.length === 0 && (

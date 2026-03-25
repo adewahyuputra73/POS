@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui";
-import { Product, Category, Variant, Tax, ServiceFee, ProductFormData } from "../types";
+import { Product, Variant, Tax, ServiceFee, ProductFormData } from "../types";
 import { StatusToggle } from "./status-toggle";
 import { ImageUploader } from "./image-uploader";
-import { mockCategories, mockVariants, mockTaxes, mockServiceFees } from "../mock-data";
+import { mockVariants, mockTaxes, mockServiceFees } from "../mock-data";
 import { 
   X, 
   ChevronDown,
@@ -21,9 +21,10 @@ import {
 interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: ProductFormData, productId?: number) => void;
+  onSave: (data: ProductFormData, productId?: string) => void;
   product?: Product | null;
   isLoading?: boolean;
+  categories?: { id: string; name: string }[];
 }
 
 interface ImageFile {
@@ -70,6 +71,7 @@ export function ProductModal({
   onSave,
   product,
   isLoading = false,
+  categories = [],
 }: ProductModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("basic");
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
@@ -255,11 +257,11 @@ export function ProductModal({
                   </label>
                   <select
                     value={formData.categoryId || ""}
-                    onChange={(e) => updateField("categoryId", e.target.value ? Number(e.target.value) : null)}
+                    onChange={(e) => updateField("categoryId", e.target.value || null)}
                     className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   >
                     <option value="">Pilih Kategori</option>
-                    {mockCategories.filter(c => c.isActive).map((cat) => (
+                    {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.name}
                       </option>

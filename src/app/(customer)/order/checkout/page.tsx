@@ -3,25 +3,24 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, Phone, MapPin, ClipboardList, Send, CreditCard, ChevronRight, ShoppingBag } from "lucide-react";
+import { ArrowLeft, User, MapPin, ShoppingBag, ClipboardList, ReceiptText, Send } from "lucide-react";
 import { useCustomerCartStore } from "@/stores/customer-cart-store";
 import { formatCurrency } from "@/lib/utils/format";
 import { mockTaxSettings } from "@/features/store-settings/mock-data";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function CheckoutPage() {
     const router = useRouter();
     const { items, getSubtotal, getTax, getServiceFee, getTotal, clearCart } = useCustomerCartStore();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
         customerName: "",
         customerPhone: "",
         fulfillmentType: "dine_in" as "dine_in" | "takeaway",
         tableNumber: "",
-        notes: ""
+        notes: "",
     });
 
     const subtotal = getSubtotal();
@@ -36,231 +35,420 @@ export default function CheckoutPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // In a real app, this would call an API. 
-        // For now, we simulate success and redirect to confirmation.
-
-        // Simulate API call delay
+        setIsSubmitting(true);
         setTimeout(() => {
-            // We'll pass some info via search params for the confirmation page to show
             const params = new URLSearchParams({
                 orderNumber: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
-                name: formData.customerName
+                name: formData.customerName,
             });
             clearCart();
             router.push(`/order/confirmation?${params.toString()}`);
-        }, 1000);
+        }, 1200);
+    };
+
+    // Shared input style helpers
+    const inputBaseStyle = {
+        backgroundColor: '#FFF8EE',
+        borderColor: 'rgba(124,74,30,0.18)',
+        color: '#1C0A00',
+    };
+    const onInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        e.currentTarget.style.borderColor = '#F59E0B';
+    };
+    const onInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        e.currentTarget.style.borderColor = 'rgba(124,74,30,0.18)';
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-5xl">
-            <div className="flex items-center gap-4 mb-8">
-                <Link href="/order/cart" className="inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-xl active:scale-[0.98] h-12 w-12 border border-divider p-0 bg-transparent text-text-secondary hover:bg-background">
-                    <ArrowLeft className="h-5 w-5" />
-                </Link>
-                <h1 className="text-3xl font-black text-text-primary tracking-tight">Checkout</h1>
-            </div>
+        <form
+            onSubmit={handleSubmit}
+            className="min-h-screen pb-36 lg:pb-12"
+            style={{ backgroundColor: '#FEFAF5' }}
+        >
+            <div className="container mx-auto px-4 py-8 max-w-5xl">
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-8">
+                    <Link
+                        href="/order/cart"
+                        className="h-11 w-11 rounded-xl flex items-center justify-center transition-all active:scale-90 border shrink-0"
+                        style={{ backgroundColor: '#FFF8EE', borderColor: 'rgba(124,74,30,0.2)', color: '#6B4C2A' }}
+                    >
+                        <ArrowLeft className="h-5 w-5" />
+                    </Link>
+                    <div>
+                        <h1
+                            className="text-2xl sm:text-3xl font-black tracking-tight font-[family-name:var(--font-fraunces)]"
+                            style={{ color: '#1C0A00' }}
+                        >
+                            Konfirmasi Pesanan
+                        </h1>
+                        <p className="text-sm font-medium mt-0.5" style={{ color: '#9C7D58' }}>
+                            {items.length} menu · {formatCurrency(total)}
+                        </p>
+                    </div>
+                </div>
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                <div className="lg:col-span-7 space-y-8">
-                    {/* Customer Info Section */}
-                    <div className="bg-white rounded-[2rem] p-8 border border-divider shadow-card relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <User className="h-5 w-5 text-primary" />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+                    {/* ── Left: Form fields ── */}
+                    <div className="lg:col-span-7 space-y-5">
+
+                        {/* Section 1 — Customer Info */}
+                        <div
+                            className="rounded-[22px] p-6"
+                            style={{
+                                backgroundColor: '#FFFFFF',
+                                border: '1.5px solid rgba(124,74,30,0.1)',
+                                boxShadow: '0 2px 12px rgba(28,10,0,0.04)',
+                            }}
+                        >
+                            <div className="flex items-center gap-3 mb-5">
+                                <div
+                                    className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0"
+                                    style={{ backgroundColor: '#FEF3C7' }}
+                                >
+                                    <User className="h-4 w-4" style={{ color: '#D97706' }} />
+                                </div>
+                                <h2 className="text-[15px] font-black tracking-tight" style={{ color: '#1C0A00' }}>
+                                    Informasi Pelanggan
+                                </h2>
                             </div>
-                            <h2 className="text-xl font-black text-text-primary tracking-tight">Informasi Pelanggan</h2>
-                        </div>
 
-                        <div className="space-y-6">
-                            <div className="space-y-3">
-                                <Label htmlFor="name" className="text-sm font-bold text-text-secondary">Nama Lengkap</Label>
-                                <div className="relative group">
+                            <div className="space-y-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-[11px] font-black uppercase tracking-widest" style={{ color: '#9C7D58' }}>
+                                        Nama Lengkap
+                                    </label>
                                     <Input
-                                        id="name"
                                         required
                                         placeholder="Masukkan nama Anda"
-                                        className="pl-5 h-14 rounded-2xl border-2 border-divider focus:border-primary transition-all text-base font-medium"
+                                        className="h-12 rounded-2xl text-sm font-medium border-2 transition-colors"
+                                        style={inputBaseStyle}
+                                        onFocus={onInputFocus}
+                                        onBlur={onInputBlur}
                                         value={formData.customerName}
                                         onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
                                     />
                                 </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-[11px] font-black uppercase tracking-widest" style={{ color: '#9C7D58' }}>
+                                        Nomor WhatsApp
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
+                                            <span className="text-sm font-black" style={{ color: '#9C7D58' }}>+62</span>
+                                        </div>
+                                        <Input
+                                            required
+                                            type="tel"
+                                            placeholder="812-3456-7890"
+                                            className="pl-14 h-12 rounded-2xl text-sm font-medium border-2 transition-colors"
+                                            style={inputBaseStyle}
+                                            onFocus={onInputFocus}
+                                            onBlur={onInputBlur}
+                                            value={formData.customerPhone}
+                                            onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 2 — Fulfillment */}
+                        <div
+                            className="rounded-[22px] p-6"
+                            style={{
+                                backgroundColor: '#FFFFFF',
+                                border: '1.5px solid rgba(124,74,30,0.1)',
+                                boxShadow: '0 2px 12px rgba(28,10,0,0.04)',
+                            }}
+                        >
+                            <div className="flex items-center gap-3 mb-5">
+                                <div
+                                    className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0"
+                                    style={{ backgroundColor: '#FEF3C7' }}
+                                >
+                                    <MapPin className="h-4 w-4" style={{ color: '#D97706' }} />
+                                </div>
+                                <h2 className="text-[15px] font-black tracking-tight" style={{ color: '#1C0A00' }}>
+                                    Metode Pemesanan
+                                </h2>
                             </div>
 
-                            <div className="space-y-3">
-                                <Label htmlFor="phone" className="text-sm font-bold text-text-secondary">Nomor WhatsApp</Label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                                        <span className="text-text-disabled font-bold text-sm">+62</span>
+                            <div className="grid grid-cols-2 gap-3 mb-4">
+                                {/* Dine In */}
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, fulfillmentType: 'dine_in' })}
+                                    className="flex flex-col items-center gap-2.5 py-5 px-3 rounded-2xl border-2 transition-all duration-200 active:scale-[0.97]"
+                                    style={
+                                        formData.fulfillmentType === 'dine_in'
+                                            ? { backgroundColor: '#FEF3C7', borderColor: '#F59E0B' }
+                                            : { backgroundColor: '#FEFAF5', borderColor: 'rgba(124,74,30,0.14)' }
+                                    }
+                                >
+                                    <div
+                                        className="h-11 w-11 rounded-2xl flex items-center justify-center transition-colors"
+                                        style={
+                                            formData.fulfillmentType === 'dine_in'
+                                                ? { backgroundColor: '#F59E0B', color: '#1C0A00' }
+                                                : { backgroundColor: 'rgba(124,74,30,0.07)', color: '#9C7D58' }
+                                        }
+                                    >
+                                        <MapPin className="h-5 w-5" />
                                     </div>
+                                    <span
+                                        className="text-[13px] font-black"
+                                        style={{ color: formData.fulfillmentType === 'dine_in' ? '#92400E' : '#6B4C2A' }}
+                                    >
+                                        Makan di Tempat
+                                    </span>
+                                </button>
+
+                                {/* Takeaway */}
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, fulfillmentType: 'takeaway' })}
+                                    className="flex flex-col items-center gap-2.5 py-5 px-3 rounded-2xl border-2 transition-all duration-200 active:scale-[0.97]"
+                                    style={
+                                        formData.fulfillmentType === 'takeaway'
+                                            ? { backgroundColor: '#FEF3C7', borderColor: '#F59E0B' }
+                                            : { backgroundColor: '#FEFAF5', borderColor: 'rgba(124,74,30,0.14)' }
+                                    }
+                                >
+                                    <div
+                                        className="h-11 w-11 rounded-2xl flex items-center justify-center transition-colors"
+                                        style={
+                                            formData.fulfillmentType === 'takeaway'
+                                                ? { backgroundColor: '#F59E0B', color: '#1C0A00' }
+                                                : { backgroundColor: 'rgba(124,74,30,0.07)', color: '#9C7D58' }
+                                        }
+                                    >
+                                        <ShoppingBag className="h-5 w-5" />
+                                    </div>
+                                    <span
+                                        className="text-[13px] font-black"
+                                        style={{ color: formData.fulfillmentType === 'takeaway' ? '#92400E' : '#6B4C2A' }}
+                                    >
+                                        Bawa Pulang
+                                    </span>
+                                </button>
+                            </div>
+
+                            {/* Table number (conditional) */}
+                            {formData.fulfillmentType === 'dine_in' && (
+                                <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <label className="text-[11px] font-black uppercase tracking-widest" style={{ color: '#9C7D58' }}>
+                                        Nomor Meja
+                                    </label>
                                     <Input
-                                        id="phone"
                                         required
-                                        type="tel"
-                                        placeholder="812-3456-7890"
-                                        className="pl-14 h-14 rounded-2xl border-2 border-divider focus:border-primary transition-all text-base font-medium"
-                                        value={formData.customerPhone}
-                                        onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })}
+                                        placeholder="Contoh: Meja 04"
+                                        className="h-12 rounded-2xl text-base font-black border-2 transition-colors px-5"
+                                        style={inputBaseStyle}
+                                        onFocus={onInputFocus}
+                                        onBlur={onInputBlur}
+                                        value={formData.tableNumber}
+                                        onChange={(e) => setFormData({ ...formData, tableNumber: e.target.value })}
                                     />
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Fulfillment Section */}
-                    <div className="bg-white rounded-[2rem] p-8 border border-divider shadow-card relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-orange-500" />
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
-                                <MapPin className="h-5 w-5 text-orange-500" />
-                            </div>
-                            <h2 className="text-xl font-black text-text-primary tracking-tight">Metode Pemesanan</h2>
+                            )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, fulfillmentType: 'dine_in' })}
-                                className={cn(
-                                    "flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all duration-300",
-                                    formData.fulfillmentType === 'dine_in'
-                                        ? "border-orange-500 bg-orange-500/5 ring-4 ring-orange-500/10"
-                                        : "border-divider bg-white hover:border-orange-200"
-                                )}
-                            >
-                                <div className={cn(
-                                    "h-12 w-12 rounded-2xl flex items-center justify-center transition-colors",
-                                    formData.fulfillmentType === 'dine_in' ? "bg-orange-500 text-white" : "bg-slate-100 text-text-disabled"
-                                )}>
-                                    <MapPin className="h-6 w-6" />
-                                </div>
-                                <span className={cn("text-sm font-black", formData.fulfillmentType === 'dine_in' ? "text-orange-600" : "text-text-secondary")}>
-                                    Makan di Tempat
-                                </span>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, fulfillmentType: 'takeaway' })}
-                                className={cn(
-                                    "flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all duration-300",
-                                    formData.fulfillmentType === 'takeaway'
-                                        ? "border-orange-500 bg-orange-500/5 ring-4 ring-orange-500/10"
-                                        : "border-divider bg-white hover:border-orange-200"
-                                )}
-                            >
-                                <div className={cn(
-                                    "h-12 w-12 rounded-2xl flex items-center justify-center transition-colors",
-                                    formData.fulfillmentType === 'takeaway' ? "bg-orange-500 text-white" : "bg-slate-100 text-text-disabled"
-                                )}>
-                                    <ShoppingBag className="h-6 w-6" />
-                                </div>
-                                <span className={cn("text-sm font-black", formData.fulfillmentType === 'takeaway' ? "text-orange-600" : "text-text-secondary")}>
-                                    Bawa Pulang
-                                </span>
-                            </button>
-                        </div>
-
-                        {formData.fulfillmentType === 'dine_in' && (
-                            <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
-                                <Label htmlFor="table" className="text-sm font-bold text-text-secondary">Nomor Meja</Label>
-                                <Input
-                                    id="table"
-                                    required={formData.fulfillmentType === 'dine_in'}
-                                    placeholder="Contoh: Meja 04"
-                                    className="h-14 rounded-2xl border-2 border-divider focus:border-orange-500 transition-all text-base font-black px-6"
-                                    value={formData.tableNumber}
-                                    onChange={(e) => setFormData({ ...formData, tableNumber: e.target.value })}
-                                />
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Notes Section */}
-                    <div className="bg-white rounded-[2rem] p-8 border border-divider shadow-card relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-slate-400" />
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center">
-                                <ClipboardList className="h-5 w-5 text-slate-500" />
-                            </div>
-                            <h2 className="text-xl font-black text-text-primary tracking-tight">Catatan Tambahan</h2>
-                        </div>
-                        <textarea
-                            placeholder="Pesan khusus untuk seluruh pesanan (opsional)..."
-                            className="w-full bg-background border-2 border-divider rounded-2xl p-5 text-base focus:border-primary focus:ring-0 transition-all resize-none h-32 font-medium"
-                            value={formData.notes}
-                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                        />
-                    </div>
-                </div>
-
-                {/* Order Summary Sidebar */}
-                <div className="lg:col-span-5">
-                    <div className="sticky top-24 bg-surface rounded-[2rem] p-8 border border-divider shadow-card">
-                        <div className="flex items-center gap-3 mb-8 pb-4 border-b border-divider">
-                            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                                <CreditCard className="h-5 w-5 text-emerald-500" />
-                            </div>
-                            <h2 className="text-xl font-black text-text-primary tracking-tight">Ringkasan Biaya</h2>
-                        </div>
-
-                        <div className="space-y-4 mb-4">
-                            {items.map((item) => (
-                                <div key={item.id} className="flex justify-between gap-4 group">
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-bold text-text-primary truncate">{item.quantity}x {item.product.name}</p>
-                                        {item.selectedVariants.length > 0 && (
-                                            <p className="text-[10px] text-text-disabled font-medium truncate italic">
-                                                {item.selectedVariants.map(v => v.optionName).join(", ")}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <span className="text-sm font-black text-text-secondary shrink-0">{formatCurrency(item.subtotal)}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="border-t border-divider pt-6 space-y-4 mb-8">
-                            <div className="flex justify-between items-center group">
-                                <span className="text-text-secondary font-bold text-sm">Subtotal</span>
-                                <span className="text-text-primary font-bold text-sm">{formatCurrency(subtotal)}</span>
-                            </div>
-                            <div className="flex justify-between items-center group">
-                                <span className="text-text-secondary font-bold text-sm">PB1 (10%)</span>
-                                <span className="text-text-primary font-bold text-sm">{formatCurrency(tax)}</span>
-                            </div>
-                            <div className="flex justify-between items-center group">
-                                <span className="text-text-secondary font-bold text-sm">Service (5%)</span>
-                                <span className="text-text-primary font-bold text-sm">{formatCurrency(serviceFee)}</span>
-                            </div>
-
-                            <div className="pt-6 mt-2 border-t border-dashed border-divider">
-                                <div className="flex justify-between items-end">
-                                    <span className="text-text-primary font-black text-xl tracking-tight">Total</span>
-                                    <span className="text-3xl font-black text-primary tracking-tight">
-                                        {formatCurrency(total)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <Button
-                            type="submit"
-                            className="w-full h-16 rounded-2xl font-black text-lg bg-primary hover:bg-primary-dark shadow-xl shadow-primary/25 transition-all group active:scale-[0.98]"
+                        {/* Section 3 — Notes */}
+                        <div
+                            className="rounded-[22px] p-6"
+                            style={{
+                                backgroundColor: '#FFFFFF',
+                                border: '1.5px solid rgba(124,74,30,0.1)',
+                                boxShadow: '0 2px 12px rgba(28,10,0,0.04)',
+                            }}
                         >
-                            Pesan Sekarang
-                            <Send className="ml-3 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                        </Button>
+                            <div className="flex items-center gap-3 mb-4">
+                                <div
+                                    className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0"
+                                    style={{ backgroundColor: '#FEF3C7' }}
+                                >
+                                    <ClipboardList className="h-4 w-4" style={{ color: '#D97706' }} />
+                                </div>
+                                <div>
+                                    <h2 className="text-[15px] font-black tracking-tight" style={{ color: '#1C0A00' }}>
+                                        Catatan Tambahan
+                                    </h2>
+                                    <p className="text-[11px] font-medium" style={{ color: '#9C7D58' }}>Opsional</p>
+                                </div>
+                            </div>
+                            <textarea
+                                placeholder="Pesan khusus untuk seluruh pesanan..."
+                                rows={3}
+                                className="w-full rounded-2xl p-4 text-sm resize-none outline-none border-2 transition-colors font-medium"
+                                style={inputBaseStyle}
+                                onFocus={onInputFocus}
+                                onBlur={onInputBlur}
+                                value={formData.notes}
+                                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                            />
+                        </div>
+                    </div>
 
-                        <div className="mt-8 flex items-center justify-center gap-4 py-4 bg-emerald-50 rounded-2xl border border-emerald-100 px-6">
-                            <CreditCard className="h-5 w-5 text-emerald-600" />
-                            <p className="text-[11px] text-emerald-800 font-black leading-tight uppercase tracking-widest text-center">
-                                Metode Pembayaran Kasir / Bayar di Tempat
-                            </p>
+                    {/* ── Right: Order Summary (desktop) ── */}
+                    <div className="hidden lg:block lg:col-span-5">
+                        <div
+                            className="sticky top-24 rounded-[24px] p-7"
+                            style={{ backgroundColor: '#1C0A00', border: '1px solid rgba(245,158,11,0.15)' }}
+                        >
+                            {/* Header */}
+                            <div
+                                className="flex items-center gap-3 mb-6 pb-5"
+                                style={{ borderBottom: '1px solid rgba(245,158,11,0.12)' }}
+                            >
+                                <div
+                                    className="h-9 w-9 rounded-xl flex items-center justify-center"
+                                    style={{ backgroundColor: 'rgba(245,158,11,0.1)' }}
+                                >
+                                    <ReceiptText className="h-4 w-4" style={{ color: '#F59E0B' }} />
+                                </div>
+                                <h2
+                                    className="text-base font-black tracking-tight font-[family-name:var(--font-fraunces)]"
+                                    style={{ color: 'rgba(255,255,255,0.9)' }}
+                                >
+                                    Ringkasan Pesanan
+                                </h2>
+                            </div>
+
+                            {/* Item list */}
+                            <div className="space-y-3 mb-5">
+                                {items.map((item) => (
+                                    <div key={item.id} className="flex justify-between gap-3">
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-bold truncate" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                                                {item.quantity}× {item.product.name}
+                                            </p>
+                                            {item.selectedVariants.length > 0 && (
+                                                <p className="text-[11px] font-medium truncate mt-0.5 italic" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                                                    {item.selectedVariants.map(v => v.optionName).join(", ")}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <span className="text-sm font-black shrink-0 tabular-nums" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                                            {formatCurrency(item.subtotal)}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Price breakdown */}
+                            <div
+                                className="space-y-3 pt-5 mb-6"
+                                style={{ borderTop: '1px solid rgba(245,158,11,0.12)' }}
+                            >
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-bold" style={{ color: 'rgba(255,255,255,0.4)' }}>Subtotal</span>
+                                    <span className="text-sm font-black tabular-nums" style={{ color: 'rgba(255,255,255,0.75)' }}>{formatCurrency(subtotal)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-bold" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                                        {mockTaxSettings.tax_name} ({mockTaxSettings.tax_rate}%)
+                                    </span>
+                                    <span className="text-sm font-black tabular-nums" style={{ color: 'rgba(255,255,255,0.75)' }}>{formatCurrency(tax)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-bold" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                                        Layanan ({mockTaxSettings.service_charge_rate}%)
+                                    </span>
+                                    <span className="text-sm font-black tabular-nums" style={{ color: 'rgba(255,255,255,0.75)' }}>{formatCurrency(serviceFee)}</span>
+                                </div>
+
+                                {/* Total */}
+                                <div className="pt-4" style={{ borderTop: '1px dashed rgba(245,158,11,0.2)' }}>
+                                    <div className="flex justify-between items-end">
+                                        <span className="font-black text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>Total Akhir</span>
+                                        <span className="text-2xl font-black tracking-tight tabular-nums" style={{ color: '#F59E0B' }}>
+                                            {formatCurrency(total)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Submit — desktop */}
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full h-14 rounded-2xl font-black text-base flex items-center justify-center gap-3 transition-all duration-200 active:scale-[0.98] disabled:opacity-55"
+                                style={{ backgroundColor: '#F59E0B', color: '#1C0A00', boxShadow: '0 8px 24px rgba(245,158,11,0.28)' }}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <div className="h-4 w-4 rounded-full border-2 border-[#1C0A00]/40 border-t-[#1C0A00] animate-spin" />
+                                        Memproses...
+                                    </>
+                                ) : (
+                                    <>
+                                        Pesan Sekarang
+                                        <Send className="h-4 w-4" />
+                                    </>
+                                )}
+                            </button>
+
+                            {/* Pay at cashier note */}
+                            <div
+                                className="mt-4 flex items-center justify-center gap-2.5 py-3 rounded-xl"
+                                style={{ backgroundColor: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.12)' }}
+                            >
+                                <div className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: '#F59E0B' }} />
+                                <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: 'rgba(245,158,11,0.65)' }}>
+                                    Bayar di Kasir
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+
+            {/* ── Mobile sticky bottom bar ── */}
+            <div
+                className="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-3 z-50"
+                style={{
+                    backgroundColor: '#1C0A00',
+                    borderTop: '1px solid rgba(245,158,11,0.15)',
+                    paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))',
+                }}
+            >
+                <div className="flex items-center gap-4 max-w-lg mx-auto">
+                    <div className="flex flex-col shrink-0">
+                        <span
+                            className="text-[10px] font-black uppercase tracking-[0.18em] mb-0.5"
+                            style={{ color: 'rgba(245,158,11,0.5)' }}
+                        >
+                            Total
+                        </span>
+                        <span className="text-lg font-black tabular-nums leading-none" style={{ color: '#F59E0B' }}>
+                            {formatCurrency(total)}
+                        </span>
+                    </div>
+
+                    <div className="h-8 w-px shrink-0" style={{ backgroundColor: 'rgba(245,158,11,0.15)' }} />
+
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="flex-1 h-12 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-55"
+                        style={{ backgroundColor: '#F59E0B', color: '#1C0A00' }}
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <div className="h-3.5 w-3.5 rounded-full border-2 border-[#1C0A00]/40 border-t-[#1C0A00] animate-spin" />
+                                Memproses...
+                            </>
+                        ) : (
+                            <>
+                                Pesan Sekarang
+                                <Send className="h-3.5 w-3.5" />
+                            </>
+                        )}
+                    </button>
+                </div>
+            </div>
+        </form>
     );
 }

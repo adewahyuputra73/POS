@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,21 +21,18 @@ import {
   CategoryTable,
   CategoryModal,
 } from "@/features/categories";
-import {
-  mockCategories,
-  mockProductsForPicker,
-  filterCategories,
-  getCategoryStats,
-} from "@/features/categories/mock-data";
+import { categoryService } from "@/features/categories/services/category-service";
 import { Category, CategoryFormData, CategoryFilters } from "@/features/categories/types";
+import { mockProductsForPicker } from "@/features/categories/mock-data";
 
 type StatusTab = 'all' | 'active' | 'inactive';
 
 export default function CategoriesPage() {
   const { showToast } = useToast();
-  
+
   // State
-  const [categories, setCategories] = useState<Category[]>(mockCategories);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
   const [filters, setFilters] = useState<CategoryFilters>({
     status: 'all',
     search: '',
@@ -46,13 +43,38 @@ export default function CategoriesPage() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
+  // Fetch data
+  const fetchData = useCallback(async () => {
+    setIsFetching(true);
+    try {
+      const data = await categoryService.list();
+      setCategories(data);
+    } catch {
+      showToast("Gagal memuat data kategori", "error");
+    } finally {
+      setIsFetching(false);
+    }
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   // Computed
-  const stats = useMemo(() => getCategoryStats(categories), [categories]);
-  
+  const stats = useMemo(() => ({
+    total: categories.length,
+    active: categories.filter(c => c.is_active).length,
+    inactive: categories.filter(c => !c.is_active).length,
+  }), [categories]);
+
   const filteredCategories = useMemo(() => {
-    return filterCategories(categories, {
-      ...filters,
-      status: activeTab,
+    return categories.filter(c => {
+      const matchesSearch = !filters.search ||
+        c.name.toLowerCase().includes(filters.search.toLowerCase());
+      const matchesStatus = activeTab === 'all' ||
+        (activeTab === 'active' && c.is_active) ||
+        (activeTab === 'inactive' && !c.is_active);
+      return matchesSearch && matchesStatus;
     });
   }, [categories, filters, activeTab]);
 
@@ -67,54 +89,40 @@ export default function CategoriesPage() {
     setEditingCategory(null);
   };
 
-  const handleSubmit = (data: CategoryFormData) => {
-    if (editingCategory) {
-      // Update existing category
-      setCategories((prev) =>
-        prev.map((c) =>
-          c.id === editingCategory.id
-            ? {
-                ...c,
-                name: data.name,
-                is_active: data.is_active,
-                updatedAt: new Date().toISOString(),
-              }
-            : c
-        )
-      );
-      showToast(`Kategori "${data.name}" berhasil diubah`, "success");
-    } else {
-      // Add new category
-      const newCategory: Category = {
-        id: crypto.randomUUID(),
-        store_id: 'store-1',
-        name: data.name,
-        is_active: data.is_active,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      setCategories((prev) => [...prev, newCategory]);
-      showToast(`Kategori "${data.name}" berhasil ditambahkan`, "success");
+  const handleSubmit = async (data: CategoryFormData) => {
+    try {
+      if (editingCategory) {
+        await categoryService.update(editingCategory.id, { name: data.name });
+        showToast(`Kategori "${data.name}" berhasil diubah`, "success");
+      } else {
+        await categoryService.create({ name: data.name });
+        showToast(`Kategori "${data.name}" berhasil ditambahkan`, "success");
+      }
+      await fetchData();
+      handleCloseModal();
+    } catch {
+      showToast("Gagal menyimpan kategori", "error");
     }
-    handleCloseModal();
   };
 
-  const handleToggleStatus = (categoryId: string, is_active: boolean) => {
-    setCategories((prev) =>
-      prev.map((c) =>
-        c.id === categoryId
-          ? { ...c, is_active, updatedAt: new Date().toISOString() }
-          : c
-      )
+  const handleToggleStatus = async (categoryId: string, is_active: boolean) => {
+    // Optimistic update
+    setCategories(prev =>
+      prev.map(c => c.id === categoryId ? { ...c, is_active } : c)
     );
-    const category = categories.find((c) => c.id === categoryId);
+    const category = categories.find(c => c.id === categoryId);
     showToast(`Kategori "${category?.name}" ${is_active ? "diaktifkan" : "dinonaktifkan"}`, "success");
   };
 
-  const handleDeleteConfirm = () => {
-    if (categoryToDelete) {
-      setCategories((prev) => prev.filter((c) => c.id !== categoryToDelete.id));
+  const handleDeleteConfirm = async () => {
+    if (!categoryToDelete) return;
+    try {
+      await categoryService.delete(categoryToDelete.id);
+      setCategories(prev => prev.filter(c => c.id !== categoryToDelete.id));
       showToast(`Kategori "${categoryToDelete.name}" berhasil dihapus`, "success");
+    } catch {
+      showToast("Gagal menghapus kategori", "error");
+    } finally {
       setDeleteConfirmOpen(false);
       setCategoryToDelete(null);
     }
@@ -199,6 +207,10 @@ export default function CategoriesPage() {
       <CategoryTable
         categories={filteredCategories}
         onEdit={handleOpenModal}
+        onDelete={(category) => {
+          setCategoryToDelete(category);
+          setDeleteConfirmOpen(true);
+        }}
         onToggleStatus={handleToggleStatus}
       />
 
