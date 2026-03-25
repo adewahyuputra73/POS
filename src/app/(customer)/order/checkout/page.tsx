@@ -9,6 +9,7 @@ import { formatCurrency } from "@/lib/utils/format";
 import { mockTaxSettings } from "@/features/store-settings/mock-data";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui";
 import { orderService } from "@/features/orders/services/order-service";
 import { tableService } from "@/features/tables/services/table-service";
 import type { Table } from "@/features/tables/types";
@@ -16,6 +17,7 @@ import type { PaymentMethod } from "@/features/orders/types";
 
 export default function CheckoutPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const { items, getSubtotal, getTax, getServiceFee, getTotal, clearCart } = useCustomerCartStore();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [tables, setTables] = useState<Table[]>([]);
@@ -64,12 +66,15 @@ export default function CheckoutPage() {
                 customer_phone: formData.customerPhone || undefined,
             });
             clearCart();
+            const orderNumber = order?.order_number ?? order?.id ?? `ORD-${Date.now()}`;
             const params = new URLSearchParams({
-                orderNumber: order.id ?? `ORD-${Date.now()}`,
+                orderNumber,
                 name: formData.customerName,
             });
             router.push(`/order/confirmation?${params.toString()}`);
-        } catch {
+        } catch (err: any) {
+            const msg = err?.response?.data?.message ?? err?.message ?? "Gagal membuat pesanan";
+            showToast(msg, "error");
             setIsSubmitting(false);
         }
     };

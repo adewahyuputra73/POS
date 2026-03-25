@@ -324,14 +324,14 @@ export default function DashboardPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-text-primary">{formatCurrency(order.total)}</span>
+                          <span className="text-sm font-bold text-text-primary">{formatCurrency(order.total ?? 0)}</span>
                         </td>
                         <td className="px-6 py-4">
                           <Badge
-                            variant={getOrderStatusVariant(order.status)}
+                            variant={getOrderStatusVariant(order.status ?? "")}
                             className="rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
                           >
-                            {getOrderStatusLabel(order.status)}
+                            {getOrderStatusLabel(order.status ?? "")}
                           </Badge>
                         </td>
                         <td className="px-6 py-4">

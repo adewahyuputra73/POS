@@ -52,11 +52,20 @@ export interface OrderListParams {
 
 export interface Order {
   id: string;
+  order_number?: string;
   order_type: OrderType;
-  table_id: string | null;
+  table_id?: string | null;
+  table_number?: string | null;
   items: OrderItem[];
-  total: number;
-  status: string;
-  created_at: string;
-  updated_at: string;
+  total?: number;
+  total_amount?: string;
+  status?: string;
+  payment_status?: string;
+  fulfillment_status?: string;
+  created_at?: string;
+  createdAt?: string;
+  updated_at?: string;
+  updatedAt?: string;
+  customer?: { name: string; phone: string } | null;
+  payments?: { payment_method: string; amount: string; is_cash: boolean }[];
 }
