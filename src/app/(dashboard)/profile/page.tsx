@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/layout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { User, Lock, Activity } from "lucide-react";
@@ -10,22 +10,46 @@ import {
   ChangePasswordForm,
   ActivityLogList,
 } from "@/features/profile/components";
-import {
-  mockUserProfile,
-  mockActivityLogs,
-  ProfileFormData,
-} from "@/features/profile";
+import { authService } from "@/features/auth/services/auth-service";
+import type { UserProfile, ProfileFormData } from "@/features/profile/types";
+import type { LoginResponse } from "@/features/auth/types";
+
+function mapApiUser(raw: LoginResponse["user"]): UserProfile {
+  return {
+    id: raw.id,
+    name: raw.name,
+    email: raw.email ?? "",
+    phone: raw.phone ?? "",
+    role: raw.role,
+    avatar: raw.avatar,
+    address: undefined,
+    date_of_birth: undefined,
+    gender: undefined,
+    joined_date: "",
+    last_login: "",
+    is_active: true,
+  };
+}
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState(mockUserProfile);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleSaveProfile = (data: ProfileFormData) => {
-    setProfile((prev) => ({
-      ...prev,
-      ...data,
-    }));
+  useEffect(() => {
+    authService.profile()
+      .then((data) => setProfile(mapApiUser(data)))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleSaveProfile = async (data: ProfileFormData) => {
+    const updated = await authService.updateProfile({
+      full_name: data.name,
+      email: data.email,
+    });
+    setProfile(mapApiUser(updated));
     setIsEditing(false);
   };
 
@@ -54,20 +78,26 @@ export default function ProfilePage() {
         </TabsList>
 
         <TabsContent value="profile">
-          <div className="space-y-6">
-            {isEditing ? (
-              <EditProfileForm
-                profile={profile}
-                onSave={handleSaveProfile}
-                onCancel={() => setIsEditing(false)}
-              />
-            ) : (
-              <ProfileInfoCard
-                profile={profile}
-                onEditClick={() => setIsEditing(true)}
-              />
-            )}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center h-40">
+              <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+            </div>
+          ) : profile ? (
+            <div className="space-y-6">
+              {isEditing ? (
+                <EditProfileForm
+                  profile={profile}
+                  onSave={handleSaveProfile}
+                  onCancel={() => setIsEditing(false)}
+                />
+              ) : (
+                <ProfileInfoCard
+                  profile={profile}
+                  onEditClick={() => setIsEditing(true)}
+                />
+              )}
+            </div>
+          ) : null}
         </TabsContent>
 
         <TabsContent value="security">
@@ -77,7 +107,7 @@ export default function ProfilePage() {
         </TabsContent>
 
         <TabsContent value="activity">
-          <ActivityLogList logs={mockActivityLogs} />
+          <ActivityLogList logs={[]} />
         </TabsContent>
       </Tabs>
     </div>
