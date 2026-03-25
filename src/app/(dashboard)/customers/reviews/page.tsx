@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Input } from "@/components/ui/input";
@@ -9,20 +9,63 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Search, Star, MessageSquare, Settings } from "lucide-react";
-import { ReviewFilters } from "@/features/customers/types";
-import { mockReviews, filterReviews, getReviewStats } from "@/features/customers/mock-data";
+import type { Review, ReviewFilters } from "@/features/customers/types";
+import { filterReviews, getReviewStats } from "@/features/customers/mock-data";
 import { ReviewTable } from "@/features/customers/components/review-table";
+import { customerService } from "@/features/customers/services/customer-service";
+
+function mapApiReview(raw: any, index: number): Review {
+  return {
+    id: typeof raw.id === "number" ? raw.id : index + 1,
+    customerId: raw.customer_id ?? raw.customerId ?? 0,
+    customerName: raw.customer?.name ?? raw.customer_name ?? raw.customerName ?? "Pelanggan",
+    customerPhone: raw.customer?.phone ?? raw.customer_phone ?? raw.customerPhone ?? "",
+    orderId: raw.order_id ?? raw.orderId ?? "",
+    orderDate: raw.order?.created_at ?? raw.order_date ?? raw.orderDate ?? raw.createdAt ?? "",
+    rating: Number(raw.rating ?? 0),
+    comment: raw.comment ?? "",
+    products: Array.isArray(raw.products) ? raw.products : [],
+    questionAnswers: Array.isArray(raw.question_answers)
+      ? raw.question_answers
+      : Array.isArray(raw.questionAnswers) ? raw.questionAnswers : [],
+    createdAt: raw.created_at ?? raw.createdAt ?? "",
+  };
+}
 
 export default function ReviewsPage() {
   const router = useRouter();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<ReviewFilters>({
-    search: '',
+    search: "",
     ratingMin: null,
     ratingMax: null,
   });
 
-  const filteredReviews = useMemo(() => filterReviews(mockReviews, filters), [filters]);
-  const stats = useMemo(() => getReviewStats(mockReviews), []);
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const raw = await customerService.reviews({
+        min_rating: filters.ratingMin ?? undefined,
+        max_rating: filters.ratingMax ?? undefined,
+      });
+      const data = Array.isArray(raw) ? raw : (raw as any)?.data ?? [];
+      setReviews(data.map((r: any, i: number) => mapApiReview(r, i)));
+    } catch {
+      setReviews([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [filters.ratingMin, filters.ratingMax]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const filteredReviews = useMemo(
+    () => filterReviews(reviews, filters),
+    [reviews, filters]
+  );
+
+  const stats = useMemo(() => getReviewStats(reviews), [reviews]);
 
   const handleViewCustomer = (customerId: number) => {
     router.push(`/customers?view=detail&id=${customerId}`);
@@ -42,7 +85,7 @@ export default function ReviewsPage() {
           <Button
             variant="outline"
             className="gap-1.5"
-            onClick={() => router.push('/customers/reviews/settings')}
+            onClick={() => router.push("/customers/reviews/settings")}
           >
             <Settings className="h-4 w-4" /> Pengaturan Ulasan
           </Button>
@@ -112,9 +155,9 @@ export default function ReviewsPage() {
             />
           </div>
           <Select
-            value={filters.ratingMin !== null ? filters.ratingMin.toString() : 'all'}
+            value={filters.ratingMin !== null ? filters.ratingMin.toString() : "all"}
             onValueChange={(v: string) => {
-              if (v === 'all') {
+              if (v === "all") {
                 setFilters({ ...filters, ratingMin: null, ratingMax: null });
               } else {
                 const val = parseInt(v);
@@ -123,7 +166,9 @@ export default function ReviewsPage() {
             }}
           >
             <SelectTrigger className="w-36">
-              <SelectValue>{filters.ratingMin === null ? "Semua Rating" : `⭐ ${filters.ratingMin} Bintang`}</SelectValue>
+              <SelectValue>
+                {filters.ratingMin === null ? "Semua Rating" : `⭐ ${filters.ratingMin} Bintang`}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Semua Rating</SelectItem>
@@ -136,12 +181,20 @@ export default function ReviewsPage() {
           </Select>
         </div>
         <p className="text-xs text-text-secondary mt-2">
-          Menampilkan <span className="font-semibold text-text-primary">{filteredReviews.length}</span> ulasan
+          Menampilkan{" "}
+          <span className="font-semibold text-text-primary">{filteredReviews.length}</span>{" "}
+          ulasan
         </p>
       </div>
 
-      {/* Reviews */}
-      <ReviewTable reviews={filteredReviews} onViewCustomer={handleViewCustomer} />
+      {/* Content */}
+      {loading ? (
+        <div className="flex items-center justify-center h-40">
+          <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+        </div>
+      ) : (
+        <ReviewTable reviews={filteredReviews} onViewCustomer={handleViewCustomer} />
+      )}
     </div>
   );
 }
