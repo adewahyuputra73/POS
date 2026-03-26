@@ -1,25 +1,74 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { RestaurantTable, LayoutObject, LayoutObjectType } from '@/features/table-management/types';
-import { mockTables, mockAreas, mockLayoutObjects, getTablesByArea, getLayoutObjectsByArea } from '@/features/table-management/mock-data';
+import { tableService } from '@/features/tables/services/table-service';
+import type { Table, Area } from '@/features/tables/types';
+import { useToast } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  Save, RotateCcw, ZoomIn, ZoomOut, Plus, Trash2, Layers, Move, Square, Circle,
-} from 'lucide-react';
+import { Save, RotateCcw, ZoomIn, ZoomOut, Layers, Move, Square, Trash2 } from 'lucide-react';
 
 // ==================
-// Canvas Table Element
+// Local types
 // ==================
-function CanvasTable({ table, isSelected, onSelect, onDrag }: {
-  table: RestaurantTable;
+interface TablePos { x: number; y: number; }
+
+interface LocalObject {
+  id: string;
+  areaId: string;
+  type: 'bar' | 'dapur' | 'tembok';
+  name: string;
+  x: number; y: number;
+  width: number; height: number;
+}
+
+const TABLE_W = 80;
+const TABLE_H = 70;
+const STORAGE_KEY = 'fere-table-layout-v1';
+
+const STATUS_COLOR: Record<string, string> = {
+  AVAILABLE: 'bg-green-100 border-green-300 text-green-700',
+  OCCUPIED: 'bg-red-100 border-red-300 text-red-700',
+  RESERVED: 'bg-yellow-100 border-yellow-300 text-yellow-700',
+  UNAVAILABLE: 'bg-gray-100 border-gray-300 text-gray-400',
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  AVAILABLE: 'Tersedia',
+  OCCUPIED: 'Terisi',
+  RESERVED: 'Reserved',
+  UNAVAILABLE: 'Nonaktif',
+};
+
+function loadSavedLayout(): Record<string, Record<string, TablePos>> {
+  if (typeof window === 'undefined') return {};
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}'); }
+  catch { return {}; }
+}
+
+function autoPositions(tables: Table[]): Record<string, TablePos> {
+  const COLS = 5;
+  const result: Record<string, TablePos> = {};
+  tables.forEach((t, i) => {
+    result[t.id] = {
+      x: 40 + (i % COLS) * 120,
+      y: 40 + Math.floor(i / COLS) * 110,
+    };
+  });
+  return result;
+}
+
+// ==================
+// CanvasTable
+// ==================
+function CanvasTable({ table, pos, isSelected, onSelect, onDrag }: {
+  table: Table;
+  pos: TablePos;
   isSelected: boolean;
   onSelect: () => void;
   onDrag: (dx: number, dy: number) => void;
 }) {
-  const dragRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const lastPos = useRef({ x: 0, y: 0 });
 
@@ -41,40 +90,41 @@ function CanvasTable({ table, isSelected, onSelect, onDrag }: {
     const handleUp = () => setIsDragging(false);
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleUp);
-    return () => { window.removeEventListener('mousemove', handleMove); window.removeEventListener('mouseup', handleUp); };
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+    };
   }, [isDragging, onDrag]);
 
-  const statusColor = table.status === 'occupied' ? 'bg-red-100 border-red-300 text-red-700'
-    : table.status === 'reserved' ? 'bg-yellow-100 border-yellow-300 text-yellow-700'
-    : 'bg-green-100 border-green-300 text-green-700';
+  const colorClass = STATUS_COLOR[table.status] ?? STATUS_COLOR.AVAILABLE;
 
   return (
     <div
-      ref={dragRef}
       onMouseDown={handleMouseDown}
-      className={`absolute cursor-move flex flex-col items-center justify-center border-2 transition-shadow select-none
-        ${table.shape === 'circle' ? 'rounded-full' : 'rounded-lg'}
-        ${statusColor}
+      className={`absolute cursor-move flex flex-col items-center justify-center border-2 rounded-lg select-none transition-shadow
+        ${colorClass}
         ${isSelected ? 'ring-2 ring-primary ring-offset-2 shadow-lg' : 'shadow-sm hover:shadow-md'}
       `}
-      style={{
-        left: table.positionX, top: table.positionY,
-        width: table.width, height: table.height,
-        transform: `rotate(${table.rotation}deg)`,
-      }}
-      title={`Meja ${table.name} (${table.capacity} pax) - ${table.areaName}`}
+      style={{ left: pos.x, top: pos.y, width: TABLE_W, height: TABLE_H }}
+      title={`${table.name} · ${table.capacity} pax · ${table.area?.name ?? ''}`}
     >
       <span className="text-xs font-bold leading-none">{table.name}</span>
-      <span className="text-[9px] opacity-70">{table.capacity}p</span>
+      <span className="text-[9px] opacity-70 mt-0.5">{table.capacity}p</span>
     </div>
   );
 }
 
 // ==================
-// Canvas Layout Object
+// CanvasObject
 // ==================
+const OBJ_CONFIG: Record<LocalObject['type'], { bg: string; label: string }> = {
+  bar: { bg: 'bg-amber-200 border-amber-400 text-amber-800', label: '🍸 Bar' },
+  dapur: { bg: 'bg-orange-200 border-orange-400 text-orange-800', label: '🍳 Dapur' },
+  tembok: { bg: 'bg-gray-300 border-gray-400 text-gray-600', label: '' },
+};
+
 function CanvasObject({ obj, isSelected, onSelect, onDrag }: {
-  obj: LayoutObject;
+  obj: LocalObject;
   isSelected: boolean;
   onSelect: () => void;
   onDrag: (dx: number, dy: number) => void;
@@ -100,78 +150,124 @@ function CanvasObject({ obj, isSelected, onSelect, onDrag }: {
     const handleUp = () => setIsDragging(false);
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleUp);
-    return () => { window.removeEventListener('mousemove', handleMove); window.removeEventListener('mouseup', handleUp); };
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+    };
   }, [isDragging, onDrag]);
 
-  const typeConfig: Record<LayoutObjectType, { bg: string; label: string }> = {
-    bar: { bg: 'bg-amber-200 border-amber-400 text-amber-800', label: '🍸 Bar' },
-    dapur: { bg: 'bg-orange-200 border-orange-400 text-orange-800', label: '🍳 Dapur' },
-    tembok: { bg: 'bg-border border-border', label: '' },
-  };
-  const config = typeConfig[obj.type];
+  const cfg = OBJ_CONFIG[obj.type];
 
   return (
     <div
       onMouseDown={handleMouseDown}
       className={`absolute cursor-move border-2 flex items-center justify-center select-none
-        ${config.bg}
-        ${obj.type === 'tembok' ? '' : 'rounded-lg'}
+        ${cfg.bg}
+        ${obj.type !== 'tembok' ? 'rounded-lg' : ''}
         ${isSelected ? 'ring-2 ring-primary ring-offset-2' : ''}
       `}
-      style={{
-        left: obj.positionX, top: obj.positionY,
-        width: obj.width, height: obj.height,
-        transform: `rotate(${obj.rotation}deg)`,
-      }}
+      style={{ left: obj.x, top: obj.y, width: obj.width, height: obj.height }}
       title={obj.name || obj.type}
     >
-      {config.label && <span className="text-[10px] font-medium">{config.label}</span>}
-      {obj.name && obj.type !== 'tembok' && (
-        <span className="text-[9px] absolute -bottom-4 left-0 right-0 text-center text-text-secondary">{obj.name}</span>
-      )}
+      {cfg.label && <span className="text-[10px] font-medium">{cfg.label}</span>}
     </div>
   );
 }
 
 // ==================
-// Layout Editor Page
+// Main Page
 // ==================
 export default function LayoutPage() {
-  const [selectedAreaId, setSelectedAreaId] = useState(mockAreas[0]?.id || 1);
-  const [tables, setTables] = useState<RestaurantTable[]>(mockTables);
-  const [objects, setObjects] = useState<LayoutObject[]>(mockLayoutObjects);
-  const [selectedId, setSelectedId] = useState<{ type: 'table' | 'object'; id: number } | null>(null);
+  const [areas, setAreas] = useState<Area[]>([]);
+  const [tables, setTables] = useState<Table[]>([]);
+  const [positions, setPositions] = useState<Record<string, Record<string, TablePos>>>({});
+  const [objects, setObjects] = useState<LocalObject[]>([]);
+  const [selectedAreaId, setSelectedAreaId] = useState<string>('');
+  const [selectedId, setSelectedId] = useState<{ type: 'table' | 'object'; id: string } | null>(null);
   const [zoom, setZoom] = useState(1);
   const [hasChanges, setHasChanges] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
 
-  const areaTables = useMemo(() => getTablesByArea(tables, selectedAreaId), [tables, selectedAreaId]);
-  const areaObjects = useMemo(() => getLayoutObjectsByArea(objects, selectedAreaId), [objects, selectedAreaId]);
-  const selectedArea = mockAreas.find(a => a.id === selectedAreaId);
+  useEffect(() => {
+    async function load() {
+      try {
+        const [areasData, tablesData] = await Promise.all([
+          tableService.areas().catch(() => [] as Area[]),
+          tableService.list().catch(() => [] as Table[]),
+        ]);
+        const areaList = Array.isArray(areasData) ? areasData : [];
+        const tableList = Array.isArray(tablesData) ? tablesData : [];
+        setAreas(areaList);
+        setTables(tableList);
+        if (areaList.length > 0) setSelectedAreaId(areaList[0].id);
+        setPositions(loadSavedLayout());
+      } catch {
+        showToast('Gagal memuat data meja', 'error');
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [showToast]);
 
-  const handleTableDrag = useCallback((tableId: number, dx: number, dy: number) => {
-    setTables(prev => prev.map(t => t.id === tableId ? {
-      ...t, positionX: Math.max(0, t.positionX + dx / zoom), positionY: Math.max(0, t.positionY + dy / zoom),
-    } : t));
+  const areaTables = useMemo(
+    () => tables.filter(t => t.area_id === selectedAreaId),
+    [tables, selectedAreaId]
+  );
+
+  const areaObjects = useMemo(
+    () => objects.filter(o => o.areaId === selectedAreaId),
+    [objects, selectedAreaId]
+  );
+
+  // Auto-place tables if no saved position for this area
+  useEffect(() => {
+    if (!selectedAreaId || areaTables.length === 0) return;
+    if (positions[selectedAreaId]) return;
+    setPositions(prev => ({ ...prev, [selectedAreaId]: autoPositions(areaTables) }));
+  }, [selectedAreaId, areaTables, positions]);
+
+  const getPos = useCallback((tableId: string): TablePos => {
+    return positions[selectedAreaId]?.[tableId] ?? { x: 40, y: 40 };
+  }, [positions, selectedAreaId]);
+
+  const handleTableDrag = useCallback((tableId: string, dx: number, dy: number) => {
+    setPositions(prev => {
+      const areaPos = prev[selectedAreaId] ?? {};
+      const cur = areaPos[tableId] ?? { x: 40, y: 40 };
+      return {
+        ...prev,
+        [selectedAreaId]: {
+          ...areaPos,
+          [tableId]: {
+            x: Math.max(0, cur.x + dx / zoom),
+            y: Math.max(0, cur.y + dy / zoom),
+          },
+        },
+      };
+    });
     setHasChanges(true);
-  }, [zoom]);
+  }, [selectedAreaId, zoom]);
 
-  const handleObjectDrag = useCallback((objId: number, dx: number, dy: number) => {
+  const handleObjectDrag = useCallback((objId: string, dx: number, dy: number) => {
     setObjects(prev => prev.map(o => o.id === objId ? {
-      ...o, positionX: Math.max(0, o.positionX + dx / zoom), positionY: Math.max(0, o.positionY + dy / zoom),
+      ...o,
+      x: Math.max(0, o.x + dx / zoom),
+      y: Math.max(0, o.y + dy / zoom),
     } : o));
     setHasChanges(true);
   }, [zoom]);
 
-  const addObject = (type: LayoutObjectType) => {
-    const newObj: LayoutObject = {
-      id: Math.max(...objects.map(o => o.id), 0) + 1,
+  const addObject = (type: LocalObject['type']) => {
+    const newObj: LocalObject = {
+      id: `obj-${Date.now()}`,
       areaId: selectedAreaId,
       type,
-      name: type === 'tembok' ? '' : `${type.charAt(0).toUpperCase() + type.slice(1)} Baru`,
-      positionX: 200, positionY: 200,
+      name: type === 'tembok' ? '' : type.charAt(0).toUpperCase() + type.slice(1),
+      x: 200, y: 150,
       width: type === 'tembok' ? 200 : 120,
-      height: type === 'tembok' ? 10 : 60,
-      rotation: 0,
+      height: type === 'tembok' ? 12 : 60,
     };
     setObjects(prev => [...prev, newObj]);
     setSelectedId({ type: 'object', id: newObj.id });
@@ -180,28 +276,45 @@ export default function LayoutPage() {
 
   const deleteSelected = () => {
     if (!selectedId) return;
-    if (selectedId.type === 'table') {
-      const t = tables.find(t => t.id === selectedId.id);
-      if (t?.status === 'occupied') { alert('Meja sedang terisi!'); return; }
-      setTables(prev => prev.filter(t => t.id !== selectedId.id));
-    } else {
+    if (selectedId.type === 'object') {
       setObjects(prev => prev.filter(o => o.id !== selectedId.id));
+      setHasChanges(true);
     }
     setSelectedId(null);
-    setHasChanges(true);
   };
 
   const handleSave = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
     setHasChanges(false);
-    // API save would go here
+    showToast('Layout berhasil disimpan', 'success');
   };
 
   const handleReset = () => {
-    setTables(mockTables);
-    setObjects(mockLayoutObjects);
+    if (!selectedAreaId || areaTables.length === 0) return;
+    setPositions(prev => ({ ...prev, [selectedAreaId]: autoPositions(areaTables) }));
+    setObjects(prev => prev.filter(o => o.areaId !== selectedAreaId));
     setSelectedId(null);
     setHasChanges(false);
+    showToast('Layout direset ke posisi awal', 'success');
   };
+
+  const selectedArea = areas.find(a => a.id === selectedAreaId);
+
+  const tableCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    areas.forEach(a => {
+      counts[a.id] = tables.filter(t => t.area_id === a.id).length;
+    });
+    return counts;
+  }, [areas, tables]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
@@ -209,11 +322,11 @@ export default function LayoutPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Tata Letak</h1>
-          <p className="text-sm text-text-secondary mt-1">Desain layout meja restoran secara visual</p>
+          <p className="text-sm text-text-secondary mt-1">Atur posisi meja secara visual per area</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleReset} disabled={!hasChanges} className="gap-1.5">
-            <RotateCcw className="h-4 w-4" /> Reset
+          <Button variant="outline" onClick={handleReset} className="gap-1.5">
+            <RotateCcw className="h-4 w-4" /> Reset Area
           </Button>
           <Button onClick={handleSave} disabled={!hasChanges} className="gap-1.5">
             <Save className="h-4 w-4" /> Simpan Layout
@@ -222,23 +335,29 @@ export default function LayoutPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="bg-surface rounded-xl border border-border p-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="bg-surface rounded-xl border border-border p-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {/* Area Selector */}
-          <Select value={String(selectedAreaId)} onValueChange={(v) => { setSelectedAreaId(Number(v)); setSelectedId(null); }}>
-            <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {mockAreas.filter(a => a.isActive).map(area => (
-                <SelectItem key={area.id} value={String(area.id)}>
-                  {area.name} ({getTablesByArea(tables, area.id).length} meja)
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {areas.length > 0 ? (
+            <Select value={selectedAreaId} onValueChange={(v) => { setSelectedAreaId(v); setSelectedId(null); }}>
+              <SelectTrigger className="w-52">
+                <SelectValue placeholder="Pilih area" />
+              </SelectTrigger>
+              <SelectContent>
+                {areas.filter(a => a.is_active).map(area => (
+                  <SelectItem key={area.id} value={area.id}>
+                    {area.name} ({tableCounts[area.id] ?? 0} meja)
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <span className="text-sm text-text-secondary">Belum ada area</span>
+          )}
 
-          <div className="w-px h-6 bg-background" />
+          <div className="w-px h-6 bg-border" />
 
-          {/* Add Object Buttons */}
+          {/* Add Objects */}
           <div className="flex items-center gap-1">
             <span className="text-xs text-text-secondary mr-1">Tambah:</span>
             <Button variant="outline" size="sm" onClick={() => addObject('bar')} className="h-8 text-xs gap-1">
@@ -252,22 +371,26 @@ export default function LayoutPage() {
             </Button>
           </div>
 
-          <div className="w-px h-6 bg-background" />
-
-          {/* Delete */}
-          {selectedId && (
-            <Button variant="outline" size="sm" onClick={deleteSelected} className="h-8 text-xs gap-1 text-red-500 border-red-200 hover:bg-red-50">
-              <Trash2 className="h-3 w-3" /> Hapus
-            </Button>
+          {selectedId?.type === 'object' && (
+            <>
+              <div className="w-px h-6 bg-border" />
+              <Button
+                variant="outline" size="sm"
+                onClick={deleteSelected}
+                className="h-8 text-xs gap-1 text-red-500 border-red-200 hover:bg-red-50"
+              >
+                <Trash2 className="h-3 w-3" /> Hapus Objek
+              </Button>
+            </>
           )}
         </div>
 
         {/* Zoom */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <Button variant="ghost" size="sm" onClick={() => setZoom(z => Math.max(0.5, z - 0.1))} className="h-8 w-8 p-0">
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-xs text-text-secondary w-12 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="text-xs text-text-secondary w-10 text-center">{Math.round(zoom * 100)}%</span>
           <Button variant="ghost" size="sm" onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="h-8 w-8 p-0">
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -275,31 +398,31 @@ export default function LayoutPage() {
       </div>
 
       {/* Canvas */}
-      <div className="bg-surface rounded-xl border border-border overflow-auto" style={{ height: 'calc(100vh - 280px)' }}>
+      <div
+        className="bg-surface rounded-xl border border-border overflow-auto"
+        style={{ height: 'calc(100vh - 290px)' }}
+      >
         <div
           className="relative bg-[radial-gradient(circle,#e5e7eb_1px,transparent_1px)] bg-[size:20px_20px]"
           style={{
-            width: 800 * zoom, height: 600 * zoom,
-            transform: `scale(${zoom})`, transformOrigin: 'top left',
-            minWidth: 800, minHeight: 600,
+            width: 800 * zoom,
+            height: 600 * zoom,
+            transform: `scale(${zoom})`,
+            transformOrigin: 'top left',
+            minWidth: 800,
+            minHeight: 600,
           }}
           onClick={() => setSelectedId(null)}
         >
           {/* Legend */}
           <div className="absolute top-3 right-3 bg-surface/90 backdrop-blur rounded-lg border border-border p-2.5 z-10 space-y-1.5">
             <p className="text-[10px] font-semibold text-text-secondary mb-1">LEGENDA</p>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm bg-green-200 border border-green-400" />
-              <span className="text-[10px] text-text-secondary">Tersedia</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm bg-red-200 border border-red-400" />
-              <span className="text-[10px] text-text-secondary">Terisi</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm bg-yellow-200 border border-yellow-400" />
-              <span className="text-[10px] text-text-secondary">Reserved</span>
-            </div>
+            {Object.entries(STATUS_LABEL).map(([status, label]) => (
+              <div key={status} className="flex items-center gap-1.5">
+                <div className={`w-3 h-3 rounded-sm border ${STATUS_COLOR[status]}`} />
+                <span className="text-[10px] text-text-secondary">{label}</span>
+              </div>
+            ))}
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-amber-200 border border-amber-400" />
               <span className="text-[10px] text-text-secondary">Bar</span>
@@ -308,16 +431,12 @@ export default function LayoutPage() {
               <div className="w-3 h-3 rounded-sm bg-orange-200 border border-orange-400" />
               <span className="text-[10px] text-text-secondary">Dapur</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm bg-border" />
-              <span className="text-[10px] text-text-secondary">Tembok</span>
-            </div>
           </div>
 
-          {/* Layout Objects */}
+          {/* Objects */}
           {areaObjects.map(obj => (
             <CanvasObject
-              key={`obj-${obj.id}`}
+              key={obj.id}
               obj={obj}
               isSelected={selectedId?.type === 'object' && selectedId.id === obj.id}
               onSelect={() => setSelectedId({ type: 'object', id: obj.id })}
@@ -326,15 +445,19 @@ export default function LayoutPage() {
           ))}
 
           {/* Tables */}
-          {areaTables.map(table => (
-            <CanvasTable
-              key={`table-${table.id}`}
-              table={table}
-              isSelected={selectedId?.type === 'table' && selectedId.id === table.id}
-              onSelect={() => setSelectedId({ type: 'table', id: table.id })}
-              onDrag={(dx, dy) => handleTableDrag(table.id, dx, dy)}
-            />
-          ))}
+          {areaTables.map(table => {
+            const pos = getPos(table.id);
+            return (
+              <CanvasTable
+                key={table.id}
+                table={table}
+                pos={pos}
+                isSelected={selectedId?.type === 'table' && selectedId.id === table.id}
+                onSelect={() => setSelectedId({ type: 'table', id: table.id })}
+                onDrag={(dx, dy) => handleTableDrag(table.id, dx, dy)}
+              />
+            );
+          })}
 
           {/* Empty state */}
           {areaTables.length === 0 && areaObjects.length === 0 && (
@@ -352,15 +475,19 @@ export default function LayoutPage() {
       {/* Status Bar */}
       <div className="flex items-center justify-between text-xs text-text-disabled">
         <div className="flex items-center gap-3">
-          <span>{selectedArea?.name || '-'}</span>
+          <span>{selectedArea?.name ?? '-'}</span>
           <span>·</span>
           <span>{areaTables.length} meja</span>
           <span>·</span>
-          <span>{areaObjects.length} objek</span>
+          <span>
+            {areaTables.filter(t => t.status === 'AVAILABLE').length} tersedia
+            {' · '}
+            {areaTables.filter(t => t.status === 'OCCUPIED').length} terisi
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Move className="h-3 w-3" />
-          <span>Klik & drag untuk memindahkan · Klik untuk memilih</span>
+          <span>Klik & drag untuk memindahkan · Posisi disimpan di browser</span>
           {hasChanges && <Badge variant="warning" size="sm">Belum disimpan</Badge>}
         </div>
       </div>

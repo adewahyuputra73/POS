@@ -54,18 +54,18 @@ export const mockCategories: Category[] = [
 
 // Products available for picker
 export const mockProductsForPicker: ProductForPicker[] = [
-  { id: 1, name: 'Nasi Goreng Spesial', price: 35000, categoryName: 'Makanan', isActive: true },
-  { id: 2, name: 'Mie Goreng', price: 30000, categoryName: 'Makanan', isActive: true },
-  { id: 3, name: 'Ayam Bakar', price: 45000, categoryName: 'Makanan', isActive: true },
-  { id: 4, name: 'Es Teh Manis', price: 8000, categoryName: 'Minuman', isActive: true },
-  { id: 5, name: 'Es Jeruk', price: 12000, categoryName: 'Minuman', isActive: true },
-  { id: 6, name: 'Kopi Susu', price: 18000, categoryName: 'Minuman', isActive: true },
-  { id: 7, name: 'Cappuccino', price: 25000, categoryName: 'Minuman', isActive: true },
-  { id: 8, name: 'Kentang Goreng', price: 20000, categoryName: 'Snack', isActive: true },
-  { id: 9, name: 'Cireng', price: 15000, categoryName: 'Snack', isActive: true },
-  { id: 10, name: 'Brownies', price: 22000, categoryName: 'Dessert', isActive: true },
-  { id: 11, name: 'Es Krim', price: 15000, categoryName: 'Dessert', isActive: false },
-  { id: 12, name: 'Puding', price: 12000, categoryName: 'Dessert', isActive: true },
+  { id: '1', name: 'Nasi Goreng Spesial', price: 35000, categoryName: 'Makanan', isActive: true },
+  { id: '2', name: 'Mie Goreng', price: 30000, categoryName: 'Makanan', isActive: true },
+  { id: '3', name: 'Ayam Bakar', price: 45000, categoryName: 'Makanan', isActive: true },
+  { id: '4', name: 'Es Teh Manis', price: 8000, categoryName: 'Minuman', isActive: true },
+  { id: '5', name: 'Es Jeruk', price: 12000, categoryName: 'Minuman', isActive: true },
+  { id: '6', name: 'Kopi Susu', price: 18000, categoryName: 'Minuman', isActive: true },
+  { id: '7', name: 'Cappuccino', price: 25000, categoryName: 'Minuman', isActive: true },
+  { id: '8', name: 'Kentang Goreng', price: 20000, categoryName: 'Snack', isActive: true },
+  { id: '9', name: 'Cireng', price: 15000, categoryName: 'Snack', isActive: true },
+  { id: '10', name: 'Brownies', price: 22000, categoryName: 'Dessert', isActive: true },
+  { id: '11', name: 'Es Krim', price: 15000, categoryName: 'Dessert', isActive: false },
+  { id: '12', name: 'Puding', price: 12000, categoryName: 'Dessert', isActive: true },
 ];
 
 // Filter function

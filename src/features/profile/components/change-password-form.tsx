@@ -12,6 +12,7 @@ import {
 import { useToast } from "@/components/ui";
 import { Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { ChangePasswordData } from "../types";
+import { authService } from "@/features/auth/services/auth-service";
 
 export function ChangePasswordForm() {
   const { showToast } = useToast();
@@ -54,10 +55,19 @@ export function ChangePasswordForm() {
     if (!validate()) return;
 
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    showToast("Password berhasil diubah", "success");
-    setFormData({ current_password: "", new_password: "", confirm_password: "" });
-    setIsSubmitting(false);
+    try {
+      await authService.changePassword({
+        old_password: formData.current_password,
+        new_password: formData.new_password,
+        new_password_confirm: formData.confirm_password,
+      });
+      showToast("Password berhasil diubah", "success");
+      setFormData({ current_password: "", new_password: "", confirm_password: "" });
+    } catch {
+      showToast("Gagal mengubah password", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: keyof ChangePasswordData, value: string) => {

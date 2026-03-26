@@ -28,11 +28,12 @@ export const customerService = {
   },
 
   async reviews(params?: ReviewListParams): Promise<Review[]> {
-    const response = await apiClient.get<ApiResponse<Review[]>>(
+    const response = await apiClient.get<ApiResponse<any>>(
       ENDPOINTS.CUSTOMERS.REVIEWS,
       { params }
     );
-    return response.data.data;
+    const payload = response.data.data;
+    return Array.isArray(payload) ? payload : (payload?.data ?? []);
   },
 
   async createReview(customerId: string | number, data: CreateReviewRequest): Promise<Review> {

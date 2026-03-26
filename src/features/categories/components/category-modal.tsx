@@ -68,14 +68,14 @@ export function CategoryModal({
     }
   };
 
-  const handleRemoveProduct = (productId: number) => {
+  const handleRemoveProduct = (productId: string) => {
     setFormData((prev) => ({
       ...prev,
       productIds: prev.productIds.filter((id) => id !== productId),
     }));
   };
 
-  const handleProductsSelected = (productIds: number[]) => {
+  const handleProductsSelected = (productIds: string[]) => {
     setFormData((prev) => ({ ...prev, productIds }));
   };
 

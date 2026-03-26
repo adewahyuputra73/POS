@@ -5,7 +5,7 @@ export const mockUserProfile: UserProfile = {
   name: "Ahmad Rizky",
   email: "admin@ferepos.com",
   phone: "+62 812-3456-7890",
-  role: "admin",
+  role: "owner",
   avatar: undefined,
   address: "Jl. Sudirman No. 123, Jakarta Selatan, DKI Jakarta 12190",
   date_of_birth: "1990-05-15",

@@ -22,7 +22,7 @@ import { UserProfile, ProfileFormData, GENDER_OPTIONS } from "../types";
 
 interface EditProfileFormProps {
   profile: UserProfile;
-  onSave: (data: ProfileFormData) => void;
+  onSave: (data: ProfileFormData) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -57,11 +57,14 @@ export function EditProfileForm({ profile, onSave, onCancel }: EditProfileFormPr
     if (!validate()) return;
 
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    onSave(formData);
-    showToast("Profil berhasil diperbarui", "success");
-    setIsSubmitting(false);
+    try {
+      await onSave(formData);
+      showToast("Profil berhasil diperbarui", "success");
+    } catch {
+      showToast("Gagal memperbarui profil", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: keyof ProfileFormData, value: string) => {

@@ -25,7 +25,7 @@ function StarRating({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md
 
 interface ReviewTableProps {
   reviews: Review[];
-  onViewCustomer?: (customerId: number) => void;
+  onViewCustomer?: (customerId: string) => void;
 }
 
 export function ReviewTable({ reviews, onViewCustomer }: ReviewTableProps) {

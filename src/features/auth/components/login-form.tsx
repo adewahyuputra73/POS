@@ -27,6 +27,7 @@ export function LoginForm() {
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
   const [otpError, setOtpError] = useState("");
   const [resendCountdown, setResendCountdown] = useState(0);
+  const [debugOtp, setDebugOtp] = useState<string | null>(null);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +78,8 @@ export function LoginForm() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      await authService.login({ phone_number: normalized, password });
+      const loginResult = await authService.login({ phone_number: normalized, password }) as any;
+      setDebugOtp(loginResult?.debug_otp ?? null);
       // Login succeeded → OTP has been sent to phone
       setStep("otp");
       setResendCountdown(60);
@@ -260,6 +262,11 @@ export function LoginForm() {
       </div>
 
       <form onSubmit={handleOtpSubmit} className="space-y-5">
+        {debugOtp && (
+          <div className="p-3 text-xs font-mono font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
+            <span>Debug OTP: {debugOtp}</span>
+          </div>
+        )}
         {(errorMessage || otpError) && (
           <div className="p-4 text-xs font-bold text-red-600 bg-red-50 border border-red-100 rounded-xl flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-red-600 shrink-0" />

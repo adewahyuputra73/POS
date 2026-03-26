@@ -102,14 +102,15 @@ export interface ReviewListParams {
 
 // Review Types
 export interface Review {
-  id: number;
-  customerId: number;
+  id: string;
+  customerId: string;
   customerName: string;
   customerPhone: string;
   orderId: string;
   orderDate: string;
   rating: number; // 1-5
   comment: string;
+  is_visible: boolean;
   products: string[];
   questionAnswers: ReviewAnswer[];
   createdAt: string;

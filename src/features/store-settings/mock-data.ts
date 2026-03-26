@@ -1,4 +1,4 @@
-import {
+import type {
   StoreInfo,
   OperatingHours,
   TaxSettings,
@@ -8,26 +8,20 @@ import {
 
 export const mockStoreInfo: StoreInfo = {
   id: "STORE-001",
+  owner_id: "USR-001",
   name: "Fere Coffee",
   slug: "fere-coffee",
-  description:
-    "Kafe modern dengan suasana nyaman dan menu kopi spesial dari biji pilihan nusantara. Menyediakan berbagai minuman, makanan ringan, dan pastry.",
   address: "Jl. Sudirman No. 123, Blok A Lt. 2",
-  city: "Jakarta Selatan",
-  province: "DKI Jakarta",
-  postal_code: "12190",
-  phone: "+62 21-5555-1234",
-  email: "info@ferecafe.com",
-  website: "https://ferecafe.com",
-  logo: undefined,
-  cover_image: undefined,
-  tax_id: "01.234.567.8-901.000",
-  business_type: "cafe",
-  currency: "IDR",
-  timezone: "Asia/Jakarta",
-  is_active: true,
-  created_at: "2024-01-15T08:00:00Z",
-  updated_at: "2025-01-10T14:30:00Z",
+  latitude: null,
+  longitude: null,
+  status: "active",
+  createdAt: "2024-01-15T08:00:00Z",
+  updatedAt: "2025-01-10T14:30:00Z",
+  owner: {
+    id: "USR-001",
+    full_name: "Ahmad Rizky",
+    phone_number: "+62812345678",
+  },
 };
 
 export const mockOperatingHours: OperatingHours[] = [
