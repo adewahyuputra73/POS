@@ -4,7 +4,7 @@ import { useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useUIStore } from "@/stores";
+import { useUIStore, useAuthStore } from "@/stores";
 import {
   LayoutDashboard,
   Package,
@@ -33,13 +33,19 @@ import {
   MapPin,
   LayoutGrid,
   Armchair,
+  Clock,
+  Shield,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
+
+type UserRole = "admin" | "manager" | "cashier";
 
 interface NavItem {
   label: string;
   href: string;
   icon: React.ReactNode;
+  /** Jika diisi, hanya tampil untuk role yang ada di array. Jika kosong = semua role. */
+  roles?: UserRole[];
 }
 
 const navItems: NavItem[] = [
@@ -49,24 +55,40 @@ const navItems: NavItem[] = [
     icon: <LayoutDashboard className="h-5 w-5" />,
   },
   {
+    label: "Shift",
+    href: "/shift",
+    icon: <Clock className="h-5 w-5" />,
+    // semua role bisa akses shift
+  },
+  {
+    label: "Wallet",
+    href: "/wallet",
+    icon: <Wallet className="h-5 w-5" />,
+    roles: ["admin", "manager"],
+  },
+  {
     label: "Laporan",
     href: "/reports",
     icon: <FileText className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Produk",
     href: "/products",
     icon: <Package className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Varian",
     href: "/products/variants",
     icon: <Layers className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Kategori",
     href: "/categories",
     icon: <Tag className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Transaksi",
@@ -77,49 +99,57 @@ const navItems: NavItem[] = [
     label: "Pembayaran",
     href: "/payments",
     icon: <Wallet className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
 ];
 
-// Master menu items
+// Master menu items — admin & manager only
 const masterNavItems: NavItem[] = [
   {
     label: "Master Produk",
     href: "/master/products",
     icon: <Package className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Master Varian",
     href: "/master/variants",
     icon: <Layers className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Master Kategori",
     href: "/master/categories",
     icon: <Tag className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
 ];
 
-// Pelanggan menu items
+// Pelanggan menu items — admin & manager only
 const pelangganNavItems: NavItem[] = [
   {
     label: "Pelanggan",
     href: "/customers",
     icon: <Users className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Ulasan",
     href: "/customers/reviews",
     icon: <Star className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Voucher",
     href: "/customers/vouchers",
     icon: <Ticket className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Koin",
     href: "/customers/coins",
     icon: <Coins className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
 ];
 
@@ -142,37 +172,43 @@ const mejaNavItems: NavItem[] = [
   },
 ];
 
-// Inventory menu items
+// Inventory menu items — admin & manager only
 const inventoryNavItems: NavItem[] = [
   {
     label: "Arus Stok",
     href: "/inventory/stock-flow",
     icon: <TrendingUp className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Bahan Dasar",
     href: "/inventory/raw-materials",
     icon: <FlaskConical className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Konversi Unit",
     href: "/inventory/unit-conversion",
     icon: <Ruler className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Kategori",
     href: "/inventory/categories",
     icon: <FolderOpen className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Supplier",
     href: "/inventory/suppliers",
     icon: <Truck className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Resep",
     href: "/inventory/recipes",
     icon: <BookOpen className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
 ];
 
@@ -181,11 +217,19 @@ const bottomNavItems: NavItem[] = [
     label: "Store Settings",
     href: "/store",
     icon: <Store className="h-5 w-5" />,
+    roles: ["admin", "manager"],
   },
   {
     label: "Settings",
     href: "/settings",
     icon: <Settings className="h-5 w-5" />,
+    roles: ["admin", "manager"],
+  },
+  {
+    label: "Role & Akses",
+    href: "/roles",
+    icon: <Shield className="h-5 w-5" />,
+    roles: ["admin"],
   },
 ];
 
@@ -193,6 +237,11 @@ export function Sidebar() {
   const pathname = usePathname();
   const { sidebarCollapsed, sidebarMobileOpen, toggleSidebar, setSidebarMobileOpen } =
     useUIStore();
+  const { user } = useAuthStore();
+  const userRole = (user?.role ?? "") as UserRole;
+
+  const filterByRole = (items: NavItem[]) =>
+    items.filter((item) => !item.roles || item.roles.includes(userRole));
 
   // Scroll position persistence
   const navRef = useRef<HTMLElement>(null);
@@ -285,45 +334,61 @@ export function Sidebar() {
           "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3",
           sidebarCollapsed && "hidden"
         )}>Menu Utama</p>
-        {navItems.map((item) => (
+        {filterByRole(navItems).map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
 
-        {/* Master Section */}
-        <p className={cn(
-          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
-          sidebarCollapsed && "hidden"
-        )}>Master</p>
-        {masterNavItems.map((item) => (
-          <NavLink key={item.href} item={item} />
-        ))}
+        {/* Master Section — admin & manager only */}
+        {filterByRole(masterNavItems).length > 0 && (
+          <>
+            <p className={cn(
+              "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+              sidebarCollapsed && "hidden"
+            )}>Master</p>
+            {filterByRole(masterNavItems).map((item) => (
+              <NavLink key={item.href} item={item} />
+            ))}
+          </>
+        )}
 
         {/* Inventory Section */}
-        <p className={cn(
-          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
-          sidebarCollapsed && "hidden"
-        )}>Inventory</p>
-        {inventoryNavItems.map((item) => (
-          <NavLink key={item.href} item={item} />
-        ))}
+        {filterByRole(inventoryNavItems).length > 0 && (
+          <>
+            <p className={cn(
+              "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+              sidebarCollapsed && "hidden"
+            )}>Inventory</p>
+            {filterByRole(inventoryNavItems).map((item) => (
+              <NavLink key={item.href} item={item} />
+            ))}
+          </>
+        )}
 
         {/* Pelanggan Section */}
-        <p className={cn(
-          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
-          sidebarCollapsed && "hidden"
-        )}>Pelanggan</p>
-        {pelangganNavItems.map((item) => (
-          <NavLink key={item.href} item={item} />
-        ))}
+        {filterByRole(pelangganNavItems).length > 0 && (
+          <>
+            <p className={cn(
+              "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+              sidebarCollapsed && "hidden"
+            )}>Pelanggan</p>
+            {filterByRole(pelangganNavItems).map((item) => (
+              <NavLink key={item.href} item={item} />
+            ))}
+          </>
+        )}
 
         {/* Manajemen Meja Section */}
-        <p className={cn(
-          "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
-          sidebarCollapsed && "hidden"
-        )}>Manajemen Meja</p>
-        {mejaNavItems.map((item) => (
-          <NavLink key={item.href} item={item} />
-        ))}
+        {filterByRole(mejaNavItems).length > 0 && (
+          <>
+            <p className={cn(
+              "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3 mt-6",
+              sidebarCollapsed && "hidden"
+            )}>Manajemen Meja</p>
+            {filterByRole(mejaNavItems).map((item) => (
+              <NavLink key={item.href} item={item} />
+            ))}
+          </>
+        )}
       </nav>
 
       {/* Bottom Navigation */}
@@ -332,7 +397,7 @@ export function Sidebar() {
           "text-[10px] font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3",
           sidebarCollapsed && "hidden"
         )}>Pengaturan</p>
-        {bottomNavItems.map((item) => (
+        {filterByRole(bottomNavItems).map((item) => (
           <NavLink key={item.href} item={item} />
         ))}
       </div>
