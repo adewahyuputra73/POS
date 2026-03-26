@@ -35,6 +35,7 @@ import {
   Armchair,
   Clock,
   Shield,
+  Building2,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -217,6 +218,12 @@ const bottomNavItems: NavItem[] = [
     label: "Store Settings",
     href: "/store",
     icon: <Store className="h-5 w-5" />,
+    roles: ["owner"],
+  },
+  {
+    label: "Cabang",
+    href: "/outlets",
+    icon: <Building2 className="h-5 w-5" />,
     roles: ["owner"],
   },
   {

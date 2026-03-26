@@ -26,8 +26,7 @@ export function CustomerFooter() {
                         <h4 className="text-sm font-bold mb-3 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.9)' }}>
                             Hubungi Kami
                         </h4>
-                        <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.55)' }}>{mockStoreInfo.phone}</p>
-                        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{mockStoreInfo.email}</p>
+                        <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.55)' }}>{mockStoreInfo.owner?.phone_number ?? "-"}</p>
                     </div>
                 </div>
                 <div className="pt-8 text-center" style={{ borderTop: '1px solid rgba(245,158,11,0.12)' }}>

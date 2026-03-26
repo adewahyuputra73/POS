@@ -118,7 +118,7 @@ export default function OrderPage() {
                         <span className="italic" style={{ color: '#F59E0B' }}>{storeInfo?.name ?? ""}</span>
                     </h1>
                     <p className="max-w-2xl mx-auto font-medium text-sm md:text-base leading-relaxed mb-10" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                        {storeInfo?.description ?? ""}
+                        {storeInfo?.address ?? ""}
                     </p>
 
                     <div className="relative max-w-xl mx-auto group">

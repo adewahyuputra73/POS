@@ -1,37 +1,24 @@
 // Store Settings feature types
 
-export interface StoreInfo {
+export interface StoreOwner {
   id: string;
-  name: string;
-  slug: string;
-  description: string;
-  address: string;
-  city: string;
-  province: string;
-  postal_code: string;
-  phone: string;
-  email: string;
-  website?: string;
-  logo?: string;
-  cover_image?: string;
-  tax_id?: string; // NPWP
-  business_type: BusinessType;
-  currency: string;
-  timezone: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  full_name: string;
+  phone_number: string;
 }
 
-export type BusinessType = "restaurant" | "cafe" | "retail" | "fnb" | "other";
-
-export const BUSINESS_TYPE_LABELS: Record<BusinessType, string> = {
-  restaurant: "Restoran",
-  cafe: "Kafe",
-  retail: "Retail",
-  fnb: "F&B",
-  other: "Lainnya",
-};
+export interface StoreInfo {
+  id: string;
+  owner_id: string;
+  name: string;
+  slug: string;
+  address: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  owner?: StoreOwner;
+}
 
 export interface UpdateStoreRequest {
   name: string;

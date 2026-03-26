@@ -191,7 +191,7 @@ export const mockReviews: Review[] = [
   {
     id: '1', customerId: '1', customerName: 'Budi Santoso', customerPhone: '081234567890',
     orderId: 'ORD-2026-0211-001', orderDate: '2026-02-11T10:30:00Z',
-    rating: 5, comment: 'Makanan selalu enak dan pelayanan ramah!',
+    rating: 5, comment: 'Makanan selalu enak dan pelayanan ramah!', is_visible: true,
     products: ['Nasi Goreng Spesial', 'Es Teh Manis'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 5 },
@@ -203,7 +203,7 @@ export const mockReviews: Review[] = [
   {
     id: '2', customerId: '1', customerName: 'Budi Santoso', customerPhone: '081234567890',
     orderId: 'ORD-2026-0201-004', orderDate: '2026-02-01T19:30:00Z',
-    rating: 4, comment: 'Porsinya banyak, tapi agak lama datangnya',
+    rating: 4, comment: 'Porsinya banyak, tapi agak lama datangnya', is_visible: true,
     products: ['Paket Keluarga A', 'Es Campur'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 4 },
@@ -214,7 +214,7 @@ export const mockReviews: Review[] = [
   {
     id: '3', customerId: '6', customerName: 'Nurul Hidayah', customerPhone: '081345678901',
     orderId: 'ORD-2026-0213-001', orderDate: '2026-02-13T09:00:00Z',
-    rating: 5, comment: 'Bubur ayamnya best di kota! Pasti balik lagi.',
+    rating: 5, comment: 'Bubur ayamnya best di kota! Pasti balik lagi.', is_visible: true,
     products: ['Bubur Ayam', 'Kopi Hitam'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 5 },
@@ -226,7 +226,7 @@ export const mockReviews: Review[] = [
   {
     id: '4', customerId: '2', customerName: 'Siti Aminah', customerPhone: '081298765432',
     orderId: 'ORD-2026-0210-002', orderDate: '2026-02-10T12:00:00Z',
-    rating: 3, comment: 'Makanan lumayan, tapi suasana agak berisik',
+    rating: 3, comment: 'Makanan lumayan, tapi suasana agak berisik', is_visible: true,
     products: ['Soto Betawi', 'Nasi Uduk'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 4 },
@@ -237,7 +237,7 @@ export const mockReviews: Review[] = [
   {
     id: '5', customerId: '3', customerName: 'Andi Wijaya', customerPhone: '082112345678',
     orderId: 'ORD-2026-0205-001', orderDate: '2026-02-05T18:00:00Z',
-    rating: 4, comment: 'Enak, harga terjangkau',
+    rating: 4, comment: 'Enak, harga terjangkau', is_visible: true,
     products: ['Ayam Bakar', 'Sambal Matah', 'Es Kelapa'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 4 },
@@ -248,7 +248,7 @@ export const mockReviews: Review[] = [
   {
     id: '6', customerId: '12', customerName: 'Ratna Dewi', customerPhone: '082334556677',
     orderId: 'ORD-2026-0212-003', orderDate: '2026-02-12T19:00:00Z',
-    rating: 5, comment: 'Luar biasa! Menu baru sangat recommended.',
+    rating: 5, comment: 'Luar biasa! Menu baru sangat recommended.', is_visible: true,
     products: ['Lobster Roll Special', 'Matcha Latte'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 5 },
@@ -260,7 +260,7 @@ export const mockReviews: Review[] = [
   {
     id: '7', customerId: '9', customerName: 'Hendri Sutanto', customerPhone: '081456789012',
     orderId: 'ORD-2026-0209-005', orderDate: '2026-02-09T15:00:00Z',
-    rating: 2, comment: 'Pesanan salah dan lama sekali. Kecewa.',
+    rating: 2, comment: 'Pesanan salah dan lama sekali. Kecewa.', is_visible: true,
     products: ['Nasi Campur'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 3 },
@@ -271,7 +271,7 @@ export const mockReviews: Review[] = [
   {
     id: '8', customerId: '10', customerName: 'Maya Sari', customerPhone: '089912345678',
     orderId: 'ORD-2026-0125-001', orderDate: '2026-01-25T17:00:00Z',
-    rating: 4, comment: 'Tempatnya nyaman, cocok buat kerja.',
+    rating: 4, comment: 'Tempatnya nyaman, cocok buat kerja.', is_visible: true,
     products: ['Cappuccino', 'Cheese Cake'],
     questionAnswers: [
       { questionId: 1, questionText: 'Bagaimana rasa makanan kami?', ratingValue: 4 },
@@ -453,7 +453,7 @@ export const mockCoinApprovals: CoinApproval[] = [
     requestedBy: 'Admin Kasir', approvedBy: null, createdAt: '2026-02-13T10:00:00Z', approvedAt: null,
   },
   {
-    id: '2', customerId: '1', customerName: 'Budi Santoso', customerPhone: '081234567890',
+    id: 2, customerId: 1, customerName: 'Budi Santoso', customerPhone: '081234567890',
     type: 'transfer', amount: 200, direction: 'debit', status: 'pending',
     requestedBy: 'Admin Kasir', approvedBy: null, createdAt: '2026-02-13T11:00:00Z', approvedAt: null,
     recipientId: 6, recipientName: 'Nurul Hidayah', recipientPhone: '081345678901',

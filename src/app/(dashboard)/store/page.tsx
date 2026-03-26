@@ -13,7 +13,7 @@ import {
 import { useStoreSettingsStore } from "@/stores/storeSettingsStore";
 import { storeSettingsService } from "@/features/store-settings/services/store-settings-service";
 import type {
-  StoreInfo,
+  UpdateStoreRequest,
   OperatingHours,
   TaxSettings,
   ReceiptSettings as ReceiptSettingsType,
@@ -44,12 +44,9 @@ export default function StoreSettingsPage() {
       .finally(() => setLoadingStore(false));
   }, [updateStoreInfo]);
 
-  // Save name + address to API, full data to Zustand
-  const handleSaveStoreInfo = async (data: Partial<StoreInfo>) => {
-    await storeSettingsService.update({
-      name: data.name ?? storeInfo.name,
-      address: data.address ?? storeInfo.address,
-    });
+  // Save name + address to API, then update Zustand
+  const handleSaveStoreInfo = async (data: UpdateStoreRequest) => {
+    await storeSettingsService.update(data);
     updateStoreInfo(data);
   };
 
