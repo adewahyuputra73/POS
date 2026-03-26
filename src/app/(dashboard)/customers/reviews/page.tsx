@@ -14,16 +14,17 @@ import { filterReviews, getReviewStats } from "@/features/customers/mock-data";
 import { ReviewTable } from "@/features/customers/components/review-table";
 import { customerService } from "@/features/customers/services/customer-service";
 
-function mapApiReview(raw: any, index: number): Review {
+function mapApiReview(raw: any): Review {
   return {
-    id: typeof raw.id === "number" ? raw.id : index + 1,
-    customerId: raw.customer_id ?? raw.customerId ?? 0,
+    id: raw.id ?? "",
+    customerId: raw.customer_id ?? raw.customerId ?? "",
     customerName: raw.customer?.name ?? raw.customer_name ?? raw.customerName ?? "Pelanggan",
     customerPhone: raw.customer?.phone ?? raw.customer_phone ?? raw.customerPhone ?? "",
     orderId: raw.order_id ?? raw.orderId ?? "",
     orderDate: raw.order?.created_at ?? raw.order_date ?? raw.orderDate ?? raw.createdAt ?? "",
     rating: Number(raw.rating ?? 0),
     comment: raw.comment ?? "",
+    is_visible: raw.is_visible ?? true,
     products: Array.isArray(raw.products) ? raw.products : [],
     questionAnswers: Array.isArray(raw.question_answers)
       ? raw.question_answers
@@ -49,8 +50,8 @@ export default function ReviewsPage() {
         min_rating: filters.ratingMin ?? undefined,
         max_rating: filters.ratingMax ?? undefined,
       });
-      const data = Array.isArray(raw) ? raw : (raw as any)?.data ?? [];
-      setReviews(data.map((r: any, i: number) => mapApiReview(r, i)));
+      const data = Array.isArray(raw) ? raw : [];
+      setReviews(data.map((r: any) => mapApiReview(r)));
     } catch {
       setReviews([]);
     } finally {
@@ -67,7 +68,7 @@ export default function ReviewsPage() {
 
   const stats = useMemo(() => getReviewStats(reviews), [reviews]);
 
-  const handleViewCustomer = (customerId: number) => {
+  const handleViewCustomer = (customerId: string) => {
     router.push(`/customers?view=detail&id=${customerId}`);
   };
 

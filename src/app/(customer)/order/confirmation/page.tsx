@@ -10,6 +10,7 @@ function ConfirmationContent() {
     const searchParams = useSearchParams();
     const orderNumber = searchParams.get("orderNumber") || "ORD-0000";
     const customerName = searchParams.get("name") || "Pelanggan";
+    const orderId = searchParams.get("orderId") || "";
 
     return (
         <div className="container mx-auto px-4 pt-16 pb-32 max-w-xl text-center">
@@ -58,6 +59,14 @@ function ConfirmationContent() {
             </div>
 
             <div className="space-y-4">
+                {orderId && (
+                    <Link
+                        href={`/order/review?order_id=${orderId}`}
+                        className="inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-2xl active:scale-[0.98] w-full h-16 text-lg border-2 border-primary text-primary hover:bg-primary/5"
+                    >
+                        Beri Ulasan
+                    </Link>
+                )}
                 <Link
                     href="/order"
                     className="inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-2xl active:scale-[0.98] w-full h-16 text-lg bg-primary text-white hover:bg-primary-dark shadow-xl shadow-primary/25"

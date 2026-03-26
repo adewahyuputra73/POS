@@ -70,6 +70,7 @@ export default function CheckoutPage() {
             const params = new URLSearchParams({
                 orderNumber,
                 name: formData.customerName,
+                orderId: order?.id ?? "",
             });
             router.push(`/order/confirmation?${params.toString()}`);
         } catch (err: any) {
