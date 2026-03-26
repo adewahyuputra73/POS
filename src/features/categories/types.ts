@@ -20,7 +20,7 @@ export interface UpdateCategoryRequest {
 export interface CategoryFormData {
   name: string;
   is_active: boolean;
-  productIds: number[];
+  productIds: string[];
 }
 
 export interface CategoryFilters {
@@ -30,7 +30,7 @@ export interface CategoryFilters {
 
 // For product picker in category modal
 export interface ProductForPicker {
-  id: number;
+  id: string;
   name: string;
   price: number;
   imageUrl?: string;

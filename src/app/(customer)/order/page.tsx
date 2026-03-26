@@ -15,10 +15,12 @@ import {
 import { useCustomerCartStore } from "@/stores/customer-cart-store";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/lib/utils/format";
-import { mockStoreInfo } from "@/features/store-settings/mock-data";
+import { storeSettingsService } from "@/features/store-settings/services/store-settings-service";
+import type { StoreInfo } from "@/features/store-settings/types";
 
 export default function OrderPage() {
     const [products, setProducts] = useState<Product[]>([]);
+    const [storeInfo, setStoreInfo] = useState<StoreInfo | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | number | null>(null);
@@ -46,6 +48,10 @@ export default function OrderPage() {
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
+
+    useEffect(() => {
+        storeSettingsService.my().then(setStoreInfo).catch(() => {});
+    }, []);
 
     // Derive categories from products
     const activeCategories = useMemo(() => {
@@ -109,10 +115,10 @@ export default function OrderPage() {
                 <div className="container mx-auto relative z-10 max-w-5xl text-center">
                     <h1 className="text-4xl md:text-5xl font-[700] mb-4 leading-[1.15] tracking-tight font-[family-name:var(--font-fraunces)]">
                         Selamat Datang di{" "}
-                        <span className="italic" style={{ color: '#F59E0B' }}>{mockStoreInfo.name}</span>
+                        <span className="italic" style={{ color: '#F59E0B' }}>{storeInfo?.name ?? ""}</span>
                     </h1>
                     <p className="max-w-2xl mx-auto font-medium text-sm md:text-base leading-relaxed mb-10" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                        {mockStoreInfo.description}
+                        {storeInfo?.description ?? ""}
                     </p>
 
                     <div className="relative max-w-xl mx-auto group">

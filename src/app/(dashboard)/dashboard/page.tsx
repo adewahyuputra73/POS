@@ -148,7 +148,7 @@ export default function DashboardPage() {
         shortId.includes(searchQuery.toLowerCase()) ||
         orderType.includes(searchQuery.toLowerCase());
 
-      const orderStatusNormalized = (order.status ?? "").toLowerCase();
+      const orderStatusNormalized = (order.fulfillment_status ?? order.payment_status ?? "").toLowerCase();
       const matchesStatus =
         statusFilter === "all" ||
         (statusFilter === "completed" && orderStatusNormalized === "completed") ||
@@ -324,19 +324,19 @@ export default function DashboardPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-text-primary">{formatCurrency(order.total ?? 0)}</span>
+                          <span className="text-sm font-bold text-text-primary">{formatCurrency(Number(order.total_amount ?? order.total ?? 0))}</span>
                         </td>
                         <td className="px-6 py-4">
                           <Badge
-                            variant={getOrderStatusVariant(order.status ?? "")}
+                            variant={getOrderStatusVariant(order.fulfillment_status ?? "")}
                             className="rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
                           >
-                            {getOrderStatusLabel(order.status ?? "")}
+                            {getOrderStatusLabel(order.fulfillment_status ?? "")}
                           </Badge>
                         </td>
                         <td className="px-6 py-4">
                           <span className="text-xs font-medium text-text-secondary">
-                            {formatRelativeTime(order.created_at)}
+                            {formatRelativeTime(order.createdAt ?? order.created_at)}
                           </span>
                         </td>
                       </tr>

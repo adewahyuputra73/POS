@@ -22,8 +22,8 @@ import {
   CategoryModal,
 } from "@/features/categories";
 import { categoryService } from "@/features/categories/services/category-service";
-import { Category, CategoryFormData, CategoryFilters } from "@/features/categories/types";
-import { mockProductsForPicker } from "@/features/categories/mock-data";
+import { Category, CategoryFormData, CategoryFilters, ProductForPicker } from "@/features/categories/types";
+import { productService } from "@/features/products/services/product-service";
 
 type StatusTab = 'all' | 'active' | 'inactive';
 
@@ -32,6 +32,7 @@ export default function CategoriesPage() {
 
   // State
   const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<ProductForPicker[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const [filters, setFilters] = useState<CategoryFilters>({
     status: 'all',
@@ -47,8 +48,18 @@ export default function CategoriesPage() {
   const fetchData = useCallback(async () => {
     setIsFetching(true);
     try {
-      const data = await categoryService.list();
-      setCategories(data);
+      const [categoryData, productData] = await Promise.all([
+        categoryService.list(),
+        productService.list(),
+      ]);
+      setCategories(categoryData);
+      setProducts(productData.map(p => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        categoryName: p.categoryName,
+        isActive: p.isActive,
+      })));
     } catch {
       showToast("Gagal memuat data kategori", "error");
     } finally {
@@ -219,7 +230,7 @@ export default function CategoriesPage() {
         open={modalOpen}
         onClose={handleCloseModal}
         category={editingCategory}
-        products={mockProductsForPicker}
+        products={products}
         onSubmit={handleSubmit}
       />
 

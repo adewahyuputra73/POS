@@ -18,8 +18,8 @@ interface ProductPickerModalProps {
   open: boolean;
   onClose: () => void;
   products: ProductForPicker[];
-  selectedProductIds: number[];
-  onConfirm: (productIds: number[]) => void;
+  selectedProductIds: string[];
+  onConfirm: (productIds: string[]) => void;
 }
 
 export function ProductPickerModal({
@@ -30,7 +30,7 @@ export function ProductPickerModal({
   onConfirm,
 }: ProductPickerModalProps) {
   const [search, setSearch] = useState("");
-  const [localSelected, setLocalSelected] = useState<number[]>(selectedProductIds);
+  const [localSelected, setLocalSelected] = useState<string[]>(selectedProductIds);
 
   // Reset local state when modal opens
   const handleOpenChange = (isOpen: boolean) => {
@@ -53,7 +53,7 @@ export function ProductPickerModal({
     );
   }, [products, search]);
 
-  const handleToggleProduct = (productId: number) => {
+  const handleToggleProduct = (productId: string) => {
     setLocalSelected((prev) =>
       prev.includes(productId)
         ? prev.filter((id) => id !== productId)
