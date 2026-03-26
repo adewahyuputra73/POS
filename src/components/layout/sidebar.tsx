@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
-type UserRole = "admin" | "manager" | "cashier";
+type UserRole = "owner" | "kasir";
 
 interface NavItem {
   label: string;
@@ -64,31 +64,31 @@ const navItems: NavItem[] = [
     label: "Wallet",
     href: "/wallet",
     icon: <Wallet className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Laporan",
     href: "/reports",
     icon: <FileText className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Produk",
     href: "/products",
     icon: <Package className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Varian",
     href: "/products/variants",
     icon: <Layers className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Kategori",
     href: "/categories",
     icon: <Tag className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Transaksi",
@@ -99,7 +99,7 @@ const navItems: NavItem[] = [
     label: "Pembayaran",
     href: "/payments",
     icon: <Wallet className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
 ];
 
@@ -109,19 +109,19 @@ const masterNavItems: NavItem[] = [
     label: "Master Produk",
     href: "/master/products",
     icon: <Package className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Master Varian",
     href: "/master/variants",
     icon: <Layers className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Master Kategori",
     href: "/master/categories",
     icon: <Tag className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
 ];
 
@@ -131,25 +131,25 @@ const pelangganNavItems: NavItem[] = [
     label: "Pelanggan",
     href: "/customers",
     icon: <Users className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Ulasan",
     href: "/customers/reviews",
     icon: <Star className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Voucher",
     href: "/customers/vouchers",
     icon: <Ticket className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Koin",
     href: "/customers/coins",
     icon: <Coins className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
 ];
 
@@ -178,37 +178,37 @@ const inventoryNavItems: NavItem[] = [
     label: "Arus Stok",
     href: "/inventory/stock-flow",
     icon: <TrendingUp className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Bahan Dasar",
     href: "/inventory/raw-materials",
     icon: <FlaskConical className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Konversi Unit",
     href: "/inventory/unit-conversion",
     icon: <Ruler className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Kategori",
     href: "/inventory/categories",
     icon: <FolderOpen className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Supplier",
     href: "/inventory/suppliers",
     icon: <Truck className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Resep",
     href: "/inventory/recipes",
     icon: <BookOpen className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
 ];
 
@@ -217,19 +217,19 @@ const bottomNavItems: NavItem[] = [
     label: "Store Settings",
     href: "/store",
     icon: <Store className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Settings",
     href: "/settings",
     icon: <Settings className="h-5 w-5" />,
-    roles: ["admin", "manager"],
+    roles: ["owner"],
   },
   {
     label: "Role & Akses",
     href: "/roles",
     icon: <Shield className="h-5 w-5" />,
-    roles: ["admin"],
+    roles: ["owner"],
   },
 ];
 
