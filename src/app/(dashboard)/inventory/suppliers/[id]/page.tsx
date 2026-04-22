@@ -15,6 +15,10 @@ import {
 } from "@/features/inventory/mock-data";
 import { SupplierMaterial, SupplierMaterialFormData } from "@/features/inventory/types";
 
+export function generateStaticParams() {
+  return [];
+}
+
 export default function SupplierDetailPage() {
   const params = useParams();
   const router = useRouter();

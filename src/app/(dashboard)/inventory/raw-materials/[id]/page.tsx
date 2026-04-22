@@ -30,6 +30,10 @@ function formatCurrency(value: number) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
 }
 
+export function generateStaticParams() {
+  return [];
+}
+
 export default function RawMaterialDetailPage() {
   const params = useParams();
   const router = useRouter();
