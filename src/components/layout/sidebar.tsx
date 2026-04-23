@@ -83,12 +83,14 @@ const navItems: NavItem[] = [
     label: "Produk",
     href: "/products",
     icon: <Package className="h-5 w-5" />,
+    roles: ["owner"],
   },
   // { label: "Varian", href: "/products/variants", icon: <Layers className="h-5 w-5" />, roles: ["owner"] }, // TODO: mock — aktifkan setelah API siap
   {
     label: "Kategori",
     href: "/categories",
     icon: <Tag className="h-5 w-5" />,
+    roles: ["owner"],
   },
   {
     label: "Transaksi",
