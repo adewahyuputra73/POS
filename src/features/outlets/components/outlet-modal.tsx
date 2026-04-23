@@ -1,10 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Card, CardContent, Button, Input } from "@/components/ui";
 import { useToast } from "@/components/ui";
-import { Clock } from "lucide-react";
+import { Clock, MapPin, Loader2, Crosshair } from "lucide-react";
 import type { Outlet, CreateOutletRequest, OutletOperatingHours } from "../types";
+import type { PickedLocation } from "@/features/delivery/components/LocationPickerInner";
+
+const LocationPickerInner = dynamic(
+  () => import("@/features/delivery/components/LocationPickerInner"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-divider bg-background h-[280px]">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        <p className="text-xs font-medium text-text-secondary">Memuat peta...</p>
+      </div>
+    ),
+  }
+);
 
 const DAYS: { key: keyof OutletOperatingHours; label: string }[] = [
   { key: "monday", label: "Senin" },
@@ -38,6 +53,39 @@ export function OutletModal({ outlet, onClose, onSave }: OutletModalProps) {
   const [phone, setPhone] = useState(outlet?.phone_number ?? "");
   const [latitude, setLatitude] = useState(outlet?.latitude?.toString() ?? "");
   const [longitude, setLongitude] = useState(outlet?.longitude?.toString() ?? "");
+  const [isLocating, setIsLocating] = useState(false);
+  const [locateError, setLocateError] = useState<string | null>(null);
+
+  const handlePick = (loc: PickedLocation) => {
+    setLatitude(loc.lat.toString());
+    setLongitude(loc.lng.toString());
+    // Auto-isi alamat kalau alamat masih kosong & reverse geocode dapat hasil
+    if (!address.trim() && loc.address) setAddress(loc.address);
+  };
+
+  const handleUseMyLocation = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocateError("Geolocation tidak tersedia di browser ini");
+      return;
+    }
+    setLocateError(null);
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLatitude(pos.coords.latitude.toString());
+        setLongitude(pos.coords.longitude.toString());
+        setIsLocating(false);
+      },
+      () => {
+        setLocateError("Tidak bisa mengakses lokasi. Izinkan akses lokasi di browser.");
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  const initialLat = outlet?.latitude ?? undefined;
+  const initialLng = outlet?.longitude ?? undefined;
   const [hours, setHours] = useState<OutletOperatingHours>(
     outlet?.operating_hours ?? { ...DEFAULT_HOURS }
   );
@@ -106,23 +154,61 @@ export function OutletModal({ outlet, onClose, onSave }: OutletModalProps) {
             />
 
             {/* Koordinat */}
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                label="Latitude (opsional)"
-                type="number"
-                step="any"
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
-                placeholder="-6.8958"
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-text-secondary" />
+                    <p className="text-sm font-medium text-text-primary">Titik Lokasi Cabang</p>
+                  </div>
+                  <p className="text-xs text-text-secondary mt-0.5">
+                    Klik peta atau geser pin untuk menentukan titik. Dipakai sebagai origin pengiriman Biteship.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleUseMyLocation}
+                  disabled={isLocating}
+                >
+                  {isLocating ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Crosshair className="h-3.5 w-3.5" />
+                  )}
+                  Lokasi saya
+                </Button>
+              </div>
+
+              <LocationPickerInner
+                initialLat={initialLat}
+                initialLng={initialLng}
+                onPick={handlePick}
               />
-              <Input
-                label="Longitude (opsional)"
-                type="number"
-                step="any"
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value)}
-                placeholder="107.6104"
-              />
+
+              {locateError && (
+                <p className="text-xs text-error font-medium">{locateError}</p>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  label="Latitude"
+                  type="number"
+                  step="any"
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
+                  placeholder="-6.8958"
+                />
+                <Input
+                  label="Longitude"
+                  type="number"
+                  step="any"
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
+                  placeholder="107.6104"
+                />
+              </div>
             </div>
 
             {/* Jam Operasional */}
