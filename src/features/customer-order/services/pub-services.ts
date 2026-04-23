@@ -7,6 +7,7 @@ import pubClient from "@/lib/api/pub-client";
 import { mapApiProduct } from "@/features/products/services/product-service";
 import type { Product } from "@/features/products/types";
 import type { StoreInfo } from "@/features/store-settings/types";
+import type { Outlet } from "@/features/outlets/types";
 import type { Table, Area } from "@/features/tables/types";
 import type { CheckoutRequest } from "@/features/orders/types";
 import type { CreatePreorderRequest, Preorder, PreorderOrderType } from "@/features/preorders/types";
@@ -27,6 +28,19 @@ export const pubStoreService = {
       return response.data.data ?? null;
     } catch {
       return null;
+    }
+  },
+};
+
+export const pubOutletService = {
+  async list(): Promise<Outlet[]> {
+    try {
+      const response = await pubClient.get<any>("/outlets");
+      const payload = response.data.data;
+      const items: Outlet[] = Array.isArray(payload) ? payload : (payload?.outlets ?? []);
+      return items.filter((o) => o.is_active !== false);
+    } catch {
+      return [];
     }
   },
 };

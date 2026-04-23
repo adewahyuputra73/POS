@@ -11,7 +11,7 @@ import {
 import { useCustomerCartStore } from "@/stores/customer-cart-store";
 import { formatCurrency } from "@/lib/utils/format";
 import { useToast } from "@/components/ui";
-import { pubOrderService, pubStoreService, pubPreorderService } from "@/features/customer-order/services/pub-services";
+import { pubOrderService, pubStoreService, pubPreorderService, pubOutletService } from "@/features/customer-order/services/pub-services";
 import { TableLayoutPicker } from "@/features/customer-order/components/TableLayoutPicker";
 import { DeliveryAddressSearch } from "@/features/delivery/components/DeliveryAddressSearch";
 import { DeliveryRateSelector } from "@/features/delivery/components/DeliveryRateSelector";
@@ -19,6 +19,7 @@ import { LocationPicker } from "@/features/delivery/components/LocationPicker";
 import { biteshipService } from "@/features/delivery/services/biteship-service";
 import type { PickedLocation } from "@/features/delivery/components/LocationPicker";
 import type { StoreInfo } from "@/features/store-settings/types";
+import type { Outlet } from "@/features/outlets/types";
 import type { BiteshipArea, BiteshipCourier } from "@/features/delivery/types";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -125,37 +126,66 @@ export default function CheckoutPage() {
     useEffect(() => { setMounted(true); }, []);
 
     const [storeInfo, setStoreInfo] = useState<StoreInfo | null>(null);
+    const [outlets, setOutlets] = useState<Outlet[]>([]);
+    const [selectedOutletId, setSelectedOutletId] = useState<string | null>(null);
     const [originAreaId, setOriginAreaId] = useState<string | null>(null);
-    const [originLat, setOriginLat] = useState<number | null>(null);
-    const [originLng, setOriginLng] = useState<number | null>(null);
+
     useEffect(() => {
         pubStoreService.my().then((info) => {
             setStoreInfo(info);
-            // Koordinat langsung dari store (jika sudah diatur di dashboard)
-            if (info?.latitude && info?.longitude) {
-                setOriginLat(info.latitude);
-                setOriginLng(info.longitude);
-            }
             if (info?.area_id) setOriginAreaId(info.area_id);
-
-            // Fallback: geocode alamat toko via Nominatim jika koordinat belum ada
-            // Catatan: Biteship areas tidak mengembalikan koordinat, jadi pakai Nominatim
-            if ((!info?.latitude || !info?.longitude) && info?.address) {
-                fetch(
-                    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(info.address)}&format=json&limit=1`,
-                    { headers: { "Accept-Language": "id" } }
-                )
-                    .then((r) => r.json())
-                    .then((results: any[]) => {
-                        if (results.length > 0) {
-                            setOriginLat(parseFloat(results[0].lat));
-                            setOriginLng(parseFloat(results[0].lon));
-                        }
-                    })
-                    .catch(() => {});
-            }
+        });
+        pubOutletService.list().then((list) => {
+            setOutlets(list);
+            // Auto-pilih outlet pertama (atau yang punya koordinat) sebagai default
+            const withCoords = list.find(
+                (o) => typeof o.latitude === "number" && typeof o.longitude === "number"
+            );
+            const defaultOutlet = withCoords ?? list[0] ?? null;
+            if (defaultOutlet) setSelectedOutletId(defaultOutlet.id);
         });
     }, []);
+
+    const selectedOutlet = useMemo(
+        () => outlets.find((o) => o.id === selectedOutletId) ?? null,
+        [outlets, selectedOutletId]
+    );
+
+    // Origin koordinat: prioritas outlet → store → null (component anak yang handle fallback)
+    const originLat = useMemo<number | null>(() => {
+        if (selectedOutlet && typeof selectedOutlet.latitude === "number") return selectedOutlet.latitude;
+        if (storeInfo && typeof storeInfo.latitude === "number") return storeInfo.latitude;
+        return null;
+    }, [selectedOutlet, storeInfo]);
+
+    const originLng = useMemo<number | null>(() => {
+        if (selectedOutlet && typeof selectedOutlet.longitude === "number") return selectedOutlet.longitude;
+        if (storeInfo && typeof storeInfo.longitude === "number") return storeInfo.longitude;
+        return null;
+    }, [selectedOutlet, storeInfo]);
+
+    // Fallback geocode (Nominatim) hanya kalau outlet & store sama-sama tidak punya koordinat
+    const [geocodedOrigin, setGeocodedOrigin] = useState<{ lat: number; lng: number } | null>(null);
+    useEffect(() => {
+        if (originLat != null || originLng != null) return;
+        const address = selectedOutlet?.address || storeInfo?.address;
+        if (!address) return;
+        let cancelled = false;
+        fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
+            { headers: { "Accept-Language": "id" } }
+        )
+            .then((r) => r.json())
+            .then((results: any[]) => {
+                if (cancelled || results.length === 0) return;
+                setGeocodedOrigin({ lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) });
+            })
+            .catch(() => {});
+        return () => { cancelled = true; };
+    }, [originLat, originLng, selectedOutlet?.address, storeInfo?.address]);
+
+    const effectiveOriginLat = originLat ?? geocodedOrigin?.lat ?? null;
+    const effectiveOriginLng = originLng ?? geocodedOrigin?.lng ?? null;
 
     const taxRate = storeInfo?.is_tax_enabled ? (storeInfo.tax_rate ?? 0) : 0;
     const serviceRate = storeInfo?.is_service_charge_enabled ? (storeInfo.service_charge_rate ?? 0) : 0;
@@ -300,11 +330,12 @@ export default function CheckoutPage() {
             if (fulfillmentType === "delivery" && destinationArea && selectedRate && storeInfo && orderId && !selectedRate.is_internal) {
                 try {
                     const biteshipOrder = await biteshipService.createOrder({
-                        origin_contact_name: storeInfo.name,
-                        origin_contact_phone: storeInfo.owner?.phone_number ?? "",
-                        origin_address: storeInfo.address ?? "",
-                        ...(originLat && originLng ? {
-                            origin_coordinate: { latitude: originLat, longitude: originLng },
+                        origin_contact_name: selectedOutlet?.name || storeInfo.name,
+                        origin_contact_phone:
+                            selectedOutlet?.phone_number || storeInfo.owner?.phone_number || "",
+                        origin_address: selectedOutlet?.address || storeInfo.address || "",
+                        ...(effectiveOriginLat != null && effectiveOriginLng != null ? {
+                            origin_coordinate: { latitude: effectiveOriginLat, longitude: effectiveOriginLng },
                         } : {}),
                         destination_contact_name: customerName.trim(),
                         destination_contact_phone: phone ?? "",
@@ -690,6 +721,87 @@ export default function CheckoutPage() {
                                 <SectionTitle icon={Truck} label="Detail Pengiriman" />
                                 <div className="space-y-5">
 
+                                    {/* ⓪ Outlet asal pengiriman */}
+                                    {outlets.length > 0 && (
+                                        <div>
+                                            <FieldLabel>Diantar dari Cabang</FieldLabel>
+                                            {outlets.length === 1 ? (
+                                                <div
+                                                    className="flex items-start gap-3 px-4 py-3 rounded-2xl border-2"
+                                                    style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.18)" }}
+                                                >
+                                                    <div
+                                                        className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+                                                        style={{ backgroundColor: "#FEF3C7" }}
+                                                    >
+                                                        <MapPin className="h-3.5 w-3.5" style={{ color: "#D97706" }} />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-sm font-black" style={{ color: "#1C0A00" }}>
+                                                            {outlets[0].name}
+                                                        </p>
+                                                        <p className="text-xs font-medium mt-0.5" style={{ color: "#9C7D58" }}>
+                                                            {outlets[0].address}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {outlets.map((o) => {
+                                                        const active = o.id === selectedOutletId;
+                                                        const hasCoords =
+                                                            typeof o.latitude === "number" && typeof o.longitude === "number";
+                                                        return (
+                                                            <button
+                                                                key={o.id}
+                                                                type="button"
+                                                                onClick={() => setSelectedOutletId(o.id)}
+                                                                className="flex items-start gap-3 px-4 py-3 rounded-2xl border-2 text-left transition-all active:scale-[0.99]"
+                                                                style={{
+                                                                    backgroundColor: active ? "#FEF3C7" : "#FFF8EE",
+                                                                    borderColor: active ? "#F59E0B" : "rgba(124,74,30,0.18)",
+                                                                }}
+                                                            >
+                                                                <div
+                                                                    className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+                                                                    style={{ backgroundColor: active ? "#FDE68A" : "#FEF3C7" }}
+                                                                >
+                                                                    <MapPin className="h-3.5 w-3.5" style={{ color: "#D97706" }} />
+                                                                </div>
+                                                                <div className="min-w-0 flex-1">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <p className="text-sm font-black" style={{ color: "#1C0A00" }}>
+                                                                            {o.name}
+                                                                        </p>
+                                                                        {!hasCoords && (
+                                                                            <span
+                                                                                className="text-[9px] font-black px-1.5 py-0.5 rounded"
+                                                                                style={{ backgroundColor: "#FEE2E2", color: "#DC2626" }}
+                                                                            >
+                                                                                TANPA TITIK
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                    <p className="text-xs font-medium mt-0.5" style={{ color: "#9C7D58" }}>
+                                                                        {o.address}
+                                                                    </p>
+                                                                </div>
+                                                                {active && (
+                                                                    <Check className="h-4 w-4 shrink-0 mt-1" style={{ color: "#D97706" }} />
+                                                                )}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+                                            {selectedOutlet && !(typeof selectedOutlet.latitude === "number" && typeof selectedOutlet.longitude === "number") && (
+                                                <p className="mt-2 text-[11px] font-bold" style={{ color: "#D97706" }}>
+                                                    * Cabang ini belum punya titik lokasi — origin akan di-geocode dari alamat (kurang akurat). Atur titik di dashboard Cabang.
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+
                                     {/* ① Peta — pilih titik lokasi */}
                                     <LocationPicker
                                         initialLat={pickedLocation?.lat}
@@ -772,8 +884,8 @@ export default function CheckoutPage() {
                                         }))}
                                         selected={selectedRate}
                                         onChange={setSelectedRate}
-                                        originLat={originLat}
-                                        originLng={originLng}
+                                        originLat={effectiveOriginLat}
+                                        originLng={effectiveOriginLng}
                                         destinationLat={pickedLocation?.lat}
                                         destinationLng={pickedLocation?.lng}
                                     />
