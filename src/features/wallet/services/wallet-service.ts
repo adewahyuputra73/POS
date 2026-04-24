@@ -8,6 +8,7 @@ import type {
   WalletHistoryParams,
   WalletHistoryResponse,
   WalletShiftSummary,
+  WalletHistoryItem,
 } from "../types";
 
 export const walletService = {
@@ -27,8 +28,21 @@ export const walletService = {
     return response.data.data;
   },
 
+  /** GET /wallet/transactions — daftar semua transaksi wallet (berbeda dari /wallet/history) */
+  async transactions(params?: WalletHistoryParams): Promise<WalletHistoryItem[]> {
+    const response = await apiClient.get<ApiResponse<WalletHistoryItem[]>>(
+      ENDPOINTS.WALLET.TRANSACTIONS,
+      { params }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * POST /wallet/transactions — catat transaksi manual (pengeluaran / kas masuk).
+   * ⚠️ Konfirmasi BE: pastikan endpoint ini menerima POST, bukan endpoint lain.
+   */
   async createTransaction(data: CreateWalletTransactionRequest): Promise<void> {
-    await apiClient.post(ENDPOINTS.WALLET.TRANSACTIONS, data);
+    await apiClient.post(ENDPOINTS.WALLET.CREATE_TRANSACTION, data);
   },
 
   async shiftSummary(): Promise<WalletShiftSummary> {

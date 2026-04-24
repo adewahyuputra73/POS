@@ -36,9 +36,10 @@ export interface ValidateVoucherRequest {
 
 export interface ValidateVoucherResponse {
   valid: boolean;
-  discount_amount: number;
-  voucher_name: string;
-  // Field tambahan yang mungkin dikembalikan BE
+  // Hanya ada saat valid = true — BE tidak kirim kalau voucher tidak berlaku
+  discount_amount?: number;
+  voucher_name?: string;
+  // Pesan dari BE — biasanya error reason saat valid = false, atau keterangan saat valid = true
   message?: string;
 }
 

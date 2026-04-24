@@ -163,7 +163,11 @@ export const ENDPOINTS = {
     BALANCE: "/wallet/balance",
     HISTORY: "/wallet/history",
     SHIFT_SUMMARY: "/wallet/shift",
+    // GET /wallet/transactions — daftar semua transaksi wallet (belum diimplementasi di service)
     TRANSACTIONS: "/wallet/transactions",
+    // POST /wallet/transactions — catat transaksi baru (pengeluaran/pemasukan manual)
+    // ⚠️ Perlu konfirmasi BE: apakah POST ke /wallet/transactions atau endpoint lain?
+    CREATE_TRANSACTION: "/wallet/transactions",
   },
 
   // Biteship Delivery
