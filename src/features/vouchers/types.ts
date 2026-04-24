@@ -2,7 +2,10 @@
 
 export type DiscountType = "PERCENTAGE" | "FIXED";
 
-// NOTE: Voucher fields are guessed — adjust when actual response is known
+// Status BE: "active" = sedang berjalan, "upcoming" = belum mulai, "ended" = sudah berakhir
+// Page juga menghitung status lokal dari valid_from/valid_until sebagai fallback
+export type VoucherStatus = "active" | "upcoming" | "ended";
+
 export interface Voucher {
   id: string;
   code: string;
@@ -13,14 +16,17 @@ export interface Voucher {
   min_purchase: number | null;
   quota: number;
   used: number;
-  valid_from: string;
-  valid_until: string;
+  valid_from: string;   // ISO datetime
+  valid_until: string;  // ISO datetime
+  // BE mungkin return status langsung — jika tidak ada, UI hitung dari valid_from/valid_until
+  status?: VoucherStatus;
   created_at: string;
   updated_at: string;
 }
 
+// status filter untuk BE query param — sesuai nilai yang BE terima
 export interface VoucherListParams {
-  status?: "active" | "expired" | "all";
+  status?: VoucherStatus | "all";
 }
 
 export interface ValidateVoucherRequest {
@@ -28,11 +34,12 @@ export interface ValidateVoucherRequest {
   subtotal: number;
 }
 
-// NOTE: ValidateVoucherResponse fields are guessed — adjust when actual response is known
 export interface ValidateVoucherResponse {
   valid: boolean;
   discount_amount: number;
   voucher_name: string;
+  // Field tambahan yang mungkin dikembalikan BE
+  message?: string;
 }
 
 export interface CreateVoucherRequest {
