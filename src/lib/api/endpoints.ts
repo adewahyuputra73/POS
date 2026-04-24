@@ -180,6 +180,13 @@ export const ENDPOINTS = {
     CANCEL_ORDER: (orderId: string) => `/biteship/order/cancel/${orderId}`,
   },
 
+  // Invoices
+  INVOICES: {
+    LIST: "/invoices",
+    DETAIL: (id: string) => `/invoices/${id}`,
+    BY_ORDER: (orderId: string) => `/invoices/order/${orderId}`,
+  },
+
   // Dashboard
   DASHBOARD: {
     TODAY_SUMMARY: "/dashboard",

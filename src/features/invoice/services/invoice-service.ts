@@ -11,6 +11,7 @@
  * - GET /stores/my                      → info toko untuk header invoice
  */
 import pubClient from "@/lib/api/pub-client";
+import { ENDPOINTS } from "@/lib/api/endpoints";
 import type {
   Invoice,
   InvoiceListParams,
@@ -103,8 +104,8 @@ export const invoiceService = {
    */
   async getOrder(orderId: string): Promise<InvoiceOrder> {
     const [orderRes, invoiceRes] = await Promise.allSettled([
-      pubClient.get<any>(`/orders/${orderId}`),
-      pubClient.get<any>(`/invoices/order/${orderId}`),
+      pubClient.get<any>(ENDPOINTS.ORDERS.DETAIL(orderId)),
+      pubClient.get<any>(ENDPOINTS.INVOICES.BY_ORDER(orderId)),
     ]);
 
     if (orderRes.status !== "fulfilled") {
@@ -122,7 +123,7 @@ export const invoiceService = {
 
   /** Ambil list invoice (dashboard / laporan) */
   async list(params: InvoiceListParams = {}): Promise<InvoiceListResult> {
-    const response = await pubClient.get<any>("/invoices", { params });
+    const response = await pubClient.get<any>(ENDPOINTS.INVOICES.LIST, { params });
     const payload = response.data.data ?? response.data;
     return {
       total: Number(payload.total ?? 0),
@@ -134,14 +135,14 @@ export const invoiceService = {
 
   /** Ambil detail invoice by invoice_id */
   async getById(invoiceId: string): Promise<Invoice> {
-    const response = await pubClient.get<any>(`/invoices/${invoiceId}`);
+    const response = await pubClient.get<any>(ENDPOINTS.INVOICES.DETAIL(invoiceId));
     const data = response.data.data ?? response.data;
     return mapInvoice(data);
   },
 
   /** Ambil detail invoice by order_id (raw, tanpa merge order detail) */
   async getByOrderId(orderId: string): Promise<Invoice> {
-    const response = await pubClient.get<any>(`/invoices/order/${orderId}`);
+    const response = await pubClient.get<any>(ENDPOINTS.INVOICES.BY_ORDER(orderId));
     const data = response.data.data ?? response.data;
     return mapInvoice(data);
   },
