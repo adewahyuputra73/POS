@@ -37,8 +37,15 @@ export const pubOutletService = {
     try {
       const response = await pubClient.get<any>("/outlets");
       const payload = response.data.data;
-      const items: Outlet[] = Array.isArray(payload) ? payload : (payload?.outlets ?? []);
-      return items.filter((o) => o.is_active !== false);
+      const items: any[] = Array.isArray(payload) ? payload : (payload?.outlets ?? []);
+      return items
+        .filter((o) => o.is_active !== false)
+        .map((o) => ({
+          ...o,
+          // BE bisa return koordinat sebagai string — cast ke number supaya typeof check tidak gagal
+          latitude: o.latitude != null && o.latitude !== "" ? Number(o.latitude) : null,
+          longitude: o.longitude != null && o.longitude !== "" ? Number(o.longitude) : null,
+        }));
     } catch {
       return [];
     }
