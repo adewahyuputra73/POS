@@ -110,12 +110,13 @@ export default function TrackingPage() {
 
   useEffect(() => {
     loadData();
-    // Auto-refresh every 30s for active deliveries
+    // Auto-refresh every 30s:
+    // - Kalau trackingData null: terus coba sampai Biteship siap (kurir belum assign)
+    // - Kalau trackingData ada: refresh selama status masih aktif
     const interval = setInterval(() => {
-      if (
-        trackingData?.status &&
-        !["delivered", "cancelled", "rejected"].includes(trackingData.status)
-      ) {
+      const activeStatus = trackingData?.status &&
+        !["delivered", "cancelled", "rejected"].includes(trackingData.status);
+      if (!trackingData || activeStatus) {
         loadData(false);
       }
     }, 30_000);
