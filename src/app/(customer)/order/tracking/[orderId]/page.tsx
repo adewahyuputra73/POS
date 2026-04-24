@@ -77,7 +77,8 @@ export default function TrackingPage() {
         // localStorage tidak tersedia
       }
 
-      // 3. Try tracking by waybill first, then by biteship_order_id
+      // 3. Tracking hanya bisa pakai waybill kurir (nomor resi) — BUKAN Biteship order ID (WYB-...)
+      // Waybill baru tersedia setelah driver accept. Sebelum itu, tampilkan "menunggu driver".
       const waybillId: string | null =
         localBiteshipData?.waybillId ??
         order?.delivery?.waybill_id ??
@@ -85,19 +86,12 @@ export default function TrackingPage() {
         order?.courier?.waybill_id ??
         null;
 
-      const biteshipOrderId: string | null =
-        localBiteshipData?.biteshipOrderId ??
-        order?.delivery?.biteship_order_id ??
-        order?.biteship_order_id ??
-        null;
-
       if (waybillId) {
         const tracking = await biteshipService.trackOrder(waybillId);
         if (tracking) setTrackingData(tracking);
-      } else if (biteshipOrderId) {
-        const tracking = await biteshipService.trackOrder(biteshipOrderId);
-        if (tracking) setTrackingData(tracking);
+        // Jika tracking null: driver belum bergerak, auto-refresh akan coba lagi
       }
+      // Jika tidak ada waybillId sama sekali: driver belum assign → auto-refresh handle
 
       setLastUpdated(new Date());
     } catch (err: any) {
