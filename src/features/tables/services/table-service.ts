@@ -78,9 +78,10 @@ export const tableService = {
     await apiClient.delete(ENDPOINTS.TABLES.DELETE(id));
   },
 
-  async scan(id: string | number): Promise<ScanTableResponse> {
+  // GET /tables/scan/{store_id}/{table_id} — 2 params di path
+  async scan(storeId: string, tableId: string): Promise<ScanTableResponse> {
     const response = await apiClient.get<ApiResponse<ScanTableResponse>>(
-      ENDPOINTS.TABLES.SCAN(id)
+      ENDPOINTS.TABLES.SCAN(storeId, tableId)
     );
     return response.data.data;
   },

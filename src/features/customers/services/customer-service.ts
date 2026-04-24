@@ -10,6 +10,7 @@ import type {
   ReviewListParams,
   BulkTarget,
   SendBulkMessageRequest,
+  UpdateCustomerRequest,
 } from "../types";
 
 export const customerService = {
@@ -25,6 +26,20 @@ export const customerService = {
       ENDPOINTS.CUSTOMERS.DETAIL(id)
     );
     return response.data.data;
+  },
+
+  // PUT /customers/{id} — update data customer (nama, dll)
+  async update(id: string | number, data: UpdateCustomerRequest): Promise<Customer> {
+    const response = await apiClient.put<ApiResponse<Customer>>(
+      ENDPOINTS.CUSTOMERS.UPDATE(id),
+      data
+    );
+    return response.data.data;
+  },
+
+  // DELETE /customers/{id}
+  async delete(id: string | number): Promise<void> {
+    await apiClient.delete(ENDPOINTS.CUSTOMERS.DELETE(id));
   },
 
   async reviews(params?: ReviewListParams): Promise<Review[]> {

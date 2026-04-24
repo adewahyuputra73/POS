@@ -1,7 +1,7 @@
 import apiClient from "@/lib/api/client";
 import { ENDPOINTS } from "@/lib/api/endpoints";
 import type { ApiResponse } from "@/types";
-import type { Voucher, CreateVoucherRequest, UpdateVoucherRequest, VoucherListParams, ValidateVoucherRequest, ValidateVoucherResponse } from "../types";
+import type { Voucher, CreateVoucherRequest, UpdateVoucherRequest, VoucherListParams, ValidateVoucherRequest, ValidateVoucherResponse, PublicValidateVoucherRequest } from "../types";
 
 export const voucherService = {
   async list(params?: VoucherListParams): Promise<Voucher[]> {
@@ -38,6 +38,16 @@ export const voucherService = {
   async validate(data: ValidateVoucherRequest): Promise<ValidateVoucherResponse> {
     const response = await apiClient.post<ApiResponse<ValidateVoucherResponse>>(
       ENDPOINTS.VOUCHERS.VALIDATE,
+      data
+    );
+    return response.data.data;
+  },
+
+  // POST /vouchers/public/validate — customer-facing, tidak butuh Bearer admin
+  // Dipakai di halaman order customer (QR scan), bukan POS admin
+  async publicValidate(data: PublicValidateVoucherRequest): Promise<ValidateVoucherResponse> {
+    const response = await apiClient.post<ApiResponse<ValidateVoucherResponse>>(
+      ENDPOINTS.VOUCHERS.PUBLIC_VALIDATE,
       data
     );
     return response.data.data;

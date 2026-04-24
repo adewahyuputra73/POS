@@ -45,9 +45,10 @@ export const walletService = {
     await apiClient.post(ENDPOINTS.WALLET.CREATE_TRANSACTION, data);
   },
 
-  async shiftSummary(): Promise<WalletShiftSummary> {
+  // GET /wallet/shift/{shift_id} — ringkasan wallet per shift
+  async shiftSummary(shiftId: string): Promise<WalletShiftSummary> {
     const response = await apiClient.get<ApiResponse<WalletShiftSummary>>(
-      ENDPOINTS.WALLET.SHIFT_SUMMARY
+      ENDPOINTS.WALLET.SHIFT_SUMMARY(shiftId)
     );
     return response.data.data;
   },

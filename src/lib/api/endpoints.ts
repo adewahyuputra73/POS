@@ -43,6 +43,8 @@ export const ENDPOINTS = {
   CUSTOMERS: {
     LIST: "/customers",
     DETAIL: (id: string | number) => `/customers/${id}`,
+    UPDATE: (id: string | number) => `/customers/${id}`,
+    DELETE: (id: string | number) => `/customers/${id}`,
     REVIEWS: "/customers/reviews",
     CREATE_REVIEW: (id: string | number) => `/customers/${id}/reviews`,
     TOGGLE_REVIEW: (id: string | number) => `/customers/reviews/${id}/toggle`,
@@ -92,7 +94,8 @@ export const ENDPOINTS = {
   ORDERS: {
     LIST: "/orders",
     DETAIL: (id: string | number) => `/orders/${id}`,
-    CHECKOUT: "/orders/checkout",
+    CHECKOUT: "/orders/checkout",  // alias: POST /orders juga diterima BE
+    CHECKOUT_ALIAS: "/orders",     // ← N6: alias endpoint, payload sama dengan /orders/checkout
     PAY: (id: string | number) => `/orders/${id}/pay`,
     STATUS: (id: string | number) => `/orders/${id}/status`,
     VOID: (id: string | number) => `/orders/${id}/void`,
@@ -133,6 +136,7 @@ export const ENDPOINTS = {
     DELETE: (id: string | number) => `/vouchers/${id}`,
     TERMINATE: (id: string | number) => `/vouchers/${id}/terminate`,
     VALIDATE: "/vouchers/validate",
+    PUBLIC_VALIDATE: "/vouchers/public/validate",   // ← customer-facing, tidak butuh Bearer admin
   },
 
   // Tables
@@ -145,7 +149,7 @@ export const ENDPOINTS = {
     STATUS: (id: string | number) => `/tables/${id}/status`,
     REGENERATE_QR: (id: string | number) => `/tables/${id}/regenerate-qr`,
     SUMMARY: "/tables/summary",
-    SCAN: (id: string | number) => `/tables/scan/${id}`,
+    SCAN: (storeId: string, tableId: string) => `/tables/scan/${storeId}/${tableId}`,  // ← 2 param
     AREAS: "/tables/areas",
     AREA_DETAIL: (id: string | number) => `/tables/areas/${id}`,
   },
@@ -161,22 +165,20 @@ export const ENDPOINTS = {
   WALLET: {
     BALANCE: "/wallet/balance",
     HISTORY: "/wallet/history",
-    SHIFT_SUMMARY: "/wallet/shift",
-    // GET /wallet/transactions — daftar semua transaksi wallet (belum diimplementasi di service)
-    TRANSACTIONS: "/wallet/transactions",
-    // POST /wallet/transactions — catat transaksi baru (pengeluaran/pemasukan manual)
-    // ⚠️ Perlu konfirmasi BE: apakah POST ke /wallet/transactions atau endpoint lain?
-    CREATE_TRANSACTION: "/wallet/transactions",
+    SHIFT_SUMMARY: (shiftId: string) => `/wallet/shift/${shiftId}`,   // ← ID wajib ada di path
+    TRANSACTIONS: "/wallet/transactions",         // GET — daftar semua transaksi wallet
+    CREATE_TRANSACTION: "/wallet/transactions",   // POST — catat transaksi baru (confirmed BE)
   },
 
   // Biteship Delivery
   BITESHIP: {
     AREAS: "/biteship/areas",
     RATES: "/biteship/rates/courier",
-    ORDERS: "/biteship/orders",
-    ORDER_DETAIL: (id: string) => `/biteship/orders/${id}`,
-    TRACKING: (waybillId: string) => `/biteship/trackings/${waybillId}`,
-    COURIERS: "/biteship/couriers",
+    ORDER_CREATE: "/biteship/order/create",                               // ← bukan /biteship/orders
+    ORDER_DETAIL: (id: string) => `/biteship/orders/${id}`,              // ⚠️ belum confirmed di cURL
+    TRACKING: (waybillId: string) => `/biteship/order/tracking/${waybillId}`,  // ← bukan /biteship/trackings/
+    CANCEL_REASONS: "/biteship/order/cancel/reason",
+    CANCEL_ORDER: (orderId: string) => `/biteship/order/cancel/${orderId}`,
   },
 
   // Dashboard

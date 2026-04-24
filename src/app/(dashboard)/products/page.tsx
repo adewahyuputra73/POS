@@ -134,7 +134,8 @@ export default function ProductsPage() {
       const imageFile = data.images.length > 0 ? data.images[0] : undefined;
 
       if (productId) {
-        await productService.update(productId, payload, imageFile);
+        // PUT /products/{id} pakai JSON — image upload tidak didukung saat edit
+        await productService.update(productId, payload);
         showToast("Produk berhasil diperbarui", "success");
       } else {
         await productService.create(payload, imageFile);

@@ -48,6 +48,11 @@ export interface CustomerDetail extends Customer {
   avg_rating: number | null;
 }
 
+// PUT /customers/{id} — update data customer
+export interface UpdateCustomerRequest {
+  name?: string;
+}
+
 // Customer Filters
 export type LastVisitFilter = 'all' | 'today' | 'this_week' | 'this_month' | 'before_date' | 'after_date' | 'between';
 export type TotalSpentFilter = 'all' | 'gt' | 'lt' | 'between';

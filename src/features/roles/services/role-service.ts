@@ -1,7 +1,7 @@
 import apiClient from "@/lib/api/client";
 import { ENDPOINTS } from "@/lib/api/endpoints";
 import type { ApiResponse } from "@/types";
-import type { Role, CreateRoleRequest, UpdateRoleRequest, AssignRoleRequest } from "../types";
+import type { Role, CreateRoleRequest, UpdateRoleRequest, AssignRoleRequest, RemoveRoleRequest } from "../types";
 
 export const roleService = {
   async list(): Promise<Role[]> {
@@ -35,7 +35,7 @@ export const roleService = {
     await apiClient.post(ENDPOINTS.ROLES.ASSIGN, data);
   },
 
-  async remove(data: AssignRoleRequest): Promise<void> {
+  async remove(data: RemoveRoleRequest): Promise<void> {
     await apiClient.post(ENDPOINTS.ROLES.REMOVE, data);
   },
 

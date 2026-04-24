@@ -2,9 +2,9 @@
 
 export type DiscountType = "PERCENTAGE" | "FIXED";
 
-// Status BE: "active" = sedang berjalan, "upcoming" = belum mulai, "ended" = sudah berakhir
-// Page juga menghitung status lokal dari valid_from/valid_until sebagai fallback
-export type VoucherStatus = "active" | "upcoming" | "ended";
+// Status yang diterima BE sebagai query param dan dikembalikan di response
+// ⚠️ BE terima "expired" DAN "finished" (keduanya ada di cURL) — BUKAN "ended"
+export type VoucherStatus = "active" | "upcoming" | "expired" | "finished";
 
 export interface Voucher {
   id: string;
@@ -32,6 +32,13 @@ export interface VoucherListParams {
 export interface ValidateVoucherRequest {
   code: string;
   subtotal: number;
+}
+
+// POST /vouchers/public/validate — customer-facing, tidak butuh Bearer admin, wajib store_id
+export interface PublicValidateVoucherRequest {
+  code: string;
+  subtotal: number;
+  store_id: string;
 }
 
 export interface ValidateVoucherResponse {

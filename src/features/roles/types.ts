@@ -26,7 +26,13 @@ export interface UpdateRoleRequest {
 }
 
 export interface AssignRoleRequest {
-  store_id: string;
+  store_id: string;   // ← WAJIB untuk assign (berbeda dari remove)
+  admin_id: string;
+  role_id: string;
+}
+
+// POST /roles/remove — payload TIDAK ada store_id (berbeda dari /roles/assign)
+export interface RemoveRoleRequest {
   admin_id: string;
   role_id: string;
 }

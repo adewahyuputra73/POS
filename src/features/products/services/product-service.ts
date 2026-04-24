@@ -32,6 +32,7 @@ export function mapApiProduct(raw: any): Product {
   return {
     id: raw.id,
     name: raw.name ?? "",
+    productType: raw.product_type ?? undefined,
     description: raw.description ?? undefined,
     price: Number(raw.price ?? 0),
     comparePrice,
@@ -110,21 +111,12 @@ export const productService = {
     return mapApiProduct(response.data.data);
   },
 
-  async update(id: string | number, data: UpdateProductRequest, imageFile?: File): Promise<Product> {
-    const fd = new FormData();
-    if (data.name !== undefined) fd.append("name", data.name);
-    if (data.price !== undefined) fd.append("price", String(data.price));
-    if (data.unit) fd.append("unit", data.unit);
-    if (data.is_active !== undefined) fd.append("is_active", String(data.is_active));
-    if (data.stock_type) fd.append("stock_type", data.stock_type);
-    if (data.category_id) fd.append("category_id", data.category_id);
-    if (data.stock_qty !== undefined) fd.append("stock_qty", String(data.stock_qty));
-    if (data.stock_limit !== undefined) fd.append("stock_limit", String(data.stock_limit));
-    if (data.description) fd.append("description", data.description);
-    if (imageFile) fd.append("image", imageFile);
+  // PUT /products/{id} — ⚠️ BE menerima JSON bukan multipart (berbeda dari POST /products)
+  // Image update tidak didukung via endpoint ini — gunakan endpoint terpisah jika ada
+  async update(id: string | number, data: UpdateProductRequest): Promise<Product> {
     const response = await apiClient.put<ApiResponse<any>>(
       ENDPOINTS.PRODUCTS.UPDATE(id),
-      fd
+      data
     );
     return mapApiProduct(response.data.data);
   },

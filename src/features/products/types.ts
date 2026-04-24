@@ -10,11 +10,14 @@ export interface ChannelPrice {
   price: number;
 }
 
+export type ProductType = "UNIT" | "WEIGHT";
+
 export interface Product {
   id: string;
   name: string;
   description?: string;
   price: number;
+  productType?: ProductType;   // dari API field product_type — UNIT atau WEIGHT
   comparePrice?: number;
   categoryId?: string;
   categoryName?: string;
