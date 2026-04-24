@@ -9,13 +9,28 @@ import { tableService } from "@/features/tables/services/table-service";
 import type { CheckoutRequest, OrderType, PaymentMethod } from "@/features/orders/types";
 import type { Product } from "@/features/products/types";
 import type { Table } from "@/features/tables/types";
+import { useStoreSettingsStore } from "@/stores";
 import { formatCurrency } from "@/lib/utils/format";
 
 interface CartItem {
   product: Product;
   qty: number;
+  /** Berat (kg) untuk produk WEIGHT. Wajib > 0 sebelum checkout. */
+  weightInput: number;
   notes: string;
 }
+
+/** Apakah item harus diinput berat? Cek productType produk; fallback ke setting toko. */
+const isWeightItem = (item: CartItem, storeType: "UNIT" | "WEIGHT"): boolean => {
+  return (item.product.productType ?? storeType) === "WEIGHT";
+};
+
+const subtotalOf = (item: CartItem, storeType: "UNIT" | "WEIGHT"): number => {
+  if (isWeightItem(item, storeType)) {
+    return item.product.price * (item.weightInput || 0) * item.qty;
+  }
+  return item.product.price * item.qty;
+};
 
 interface Props {
   onClose: () => void;
@@ -35,6 +50,7 @@ const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
 
 export function TransactionCreateModal({ onClose, onSuccess }: Props) {
   const { showToast } = useToast();
+  const storeProductType = useStoreSettingsStore((s) => s.storeInfo?.product_type) ?? "UNIT";
 
   const [products, setProducts] = useState<Product[]>([]);
   const [tables, setTables] = useState<Table[]>([]);
@@ -73,8 +89,8 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
   }, [products, productSearch]);
 
   const total = useMemo(
-    () => cart.reduce((sum, item) => sum + item.product.price * item.qty, 0),
-    [cart]
+    () => cart.reduce((sum, item) => sum + subtotalOf(item, storeProductType), 0),
+    [cart, storeProductType]
   );
 
   function addToCart(product: Product) {
@@ -85,10 +101,16 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
           i.product.id === product.id ? { ...i, qty: i.qty + 1 } : i
         );
       }
-      return [...prev, { product, qty: 1, notes: "" }];
+      return [...prev, { product, qty: 1, weightInput: 0, notes: "" }];
     });
     setProductSearch("");
     setShowProductList(false);
+  }
+
+  function updateWeight(productId: string, value: number) {
+    setCart((prev) =>
+      prev.map((i) => (i.product.id === productId ? { ...i, weightInput: value } : i))
+    );
   }
 
   function updateQty(productId: string, delta: number) {
@@ -118,6 +140,13 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
       showToast("Pilih meja terlebih dahulu", "error");
       return;
     }
+    const missingWeight = cart.find(
+      (i) => isWeightItem(i, storeProductType) && (!i.weightInput || i.weightInput <= 0)
+    );
+    if (missingWeight) {
+      showToast(`Isi berat untuk produk "${missingWeight.product.name}"`, "error");
+      return;
+    }
 
     const payload: CheckoutRequest = {
       order_type: orderType,
@@ -125,6 +154,7 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
       items: cart.map((i) => ({
         product_id: i.product.id,
         qty: i.qty,
+        ...(isWeightItem(i, storeProductType) ? { weight_input: i.weightInput } : {}),
         notes: i.notes || undefined,
       })),
       payments: [{
@@ -247,8 +277,15 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
                 {cart.map((item) => (
                   <div key={item.product.id} className="border border-border rounded-xl p-3 space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-text-primary flex-1">{item.product.name}</span>
-                      <span className="text-sm text-text-secondary">{formatCurrency(item.product.price * item.qty)}</span>
+                      <span className="text-sm font-medium text-text-primary flex-1">
+                        {item.product.name}
+                        {isWeightItem(item, storeProductType) && (
+                          <span className="ml-1.5 text-[10px] uppercase tracking-wide text-amber-600 font-bold">
+                            timbang
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-sm text-text-secondary">{formatCurrency(subtotalOf(item, storeProductType))}</span>
                       <button onClick={() => removeFromCart(item.product.id)} className="text-error hover:text-error/80">
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -263,6 +300,20 @@ export function TransactionCreateModal({ onClose, onSuccess }: Props) {
                           <Plus className="h-3.5 w-3.5" />
                         </button>
                       </div>
+                      {isWeightItem(item, storeProductType) && (
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            value={item.weightInput || ""}
+                            onChange={(e) => updateWeight(item.product.id, Number(e.target.value))}
+                            placeholder="0.00"
+                            className="w-20 text-xs border border-border rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
+                          />
+                          <span className="text-xs text-text-secondary">kg</span>
+                        </div>
+                      )}
                       <input
                         type="text"
                         value={item.notes}

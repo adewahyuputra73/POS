@@ -1,5 +1,10 @@
 // Store Settings feature types
 
+// Tipe penjualan produk di toko (level toko, bukan per produk)
+// UNIT  = dijual per satuan (pcs/item)
+// WEIGHT = ditimbang (kg) saat checkout
+export type StoreProductType = "UNIT" | "WEIGHT";
+
 export interface StoreOwner {
   id: string;
   full_name: string;
@@ -29,6 +34,8 @@ export interface StoreInfo {
   is_tax_inclusive?: boolean;
   is_service_charge_enabled?: boolean;
   service_charge_rate?: number;
+  // Tipe penjualan produk untuk toko ini (UNIT/WEIGHT) — dipilih saat onboarding
+  product_type?: StoreProductType;
 }
 
 export interface UpdateStoreRequest {
@@ -37,6 +44,7 @@ export interface UpdateStoreRequest {
   latitude?: number | null;
   longitude?: number | null;
   notification_phone?: string | null;
+  product_type?: StoreProductType;
 }
 
 export interface CreateStoreRequest {
@@ -45,12 +53,14 @@ export interface CreateStoreRequest {
   address: string;
   latitude?: number | null;
   longitude?: number | null;
+  product_type?: StoreProductType;
 }
 
 export interface StoreOnboardingRequest {
   name: string;
   address: string;
   phone: string;
+  product_type?: StoreProductType;
 }
 
 export type FeeType = "percentage" | "nominal";

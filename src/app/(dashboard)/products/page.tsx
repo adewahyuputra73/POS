@@ -14,7 +14,7 @@ import {
   X,
   Package,
 } from "lucide-react";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useStoreSettingsStore } from "@/stores";
 
 type TabStatus = "all" | "active" | "inactive";
 
@@ -22,6 +22,8 @@ export default function ProductsPage() {
   const { showToast } = useToast();
   const user = useAuthStore((s) => s.user);
   const isOwner = user?.role === "owner";
+  // Tipe penjualan toko (UNIT/WEIGHT) — semua produk baru auto-inherit ini.
+  const storeProductType = useStoreSettingsStore((s) => s.storeInfo?.product_type) ?? "UNIT";
 
   // Data state
   const [products, setProducts] = useState<Product[]>([]);
@@ -116,11 +118,13 @@ export default function ProductsPage() {
   const handleSaveProduct = async (data: ProductFormData, productId?: string) => {
     setIsLoading(true);
     try {
+      // product_type auto-inherit dari store config (UNIT/WEIGHT) — set sekali di Settings.
       const payload = {
         name: data.name,
         price: data.price,
-        unit: "Pcs",
+        unit: storeProductType === "WEIGHT" ? "Kg" : "Pcs",
         is_active: data.isActive,
+        product_type: storeProductType,
         stock_type: data.useStock ? "LIMITED" as const : "UNLIMITED" as const,
         ...(data.categoryId ? { category_id: data.categoryId } : {}),
         ...(data.useStock ? { stock_qty: data.stockQuantity } : {}),

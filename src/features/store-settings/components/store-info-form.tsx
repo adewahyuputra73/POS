@@ -25,7 +25,7 @@ import {
   Navigation,
   Loader2,
 } from "lucide-react";
-import type { StoreInfo, UpdateStoreRequest } from "../types";
+import type { StoreInfo, UpdateStoreRequest, StoreProductType } from "../types";
 import type { PickedLocation } from "@/features/delivery/components/LocationPicker";
 
 const LocationPickerInner = dynamic(
@@ -61,6 +61,7 @@ export function StoreInfoForm({ store, onSave }: StoreInfoFormProps) {
   const [name, setName] = useState(store.name);
   const [address, setAddress] = useState(store.address);
   const [notificationPhone, setNotificationPhone] = useState(store.notification_phone ?? "");
+  const [productType, setProductType] = useState<StoreProductType>(store.product_type ?? "UNIT");
   const [pickedLocation, setPickedLocation] = useState<PickedLocation | null>(null);
 
   const hasStoredCoords = store.latitude != null && store.longitude != null;
@@ -76,6 +77,7 @@ export function StoreInfoForm({ store, onSave }: StoreInfoFormProps) {
         latitude: pickedLocation?.lat ?? store.latitude,
         longitude: pickedLocation?.lng ?? store.longitude,
         notification_phone: cleanPhone,
+        product_type: productType,
       });
       // Simpan ke localStorage sebagai fallback untuk customer-facing side
       if (cleanPhone) localStorage.setItem("wa_notification_phone", cleanPhone);
@@ -94,6 +96,7 @@ export function StoreInfoForm({ store, onSave }: StoreInfoFormProps) {
     setName(store.name);
     setAddress(store.address);
     setNotificationPhone(store.notification_phone ?? "");
+    setProductType(store.product_type ?? "UNIT");
     setPickedLocation(null);
     setIsEditing(false);
   };
@@ -215,6 +218,39 @@ export function StoreInfoForm({ store, onSave }: StoreInfoFormProps) {
             <p className="text-xs text-text-secondary">
               Nomor WA asli yang bisa dihubungi customer — berbeda dari nomor akun. Dipakai untuk tombol "Hubungi Toko" dan notifikasi pesanan via WhatsApp.
             </p>
+          </div>
+
+          {/* Tipe Penjualan */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-text-primary">
+              Tipe Penjualan Produk
+            </label>
+            <p className="text-xs text-text-secondary -mt-1">
+              Pilih sekali sesuai jenis toko. Semua produk mengikuti tipe ini saat checkout.
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { value: "UNIT", label: "Per Satuan", hint: "Dijual per pcs / item" },
+                { value: "WEIGHT", label: "Per Timbangan", hint: "Ditimbang (kg) saat checkout" },
+              ] as const).map((opt) => {
+                const active = productType === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setProductType(opt.value)}
+                    className={`text-left p-3 rounded-lg border transition-colors ${
+                      active ? "border-primary bg-primary-light" : "border-divider hover:border-primary/40"
+                    }`}
+                  >
+                    <p className={`text-sm font-semibold ${active ? "text-primary" : "text-text-primary"}`}>
+                      {opt.label}
+                    </p>
+                    <p className="text-xs text-text-secondary mt-0.5">{opt.hint}</p>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Location picker */}
