@@ -330,6 +330,7 @@ export default function CheckoutPage() {
             if (fulfillmentType === "delivery" && destinationArea && selectedRate && storeInfo && orderId && !selectedRate.is_internal) {
                 try {
                     const biteshipOrder = await biteshipService.createOrder({
+                        order_id: orderId,   // ← WAJIB: BE butuh order_id di body
                         origin_contact_name: selectedOutlet?.name || storeInfo.name,
                         origin_contact_phone:
                             selectedOutlet?.phone_number || storeInfo.owner?.phone_number || "",
