@@ -8,7 +8,6 @@ import type {
   BiteshipArea,
   BiteshipCourier,
   BiteshipRateRequest,
-  BiteshipOrderDetail,
   BiteshipTrackingResponse,
   BiteshipCancelReason,
 } from "../types";
@@ -60,20 +59,8 @@ export const biteshipService = {
    * Buat order pengiriman di Biteship.
    */
   async createOrder(data: Record<string, unknown>): Promise<any> {
-    const res = await pubClient.post<any>("/biteship/order/create", data);
+    const res = await pubClient.post<any>(ENDPOINTS.BITESHIP.ORDER_CREATE, data);
     return res.data?.data ?? res.data;
-  },
-
-  /**
-   * Ambil detail order Biteship.
-   */
-  async getOrder(biteshipOrderId: string): Promise<BiteshipOrderDetail | null> {
-    try {
-      const res = await pubClient.get<any>(ENDPOINTS.BITESHIP.ORDER_DETAIL(biteshipOrderId));
-      return res.data?.data ?? res.data ?? null;
-    } catch {
-      return null;
-    }
   },
 
   /**
@@ -81,7 +68,7 @@ export const biteshipService = {
    */
   async getCancelReasons(): Promise<BiteshipCancelReason[]> {
     try {
-      const res = await pubClient.get<any>("/biteship/order/cancel/reason");
+      const res = await pubClient.get<any>(ENDPOINTS.BITESHIP.CANCEL_REASONS);
       const payload = res.data?.data ?? res.data;
       const reasons: BiteshipCancelReason[] = payload?.cancellation_reasons ?? [];
       return Array.isArray(reasons) ? reasons : [];
@@ -98,7 +85,7 @@ export const biteshipService = {
     orderId: string,
     data: { cancellation_reason_code: string; cancellation_reason: string }
   ): Promise<void> {
-    await pubClient.post(`/biteship/order/cancel/${orderId}`, data);
+    await pubClient.post(ENDPOINTS.BITESHIP.CANCEL_ORDER(orderId), data);
   },
 
   /**
@@ -106,7 +93,7 @@ export const biteshipService = {
    */
   async trackOrder(trackingId: string): Promise<BiteshipTrackingResponse | null> {
     try {
-      const res = await pubClient.get<any>(`/biteship/order/tracking/${trackingId}`);
+      const res = await pubClient.get<any>(ENDPOINTS.BITESHIP.TRACKING(trackingId));
       return res.data?.data ?? res.data ?? null;
     } catch {
       return null;

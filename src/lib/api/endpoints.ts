@@ -170,13 +170,12 @@ export const ENDPOINTS = {
     CREATE_TRANSACTION: "/wallet/transactions",   // POST — catat transaksi baru (confirmed BE)
   },
 
-  // Biteship Delivery
+  // Biteship Delivery — semua path dari cURL verified
   BITESHIP: {
     AREAS: "/biteship/areas",
     RATES: "/biteship/rates/courier",
-    ORDER_CREATE: "/biteship/order/create",                               // ← bukan /biteship/orders
-    ORDER_DETAIL: (id: string) => `/biteship/orders/${id}`,              // ⚠️ belum confirmed di cURL
-    TRACKING: (waybillId: string) => `/biteship/order/tracking/${waybillId}`,  // ← bukan /biteship/trackings/
+    ORDER_CREATE: "/biteship/order/create",
+    TRACKING: (waybillId: string) => `/biteship/order/tracking/${waybillId}`,
     CANCEL_REASONS: "/biteship/order/cancel/reason",
     CANCEL_ORDER: (orderId: string) => `/biteship/order/cancel/${orderId}`,
   },
