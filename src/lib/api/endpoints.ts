@@ -84,6 +84,7 @@ export const ENDPOINTS = {
   STORES: {
     ONBOARDING: "/stores/onboarding",
     MY: "/stores/my",
+    UPDATE: (id: string | number) => `/stores/${id}`,
     FEES: "/stores/my/fees",
     CREATE: "/stores/create",
   },

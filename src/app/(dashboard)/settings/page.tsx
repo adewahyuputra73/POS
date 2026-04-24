@@ -70,7 +70,8 @@ export default function SettingsPage() {
   }, [updateStoreInfo]);
 
   const handleSaveStoreInfo = async (data: UpdateStoreRequest) => {
-    const updated = await storeSettingsService.update(data);
+    if (!storeInfo?.id) throw new Error("Store ID tidak ditemukan");
+    const updated = await storeSettingsService.update(storeInfo.id, data);
     updateStoreInfo(updated);
   };
 

@@ -11,9 +11,9 @@ export const storeSettingsService = {
     return response.data.data;
   },
 
-  async update(data: UpdateStoreRequest): Promise<StoreInfo> {
+  async update(id: string | number, data: UpdateStoreRequest): Promise<StoreInfo> {
     const response = await apiClient.put<ApiResponse<StoreInfo>>(
-      ENDPOINTS.STORES.MY,
+      ENDPOINTS.STORES.UPDATE(id),
       data
     );
     return response.data.data;

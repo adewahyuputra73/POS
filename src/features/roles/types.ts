@@ -17,6 +17,7 @@ export interface UpdateRoleRequest {
 }
 
 export interface AssignRoleRequest {
+  store_id: string;
   admin_id: string;
   role_id: string;
 }
