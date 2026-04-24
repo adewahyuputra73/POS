@@ -237,117 +237,14 @@ export default function TrackingPage() {
           </button>
         </div>
 
-        {/* Status Banner */}
-        {statusInfo && (
-          <div
-            className="flex items-center gap-3 px-5 py-4 rounded-2xl mb-5"
-            style={{ backgroundColor: statusInfo.bg }}
-          >
-            <div
-              className="h-2.5 w-2.5 rounded-full animate-pulse shrink-0"
-              style={{ backgroundColor: statusInfo.color }}
-            />
-            <div>
-              <p className="text-sm font-black" style={{ color: statusInfo.color }}>
-                {statusInfo.label}
-              </p>
-              {lastUpdated && (
-                <p className="text-[11px] font-medium mt-0.5" style={{ color: statusInfo.color, opacity: 0.7 }}>
-                  Diperbarui{" "}
-                  {format(lastUpdated, "HH:mm", { locale: id })}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Map */}
-        <div className="mb-5">
-          <DeliveryTrackingMap
-            destinationLat={resolvedDestLat}
-            destinationLng={resolvedDestLng}
-            destinationAddress={displayAddress ?? undefined}
-          />
-        </div>
-
-        {/* Info rows */}
-        <div
-          className="rounded-[22px] p-5 mb-5 space-y-4"
-          style={{
-            backgroundColor: "#FFFFFF",
-            border: "1.5px solid rgba(124,74,30,0.1)",
-            boxShadow: "0 2px 12px rgba(28,10,0,0.04)",
-          }}
-        >
-          {displayAddress && (
-            <InfoRow icon={MapPin} label="Alamat Tujuan" value={displayAddress} />
-          )}
-          {eta && (
-            <InfoRow
-              icon={Clock}
-              label="Estimasi Tiba"
-              value={(() => {
-                try {
-                  return format(parseISO(eta), "EEEE, d MMM · HH:mm", { locale: id });
-                } catch {
-                  return eta;
-                }
-              })()}
-            />
-          )}
-          {trackingData?.courier?.company && (
-            <InfoRow icon={Package} label="Kurir" value={trackingData.courier.company} />
-          )}
-          {trackingData?.courier?.phone && (
-            <InfoRow icon={Phone} label="Nomor Kurir" value={trackingData.courier.phone} />
-          )}
-          {trackingData?.waybill_id && (
-            <InfoRow icon={Package} label="Nomor Resi" value={trackingData.waybill_id} />
-          )}
-          {trackingData?.price != null && trackingData.price > 0 && (
-            <InfoRow icon={Package} label="Ongkos Kirim" value={formatCurrency(trackingData.price)} />
-          )}
-          {trackingData?.courier?.link && (
-            <div className="pt-1">
-              <Link
-                href={trackingData.courier.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-black px-4 py-2 rounded-xl transition-all active:scale-95"
-                style={{ backgroundColor: "#FEF3C7", color: "#D97706" }}
-              >
-                <Package className="h-3.5 w-3.5" />
-                Lacak di Situs Kurir
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Driver / Courier Info */}
-        {hasDriver && (
-          <div className="mb-5">
-            <DriverInfoCard
-              driver={{
-                name: driverName ?? trackingData?.courier?.name ?? "",
-                phone: driverPhone ?? trackingData?.courier?.phone ?? "",
-              }}
-              courierCompany={trackingData?.courier?.company}
-            />
-          </div>
-        )}
-
-        {/* Status Timeline */}
-        {status && (
-          <DeliveryStatusTimeline currentStatus={status} history={history} />
-        )}
-
-        {/* No tracking data but order exists */}
+        {/* Kurir belum ditemukan — sembunyikan map dan semua info tracking */}
         {!trackingData && orderData && (
           <div
             className="rounded-[22px] p-8 text-center"
             style={{
               backgroundColor: "#FFFFFF",
               border: "1.5px solid rgba(124,74,30,0.1)",
+              boxShadow: "0 2px 12px rgba(28,10,0,0.04)",
             }}
           >
             <div
@@ -357,13 +254,128 @@ export default function TrackingPage() {
               <Package className="h-8 w-8" style={{ color: "#D97706" }} />
             </div>
             <p className="text-base font-black mb-2" style={{ color: "#1C0A00" }}>
-              Pengiriman Belum Dimulai
+              Kurir Belum Ditemukan
             </p>
-            <p className="text-sm font-medium" style={{ color: "#9C7D58" }}>
-              Pesanan kamu sedang dipersiapkan. Info pengiriman akan muncul setelah driver
-              ditemukan.
+            <p className="text-sm font-medium mb-4" style={{ color: "#9C7D58" }}>
+              Pesanan kamu sedang diproses. Kami sedang mencari kurir terdekat —
+              halaman ini akan memperbarui otomatis setiap 30 detik.
             </p>
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black"
+              style={{ backgroundColor: "#FEF3C7", color: "#D97706" }}
+            >
+              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+              Mencari kurir...
+            </div>
           </div>
+        )}
+
+        {/* Semua section di bawah hanya tampil setelah kurir ditemukan */}
+        {trackingData && (
+          <>
+            {/* Status Banner */}
+            {statusInfo && (
+              <div
+                className="flex items-center gap-3 px-5 py-4 rounded-2xl mb-5"
+                style={{ backgroundColor: statusInfo.bg }}
+              >
+                <div
+                  className="h-2.5 w-2.5 rounded-full animate-pulse shrink-0"
+                  style={{ backgroundColor: statusInfo.color }}
+                />
+                <div>
+                  <p className="text-sm font-black" style={{ color: statusInfo.color }}>
+                    {statusInfo.label}
+                  </p>
+                  {lastUpdated && (
+                    <p className="text-[11px] font-medium mt-0.5" style={{ color: statusInfo.color, opacity: 0.7 }}>
+                      Diperbarui {format(lastUpdated, "HH:mm", { locale: id })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Map */}
+            <div className="mb-5">
+              <DeliveryTrackingMap
+                destinationLat={resolvedDestLat}
+                destinationLng={resolvedDestLng}
+                destinationAddress={displayAddress ?? undefined}
+              />
+            </div>
+
+            {/* Info rows */}
+            <div
+              className="rounded-[22px] p-5 mb-5 space-y-4"
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "1.5px solid rgba(124,74,30,0.1)",
+                boxShadow: "0 2px 12px rgba(28,10,0,0.04)",
+              }}
+            >
+              {displayAddress && (
+                <InfoRow icon={MapPin} label="Alamat Tujuan" value={displayAddress} />
+              )}
+              {eta && (
+                <InfoRow
+                  icon={Clock}
+                  label="Estimasi Tiba"
+                  value={(() => {
+                    try {
+                      return format(parseISO(eta), "EEEE, d MMM · HH:mm", { locale: id });
+                    } catch {
+                      return eta;
+                    }
+                  })()}
+                />
+              )}
+              {trackingData.courier?.company && (
+                <InfoRow icon={Package} label="Kurir" value={trackingData.courier.company} />
+              )}
+              {trackingData.courier?.phone && (
+                <InfoRow icon={Phone} label="Nomor Kurir" value={trackingData.courier.phone} />
+              )}
+              {trackingData.waybill_id && (
+                <InfoRow icon={Package} label="Nomor Resi" value={trackingData.waybill_id} />
+              )}
+              {trackingData.price != null && trackingData.price > 0 && (
+                <InfoRow icon={Package} label="Ongkos Kirim" value={formatCurrency(trackingData.price)} />
+              )}
+              {trackingData.courier?.link && (
+                <div className="pt-1">
+                  <Link
+                    href={trackingData.courier.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-black px-4 py-2 rounded-xl transition-all active:scale-95"
+                    style={{ backgroundColor: "#FEF3C7", color: "#D97706" }}
+                  >
+                    <Package className="h-3.5 w-3.5" />
+                    Lacak di Situs Kurir
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Driver / Courier Info */}
+            {hasDriver && (
+              <div className="mb-5">
+                <DriverInfoCard
+                  driver={{
+                    name: driverName ?? trackingData.courier?.name ?? "",
+                    phone: driverPhone ?? trackingData.courier?.phone ?? "",
+                  }}
+                  courierCompany={trackingData.courier?.company}
+                />
+              </div>
+            )}
+
+            {/* Status Timeline */}
+            {status && (
+              <DeliveryStatusTimeline currentStatus={status} history={history} />
+            )}
+          </>
         )}
       </div>
     </div>
