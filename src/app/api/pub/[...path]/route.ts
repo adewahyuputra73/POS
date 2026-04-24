@@ -5,7 +5,8 @@ export const runtime = "edge";
 
 const BE_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://qa-api.ferecorps.com/api/fereapps/v1";
 
-// ── Token cache (module-level, hidup selama server process berjalan) ──
+// ── Token cache untuk fallback env-credentials ──
+// Hanya digunakan jika client tidak mengirim x-store-token
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
@@ -95,14 +96,20 @@ async function handle(
   request: NextRequest,
   params: { path: string[] }
 ): Promise<NextResponse> {
-  const token = await getToken();
+  // Prioritas 1: token admin yang dikirim dari pubClient via x-store-token header
+  // Ini diisi secara otomatis dari localStorage saat owner membuka web order di browser
+  // yang sama dengan admin dashboard — token menentukan store mana yang tampil.
+  const clientToken = request.headers.get("x-store-token");
+
+  // Prioritas 2: fallback ke env credentials (STORE_TOKEN / STORE_PHONE+STORE_PASSWORD)
+  const token = clientToken ?? (await getToken());
 
   if (!token) {
     return NextResponse.json(
       {
         status: "error",
         message:
-          "Web order belum dikonfigurasi. Tambahkan STORE_PHONE dan STORE_PASSWORD di file .env.",
+          "Web order belum dikonfigurasi. Login ke admin dashboard terlebih dahulu, atau tambahkan STORE_TOKEN di file .env.",
       },
       { status: 503 }
     );
@@ -130,7 +137,8 @@ async function handle(
     Authorization: `Bearer ${token}`,
   };
 
-  console.log(`[pub-proxy] ${method} ${endpoint}`, body ? `body: ${body}` : "");
+  const tokenSource = clientToken ? "client (admin session)" : "env credentials";
+  console.log(`[pub-proxy] ${method} ${endpoint} [auth: ${tokenSource}]`, body ? `body: ${body}` : "");
 
   const beRes = await fetch(beUrl.toString(), { method, headers, body });
   // Helper: parse JSON safely, fallback ke text
@@ -147,8 +155,15 @@ async function handle(
   const beJson = await parseResponse(beRes);
   console.log(`[pub-proxy] BE responded: ${beRes.status}`, beRes.status >= 400 ? JSON.stringify(beJson).slice(0, 500) : "");
 
-  // Jika token expired/invalid → clear cache, retry sekali
+  // Jika token expired/invalid → clear cache env, retry sekali
+  // Jika pakai clientToken (admin session), token-nya expired — langsung 401 ke client
+  // agar browser bisa redirect ke halaman login.
   if (beRes.status === 401 || beRes.status === 403) {
+    if (clientToken) {
+      // Token admin sudah expired — tidak bisa retry, kembalikan 401 ke browser
+      return NextResponse.json({ status: "error", message: "Sesi admin sudah berakhir. Silakan login ulang." }, { status: 401 });
+    }
+
     cachedToken = null;
     tokenExpiresAt = 0;
     const newToken = await fetchToken();
