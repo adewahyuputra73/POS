@@ -110,6 +110,7 @@ export interface CreateProductRequest {
   stock_qty?: number;
   stock_limit?: number;
   description?: string;
+  product_type?: ProductType;   // ✅ CONFIRMED di cURL: form field wajib (UNIT | WEIGHT)
 }
 
 export interface UpdateProductRequest {
@@ -123,6 +124,7 @@ export interface UpdateProductRequest {
   stock_qty?: number;
   stock_limit?: number;
   description?: string;
+  product_type?: ProductType;   // ✅ CONFIRMED di cURL: PUT /products/{id} JSON body
 }
 
 // "ADD" = tambah stok masuk, "REDUCE" = kurangi stok (pemakaian/koreksi)

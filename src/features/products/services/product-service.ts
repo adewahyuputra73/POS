@@ -96,6 +96,7 @@ export const productService = {
     if (data.stock_qty !== undefined) fd.append("stock_qty", String(data.stock_qty));
     if (data.stock_limit !== undefined) fd.append("stock_limit", String(data.stock_limit));
     if (data.description) fd.append("description", data.description);
+    if (data.product_type) fd.append("product_type", data.product_type);
     if (imageFile) fd.append("image", imageFile);
     const response = await apiClient.post<ApiResponse<any>>(
       ENDPOINTS.PRODUCTS.CREATE,
