@@ -29,6 +29,7 @@ export default function ShiftPage() {
   const [submittingOpen, setSubmittingOpen] = useState(false);
   const [openError, setOpenError] = useState("");
 
+  const [closingCash, setClosingCash] = useState("");
   const [cashDeposited, setCashDeposited] = useState("");
   const [note, setNote] = useState("");
   const [submittingClose, setSubmittingClose] = useState(false);
@@ -87,16 +88,18 @@ export default function ShiftPage() {
 
   const handleCloseShift = async (e: React.FormEvent) => {
     e.preventDefault();
+    const closing = parseFloat(closingCash);
     const deposited = parseFloat(cashDeposited);
+    if (isNaN(closing) || closing < 0) { setCloseError("Masukkan jumlah kas akhir aktual yang valid"); return; }
     if (isNaN(deposited) || deposited < 0) { setCloseError("Masukkan jumlah kas disetor yang valid"); return; }
     setSubmittingClose(true);
     setCloseError("");
     try {
-      const payload: EndShiftRequest = { cash_deposited: deposited };
+      const payload: EndShiftRequest = { closing_cash: closing, cash_deposited: deposited };
       if (note.trim()) payload.note = note.trim();
       await shiftService.end(payload);
       setSuccessMsg("Shift berhasil ditutup!");
-      setCashDeposited(""); setNote("");
+      setClosingCash(""); setCashDeposited(""); setNote("");
       await fetchStatus();
       await fetchHistory();
       setTimeout(() => setSuccessMsg(""), 3000);
@@ -179,12 +182,29 @@ export default function ShiftPage() {
                 )}
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1.5">
+                    Kas Akhir Aktual (Rp) <span className="text-red-500">*</span>
+                  </label>
+                  <input type="number" min="0" value={closingCash} onChange={(e) => setClosingCash(e.target.value)}
+                    placeholder="0" required
+                    className="w-full h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary transition-colors" />
+                  <p className="text-xs text-text-disabled mt-1">Jumlah uang fisik yang ada di laci kasir sekarang</p>
+                  {/* Indikator selisih live */}
+                  {closingCash !== "" && shift.expected_cash && (() => {
+                    const diff = parseFloat(closingCash) - Number(shift.expected_cash);
+                    if (isNaN(diff)) return null;
+                    const color = diff === 0 ? "text-emerald-600" : diff > 0 ? "text-amber-600" : "text-red-500";
+                    const label = diff === 0 ? "Pas ✓" : diff > 0 ? `Lebih ${formatCurrency(diff)}` : `Kurang ${formatCurrency(Math.abs(diff))}`;
+                    return <p className={`text-xs font-semibold mt-1 ${color}`}>{label}</p>;
+                  })()}
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1.5">
                     Kas Disetor (Rp) <span className="text-red-500">*</span>
                   </label>
                   <input type="number" min="0" value={cashDeposited} onChange={(e) => setCashDeposited(e.target.value)}
                     placeholder="0" required
                     className="w-full h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary transition-colors" />
-                  <p className="text-xs text-text-disabled mt-1">Masukkan jumlah uang tunai yang disetor ke kasir utama</p>
+                  <p className="text-xs text-text-disabled mt-1">Jumlah yang disetor ke kasir utama / brankas</p>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1.5">Catatan (opsional)</label>

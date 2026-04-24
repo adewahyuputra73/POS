@@ -122,7 +122,11 @@ export interface UpdateProductRequest {
   description?: string;
 }
 
+// "ADD" = tambah stok masuk, "REDUCE" = kurangi stok (pemakaian/koreksi)
+export type StockMovementType = "ADD" | "REDUCE";
+
 export interface UpdateStockRequest {
+  type: StockMovementType;
   qty: number;
   note?: string;
 }

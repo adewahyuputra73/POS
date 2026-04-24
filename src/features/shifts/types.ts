@@ -64,7 +64,8 @@ export interface StartShiftRequest {
 }
 
 export interface EndShiftRequest {
-  cash_deposited: number;
+  closing_cash: number;   // Kas fisik aktual di laci saat tutup shift
+  cash_deposited: number; // Jumlah yang disetor ke kasir utama
   note?: string;
 }
 
