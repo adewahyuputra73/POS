@@ -83,8 +83,7 @@ export const ENDPOINTS = {
   // Stores
   STORES: {
     ONBOARDING: "/stores/onboarding",
-    MY: "/stores/my",
-    UPDATE: (id: string | number) => `/stores/${id}`,
+    MY: "/stores/my",       // GET & PUT /stores/my (confirmed dari cURL BE)
     FEES: "/stores/my/fees",
     CREATE: "/stores/create",
   },
