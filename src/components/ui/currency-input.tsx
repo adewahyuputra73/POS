@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { useRef } from "react";
 
 /**
- * Input harga dalam Rupiah.
- * - Menampilkan titik ribuan otomatis: 50000 → "50.000"
- * - Saat fokus dan nilai 0 → field kosong, langsung bisa ketik
- * - Menggunakan inputMode="numeric" (bukan type="number") agar
- *   tidak ada arrow spin & tidak ada masalah "0" di depan
+ * Input harga Rupiah dengan format titik ribuan real-time.
+ * - Ketik 15000 → langsung tampil "15.000" saat mengetik
+ * - Nilai 0 → field kosong (placeholder tampil), langsung bisa ketik
+ * - Cursor dipertahankan di posisi yang benar setelah titik disisipkan
+ * - Pakai inputMode="numeric" — keyboard angka di mobile, tanpa arrow spin
  */
 
 interface CurrencyInputProps
@@ -17,15 +16,9 @@ interface CurrencyInputProps
   onChange: (value: number) => void;
 }
 
-/** Tambahkan titik setiap 3 digit — tidak bergantung locale browser */
-function toDisplay(num: number): string {
+function addDots(num: number): string {
   if (!num || num === 0) return "";
-  return String(Math.round(num)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-function fromDisplay(str: string): number {
-  const digits = str.replace(/\./g, "").replace(/[^0-9]/g, "");
-  return digits === "" ? 0 : parseInt(digits, 10);
+  return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function CurrencyInput({
@@ -36,48 +29,62 @@ export function CurrencyInput({
   disabled,
   ...rest
 }: CurrencyInputProps) {
-  const [focused, setFocused] = useState(false);
-  const [display, setDisplay] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFocus = () => {
-    // Saat fokus: tampilkan angka tanpa titik agar mudah diedit,
-    // tapi jika 0 biarkan kosong sehingga langsung bisa ketik
-    setDisplay(value === 0 ? "" : String(value));
-    setFocused(true);
-  };
-
-  const handleBlur = () => {
-    setFocused(false);
-    const num = fromDisplay(display);
-    onChange(num);
-    setDisplay("");
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    // Hapus semua karakter non-digit
-    const digits = raw.replace(/[^0-9]/g, "");
-    // Simpan sebagai angka murni tanpa leading zero
-    const num = digits === "" ? 0 : parseInt(digits, 10);
-    setDisplay(digits === "" ? "" : String(num));
-    onChange(num);
-  };
+    const input = e.target;
+    const rawValue = input.value;           // apa yang ada di input sekarang (belum diformat ulang)
+    const cursorPos = input.selectionStart ?? rawValue.length;
 
-  // Nilai yang ditampilkan:
-  // - Saat fokus: angka murni (tanpa titik) supaya cursor tidak loncat
-  // - Saat blur: format dengan titik ribuan
-  const shownValue = focused ? display : toDisplay(value);
+    // Hitung berapa digit yang ada SEBELUM cursor di nilai yang baru diketik
+    const digitsBeforeCursor = rawValue
+      .slice(0, cursorPos)
+      .replace(/[^0-9]/g, "").length;
+
+    // Ambil hanya digit
+    const digits = rawValue.replace(/[^0-9]/g, "");
+    const num = digits === "" ? 0 : parseInt(digits, 10);
+
+    // Format dengan titik
+    const formatted = addDots(num);
+
+    // Update state di parent
+    onChange(num);
+
+    // Setelah React re-render (karena value berubah), kembalikan cursor ke posisi yang tepat
+    requestAnimationFrame(() => {
+      if (!inputRef.current) return;
+
+      if (digitsBeforeCursor === 0) {
+        inputRef.current.setSelectionRange(0, 0);
+        return;
+      }
+
+      // Cari posisi setelah digit ke-N di string yang sudah terformat
+      let digitsSeen = 0;
+      let newPos = formatted.length; // default: ujung string
+
+      for (let i = 0; i < formatted.length; i++) {
+        if (/[0-9]/.test(formatted[i])) {
+          digitsSeen++;
+          if (digitsSeen === digitsBeforeCursor) {
+            newPos = i + 1;
+            break;
+          }
+        }
+      }
+
+      inputRef.current.setSelectionRange(newPos, newPos);
+    });
+  };
 
   return (
     <input
       ref={inputRef}
       type="text"
       inputMode="numeric"
-      value={shownValue}
+      value={addDots(value)}
       onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
       placeholder={placeholder}
       disabled={disabled}
       className={className}
