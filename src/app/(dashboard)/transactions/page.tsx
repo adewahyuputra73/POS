@@ -30,7 +30,9 @@ import {
   CalendarDays,
   Trash2,
   Plus,
+  CreditCard,
 } from "lucide-react";
+import type { PaymentMethod } from "@/features/orders/types";
 
 function mapStatus(raw: any): OrderStatus {
   const pay = (raw.payment_status ?? raw.status ?? "").toUpperCase();
@@ -128,6 +130,12 @@ export default function TransactionsPage() {
   // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<Order | null>(null);
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
+
+  // Pay confirmation
+  const [payTarget, setPayTarget] = useState<Order | null>(null);
+  const [payMethod, setPayMethod] = useState<PaymentMethod>("CASH");
+  const [paidAmount, setPaidAmount] = useState<number>(0);
+  const [isPaying, setIsPaying] = useState(false);
 
   // Change date modal
   const [changeDateTarget, setChangeDateTarget] = useState<boolean>(false);
@@ -258,6 +266,36 @@ export default function TransactionsPage() {
     }
   };
 
+  const handleOpenPay = (order: Order) => {
+    setPayTarget(order);
+    setPayMethod("CASH");
+    setPaidAmount(order.totalPrice);
+  };
+
+  const confirmPay = async () => {
+    if (!payTarget) return;
+    setIsPaying(true);
+    try {
+      await orderService.pay(payTarget.id, {
+        payment_method: payMethod,
+        paid_amount: paidAmount,
+      });
+      showToast(`Pembayaran ${payTarget.orderNumber} berhasil dikonfirmasi`, "success");
+      const result = await orderService.list({ limit: 100 });
+      const mapped = result.data.map(mapApiOrder);
+      setOrders(mapped);
+      setSelectedOrder((prev) => {
+        if (!prev || String(prev.id) !== String(payTarget.id)) return prev;
+        return mapped.find((o) => String(o.id) === String(payTarget.id)) ?? prev;
+      });
+    } catch {
+      showToast("Gagal mengkonfirmasi pembayaran", "error");
+    } finally {
+      setIsPaying(false);
+      setPayTarget(null);
+    }
+  };
+
   const handleChangeDate = () => {
     const selected = orders.filter((o) => selectedIds.includes(String(o.id)));
     const invalid = selected.filter((o) => o.status !== "completed");
@@ -293,7 +331,7 @@ export default function TransactionsPage() {
             { label: selectedOrder.orderNumber },
           ]}
         />
-        <TransactionDetail order={selectedOrder} onBack={handleBackToList} onUpdateStatus={handleUpdateStatus} />
+        <TransactionDetail order={selectedOrder} onBack={handleBackToList} onUpdateStatus={handleUpdateStatus} onPay={handleOpenPay} />
       </div>
     );
   }
@@ -473,6 +511,7 @@ export default function TransactionsPage() {
         onViewDetail={handleViewDetail}
         onDelete={handleDelete}
         onUpdateStatus={handleUpdateStatus}
+        onPay={handleOpenPay}
       />
 
       {/* Delete Confirmation Modal */}
@@ -532,6 +571,98 @@ export default function TransactionsPage() {
                 </Button>
                 <Button variant="destructive" onClick={confirmBulkDelete}>
                   Hapus {selectedIds.length} Pesanan
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Pay Confirmation Modal */}
+      {payTarget && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            onClick={() => !isPaying && setPayTarget(null)}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-10 w-10 rounded-xl bg-success/10 flex items-center justify-center">
+                  <CreditCard className="h-5 w-5 text-success" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-text-primary">Konfirmasi Pembayaran</h3>
+                  <p className="text-xs text-text-secondary">{payTarget.orderNumber} · {formatCurrency(payTarget.totalPrice)}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* Metode Bayar */}
+                <div>
+                  <label className="block text-sm font-medium text-text-primary mb-2">Metode Pembayaran</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(["CASH", "QRIS", "TRANSFER"] as PaymentMethod[]).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setPayMethod(m)}
+                        className={`py-2.5 rounded-lg text-sm font-bold border-2 transition-all ${
+                          payMethod === m
+                            ? "border-primary bg-primary/5 text-primary"
+                            : "border-border text-text-secondary hover:border-primary/40"
+                        }`}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Jumlah Bayar */}
+                <div>
+                  <label className="block text-sm font-medium text-text-primary mb-1.5">Jumlah Dibayar</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-text-secondary">Rp</span>
+                    <input
+                      type="number"
+                      value={paidAmount}
+                      onChange={(e) => setPaidAmount(Number(e.target.value))}
+                      className="w-full pl-9 pr-4 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-medium"
+                      min={0}
+                    />
+                  </div>
+                </div>
+
+                {/* Kembalian */}
+                {payMethod === "CASH" && (
+                  <div className={`rounded-xl px-4 py-3 flex items-center justify-between ${
+                    paidAmount >= payTarget.totalPrice ? "bg-success/10" : "bg-error/10"
+                  }`}>
+                    <span className="text-sm font-medium text-text-secondary">Kembalian</span>
+                    <span className={`text-base font-bold ${
+                      paidAmount >= payTarget.totalPrice ? "text-success" : "text-error"
+                    }`}>
+                      {paidAmount >= payTarget.totalPrice
+                        ? formatCurrency(paidAmount - payTarget.totalPrice)
+                        : `- ${formatCurrency(payTarget.totalPrice - paidAmount)}`}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-end gap-3 mt-6">
+                <Button variant="outline" onClick={() => setPayTarget(null)} disabled={isPaying}>
+                  Batal
+                </Button>
+                <Button
+                  onClick={confirmPay}
+                  isLoading={isPaying}
+                  disabled={paidAmount <= 0}
+                  className="gap-2"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  Konfirmasi Bayar
                 </Button>
               </div>
             </div>

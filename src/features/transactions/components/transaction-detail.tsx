@@ -30,6 +30,7 @@ interface TransactionDetailProps {
   order: Order;
   onBack: () => void;
   onUpdateStatus?: (orderId: string | number, status: string) => Promise<void>;
+  onPay?: (order: Order) => void;
 }
 
 const STATUS_FLOW = [
@@ -45,7 +46,7 @@ const STATUS_NEXT_ACTION: Record<string, { label: string; next: string; variant:
   DELIVERED:  { label: "Tandai Selesai", next: "COMPLETED", variant: "default" },
 };
 
-export function TransactionDetail({ order, onBack, onUpdateStatus }: TransactionDetailProps) {
+export function TransactionDetail({ order, onBack, onUpdateStatus, onPay }: TransactionDetailProps) {
   const [isUpdating, setIsUpdating] = useState(false);
   const totalQty = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -283,6 +284,30 @@ export function TransactionDetail({ order, onBack, onUpdateStatus }: Transaction
 
         {/* Right Column - Info Cards */}
         <div className="space-y-6">
+          {/* Konfirmasi Pembayaran — hanya tampil jika belum bayar */}
+          {order.status === "unpaid" && onPay && (
+            <div className="bg-success/5 rounded-xl border border-success/20 p-5">
+              <h3 className="text-sm font-bold text-text-primary flex items-center gap-2 mb-3">
+                <CreditCard className="h-4 w-4 text-success" />
+                Menunggu Pembayaran
+              </h3>
+              <p className="text-xs text-text-secondary mb-4">
+                Pesanan ini belum dibayar. Konfirmasi setelah customer melakukan pembayaran.
+              </p>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-text-secondary">Total Tagihan</span>
+                <span className="text-lg font-bold text-text-primary">{formatCurrency(order.totalPrice)}</span>
+              </div>
+              <Button
+                onClick={() => onPay(order)}
+                className="w-full gap-2"
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                Konfirmasi Pembayaran
+              </Button>
+            </div>
+          )}
+
           {/* Customer Info */}
           <div className="bg-surface rounded-xl border border-border p-5">
             <h3 className="text-sm font-bold text-text-primary flex items-center gap-2 mb-4">

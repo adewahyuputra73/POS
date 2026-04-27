@@ -27,6 +27,7 @@ import {
   ChevronRight,
   ShoppingCart,
   ArrowRight,
+  CreditCard,
 } from "lucide-react";
 
 interface TransactionTableProps {
@@ -37,6 +38,7 @@ interface TransactionTableProps {
   onViewDetail: (order: Order) => void;
   onDelete: (order: Order) => void;
   onUpdateStatus?: (orderId: string | number, status: string) => Promise<void>;
+  onPay?: (order: Order) => void;
 }
 
 const STATUS_NEXT: Record<string, { label: string; value: string; colorClass: string }> = {
@@ -55,6 +57,7 @@ export function TransactionTable({
   onViewDetail,
   onDelete,
   onUpdateStatus,
+  onPay,
 }: TransactionTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [updatingId, setUpdatingId] = useState<string | number | null>(null);
@@ -210,6 +213,17 @@ export function TransactionTable({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
+                      {/* Tombol Bayar — hanya untuk order belum bayar */}
+                      {order.status === "unpaid" && onPay && (
+                        <button
+                          onClick={() => onPay(order)}
+                          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold text-success bg-success/10 hover:bg-success/20 rounded-lg transition-colors"
+                          title="Konfirmasi Pembayaran"
+                        >
+                          <CreditCard className="h-3.5 w-3.5" />
+                          Bayar
+                        </button>
+                      )}
                       <button
                         onClick={() => onViewDetail(order)}
                         className="p-2 text-text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
