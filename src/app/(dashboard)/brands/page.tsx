@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout";
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/ui";
+import { LocationPicker, type PickedLocation } from "@/components/ui/location-picker";
 import {
-  Plus, Store, MapPin, User, Loader2, X, ChevronDown,
+  Plus, Store, MapPin, User, Loader2, X, ChevronDown, Map, Trash2,
 } from "lucide-react";
 import { storeSettingsService } from "@/features/store-settings/services/store-settings-service";
 import { staffService } from "@/features/staff/services/staff-service";
@@ -25,6 +26,7 @@ function CreateBrandModal({ isOpen, onClose, onSuccess }: CreateBrandModalProps)
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
   const [loadingStaff, setLoadingStaff] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMapPicker, setShowMapPicker] = useState(false);
 
   const [form, setForm] = useState<CreateStoreRequest>({
     ownerId: "",
@@ -46,7 +48,19 @@ function CreateBrandModal({ isOpen, onClose, onSuccess }: CreateBrandModalProps)
 
   const handleClose = () => {
     setForm({ ownerId: "", name: "", address: "", latitude: null, longitude: null });
+    setShowMapPicker(false);
     onClose();
+  };
+
+  const handleLocationPicked = (loc: PickedLocation) => {
+    setForm((f) => ({
+      ...f,
+      latitude: loc.lat,
+      longitude: loc.lng,
+      // Auto-fill address jika masih kosong
+      address: f.address.trim() ? f.address : (loc.address ?? f.address),
+    }));
+    setShowMapPicker(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,6 +82,15 @@ function CreateBrandModal({ isOpen, onClose, onSuccess }: CreateBrandModalProps)
   if (!isOpen) return null;
 
   return (
+    <>
+    {showMapPicker && (
+      <LocationPicker
+        initialLat={form.latitude}
+        initialLng={form.longitude}
+        onConfirm={handleLocationPicked}
+        onClose={() => setShowMapPicker(false)}
+      />
+    )}
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleClose} />
       <div
@@ -173,40 +196,64 @@ function CreateBrandModal({ isOpen, onClose, onSuccess }: CreateBrandModalProps)
             />
           </div>
 
-          {/* Koordinat */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-black uppercase tracking-wider mb-1.5" style={{ color: "#9C7D58" }}>
-                Latitude
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={form.latitude ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, latitude: e.target.value ? parseFloat(e.target.value) : null }))}
-                placeholder="-6.200000"
-                className="w-full h-11 px-4 rounded-xl border text-sm font-medium outline-none transition-colors"
-                style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.18)", color: "#1C0A00" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "#F59E0B")}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(124,74,30,0.18)")}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-black uppercase tracking-wider mb-1.5" style={{ color: "#9C7D58" }}>
-                Longitude
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={form.longitude ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, longitude: e.target.value ? parseFloat(e.target.value) : null }))}
-                placeholder="106.816666"
-                className="w-full h-11 px-4 rounded-xl border text-sm font-medium outline-none transition-colors"
-                style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.18)", color: "#1C0A00" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "#F59E0B")}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(124,74,30,0.18)")}
-              />
-            </div>
+          {/* Koordinat — pilih dari peta */}
+          <div>
+            <label className="block text-xs font-black uppercase tracking-wider mb-1.5" style={{ color: "#9C7D58" }}>
+              Lokasi (Opsional)
+            </label>
+
+            {form.latitude != null && form.longitude != null ? (
+              /* Sudah ada koordinat — tampilkan info + tombol ganti/hapus */
+              <div
+                className="flex items-center gap-3 p-3 rounded-xl border"
+                style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.18)" }}
+              >
+                <div
+                  className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "#FEF3C7" }}
+                >
+                  <MapPin className="h-4 w-4" style={{ color: "#D97706" }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-black tabular-nums" style={{ color: "#D97706" }}>
+                    {form.latitude.toFixed(6)}, {form.longitude.toFixed(6)}
+                  </p>
+                  <p className="text-xs mt-0.5 truncate" style={{ color: "#9C7D58" }}>
+                    Lokasi sudah dipilih
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setShowMapPicker(true)}
+                    className="h-8 px-3 rounded-lg text-xs font-bold border transition-colors hover:bg-amber-50"
+                    style={{ borderColor: "rgba(124,74,30,0.18)", color: "#1C0A00" }}
+                  >
+                    Ganti
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, latitude: null, longitude: null }))}
+                    className="h-8 w-8 rounded-lg flex items-center justify-center transition-colors hover:bg-red-50"
+                    style={{ color: "#DC2626" }}
+                    title="Hapus lokasi"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Belum ada — tampilkan tombol pick */
+              <button
+                type="button"
+                onClick={() => setShowMapPicker(true)}
+                className="w-full h-11 rounded-xl border-2 border-dashed flex items-center justify-center gap-2 text-sm font-bold transition-colors hover:bg-amber-50"
+                style={{ borderColor: "rgba(124,74,30,0.25)", color: "#9C7D58" }}
+              >
+                <Map className="h-4 w-4" />
+                Pilih dari Peta
+              </button>
+            )}
           </div>
 
           {/* Actions */}
@@ -235,6 +282,7 @@ function CreateBrandModal({ isOpen, onClose, onSuccess }: CreateBrandModalProps)
         </form>
       </div>
     </div>
+    </>
   );
 }
 

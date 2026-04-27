@@ -12,3 +12,4 @@ export { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter, TableCaption } from "./table";
 export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./select";
 export { CurrencyInput } from "./currency-input";
+export { LocationPicker, type PickedLocation } from "./location-picker";
