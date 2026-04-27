@@ -8,9 +8,11 @@ import { CommandPalette } from "./command-palette";
 import { cn } from "@/lib/utils";
 import { notificationService } from "@/features/notifications/services/notification-service";
 import type { Notification } from "@/features/notifications/types";
+import { useDesktopNotifications } from "@/hooks/use-desktop-notifications";
 import {
   Menu,
   Bell,
+  BellRing,
   ChevronDown,
   LogOut,
   User,
@@ -34,7 +36,14 @@ function timeAgo(iso: string) {
   return `${d} hari lalu`;
 }
 
-function NotificationPanel({ onClose }: { onClose: () => void }) {
+interface NotificationPanelProps {
+  onClose: () => void;
+  permission: NotificationPermission;
+  isSupported: boolean;
+  onRequestPermission: () => Promise<void>;
+}
+
+function NotificationPanel({ onClose, permission, isSupported, onRequestPermission }: NotificationPanelProps) {
   const router = useRouter();
   const [items, setItems] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -116,6 +125,30 @@ function NotificationPanel({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
+      {/* Banner aktifkan notifikasi desktop */}
+      {isSupported && permission === "default" && (
+        <div className="px-5 py-3 bg-primary/5 border-b border-primary/10 flex items-center gap-3">
+          <BellRing className="h-4 w-4 text-primary shrink-0" />
+          <p className="text-xs text-text-secondary flex-1">
+            Aktifkan notifikasi desktop agar tidak ketinggalan pesanan baru
+          </p>
+          <button
+            onClick={onRequestPermission}
+            className="text-xs font-semibold text-primary hover:text-primary-dark whitespace-nowrap"
+          >
+            Aktifkan
+          </button>
+        </div>
+      )}
+      {isSupported && permission === "denied" && (
+        <div className="px-5 py-3 bg-warning/5 border-b border-warning/10 flex items-center gap-3">
+          <Bell className="h-4 w-4 text-warning shrink-0" />
+          <p className="text-xs text-text-secondary flex-1">
+            Notifikasi diblokir. Aktifkan di pengaturan browser untuk menerima notifikasi.
+          </p>
+        </div>
+      )}
+
       {/* List */}
       <div className="max-h-[400px] overflow-y-auto divide-y divide-divider">
         {loading ? (
@@ -165,17 +198,17 @@ export function Header() {
   const { setSidebarMobileOpen, sidebarCollapsed, theme, setTheme } = useUIStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
-  // Fetch unread count on mount
-  useEffect(() => {
-    notificationService.list({ limit: 1 }).then((res) => {
-      setUnreadCount(res.unread_count ?? 0);
-    }).catch(() => {});
-  }, []);
+  // Hook notifikasi: polling 30 detik + desktop push notification
+  const {
+    unreadCount,
+    permission,
+    isSupported,
+    requestPermission,
+  } = useDesktopNotifications();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -240,7 +273,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => { setNotifOpen((o) => !o); if (!notifOpen) setUnreadCount(0); }}
+              onClick={() => setNotifOpen((o) => !o)}
               className="relative group rounded-xl hover:bg-background"
             >
               <Bell className="h-5 w-5 text-text-secondary group-hover:text-primary transition-colors" />
@@ -251,7 +284,12 @@ export function Header() {
               )}
             </Button>
             {notifOpen && (
-              <NotificationPanel onClose={() => setNotifOpen(false)} />
+              <NotificationPanel
+                onClose={() => setNotifOpen(false)}
+                permission={permission}
+                isSupported={isSupported}
+                onRequestPermission={requestPermission}
+              />
             )}
           </div>
 
