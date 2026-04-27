@@ -80,8 +80,8 @@ export const authService = {
   /**
    * Forgot password - verify OTP
    */
-  async forgotPasswordVerifyOtp(data: VerifyOtpRequest): Promise<{ message: string }> {
-    const response = await apiClient.post<ApiResponse<{ message: string }>>(
+  async forgotPasswordVerifyOtp(data: VerifyOtpRequest): Promise<{ message: string; reset_token?: string }> {
+    const response = await apiClient.post<ApiResponse<{ message: string; reset_token?: string }>>(
       ENDPOINTS.AUTH.FORGOT_PASSWORD_VERIFY_OTP,
       data
     );

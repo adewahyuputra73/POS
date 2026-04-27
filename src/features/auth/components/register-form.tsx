@@ -89,9 +89,32 @@ export function RegisterForm() {
       setOtpDigits(["", "", "", "", "", ""]);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? err?.message ?? "";
-      if (msg.toLowerCase().includes("sudah") || msg.toLowerCase().includes("registered") || msg.toLowerCase().includes("exist")) {
+      // Coba berbagai struktur error dari BE
+      const data = err?.response?.data;
+      const status = err?.response?.status;
+      const msg: string =
+        data?.message ??
+        data?.error ??
+        (Array.isArray(data?.errors) ? data.errors[0]?.message ?? data.errors[0] : null) ??
+        err?.message ??
+        "";
+
+      const msgLower = msg.toLowerCase();
+
+      if (
+        msgLower.includes("sudah") ||
+        msgLower.includes("registered") ||
+        msgLower.includes("exist") ||
+        msgLower.includes("taken") ||
+        status === 409
+      ) {
         setErrors((prev) => ({ ...prev, phoneNumber: "Nomor HP sudah terdaftar" }));
+      } else if (status === 422 || msgLower.includes("validation") || msgLower.includes("invalid")) {
+        setErrorMessage(msg || "Data tidak valid. Periksa kembali isian Anda.");
+      } else if (status === 400) {
+        setErrorMessage(msg || "Data yang dimasukkan tidak lengkap atau tidak sesuai.");
+      } else if (status === 500 || status === 503) {
+        setErrorMessage("Server sedang bermasalah. Coba beberapa saat lagi.");
       } else {
         setErrorMessage(msg || "Pendaftaran gagal. Silakan coba lagi.");
       }
