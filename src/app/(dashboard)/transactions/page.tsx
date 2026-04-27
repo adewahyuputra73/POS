@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/components/layout";
 import { Button, useToast, CurrencyInput } from "@/components/ui";
 import { TransactionTable } from "@/features/transactions/components/transaction-table";
@@ -101,6 +102,8 @@ function mapApiOrder(raw: any): Order {
 
 export default function TransactionsPage() {
   const { showToast } = useToast();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Data state
   const [orders, setOrders] = useState<Order[]>([]);
@@ -156,6 +159,20 @@ export default function TransactionsPage() {
   }, [showToast]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Auto-buka detail order dari URL param ?orderId=<id>
+  // (dipakai saat user klik notifikasi desktop)
+  useEffect(() => {
+    const targetId = searchParams.get("orderId");
+    if (!targetId || orders.length === 0) return;
+    const target = orders.find((o) => String(o.id) === String(targetId));
+    if (target) {
+      setSelectedOrder(target);
+      setView("detail");
+      // Bersihkan query param dari URL agar tidak re-trigger saat fetchData ulang
+      router.replace("/transactions", { scroll: false });
+    }
+  }, [searchParams, orders, router]);
 
   const handleUpdateStatus = useCallback(async (orderId: string | number, newStatus: string) => {
     try {

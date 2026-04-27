@@ -84,10 +84,23 @@ export function useDesktopNotifications() {
           tag: `fere-pos-${n.id}`,
         });
 
-        // Klik notifikasi → fokus ke tab POS
+        // Klik notifikasi → fokus tab POS + buka detail order jika ada order_id
         notif.onclick = () => {
           window.focus();
           notif.close();
+          const orderId = n.data?.order_id;
+          const type = (n.type ?? "").toLowerCase();
+          const isOrderNotif =
+            orderId ||
+            type.includes("order") ||
+            type.includes("payment") ||
+            type.includes("transaksi");
+          if (isOrderNotif) {
+            const path = orderId
+              ? `/transactions?orderId=${orderId}`
+              : "/transactions";
+            window.location.href = path;
+          }
         };
       });
 
