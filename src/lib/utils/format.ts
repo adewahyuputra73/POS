@@ -1,23 +1,24 @@
 import { format, formatDistanceToNow, parseISO } from "date-fns";
 import { id as localeID } from "date-fns/locale";
 
-/**
- * Format currency to Indonesian Rupiah
- */
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+/** Tambahkan titik setiap 3 digit tanpa bergantung locale browser */
+function addDots(num: number): string {
+  return String(Math.round(num)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 /**
- * Format number with thousand separator
+ * Format currency to Indonesian Rupiah — "Rp 50.000"
+ * Menggunakan regex manual agar konsisten di semua browser & Node.js
+ */
+export function formatCurrency(amount: number): string {
+  return `Rp ${addDots(amount ?? 0)}`;
+}
+
+/**
+ * Format number with thousand separator — "1.250.000"
  */
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat("id-ID").format(num);
+  return addDots(num ?? 0);
 }
 
 /**

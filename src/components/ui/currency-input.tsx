@@ -17,9 +17,10 @@ interface CurrencyInputProps
   onChange: (value: number) => void;
 }
 
+/** Tambahkan titik setiap 3 digit — tidak bergantung locale browser */
 function toDisplay(num: number): string {
   if (!num || num === 0) return "";
-  return num.toLocaleString("id-ID"); // 50000 → "50.000"
+  return String(Math.round(num)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function fromDisplay(str: string): number {
