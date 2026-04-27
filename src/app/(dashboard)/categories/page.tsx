@@ -105,13 +105,35 @@ export default function CategoriesPage() {
 
   const handleSubmit = async (data: CategoryFormData) => {
     try {
+      let categoryId: string;
       if (editingCategory) {
         await categoryService.update(editingCategory.id, { name: data.name });
+        categoryId = editingCategory.id;
         showToast(`Kategori "${data.name}" berhasil diubah`, "success");
       } else {
-        await categoryService.create({ name: data.name });
+        const created = await categoryService.create({ name: data.name });
+        categoryId = created.id;
         showToast(`Kategori "${data.name}" berhasil ditambahkan`, "success");
       }
+
+      // Assign selected products to this category via PUT /products/{id}
+      if (data.productIds.length > 0) {
+        const results = await Promise.allSettled(
+          data.productIds.map((pid) =>
+            productService.update(pid, { category_id: categoryId })
+          )
+        );
+        const failed = results.filter((r) => r.status === "rejected").length;
+        if (failed > 0) {
+          showToast(
+            `${data.productIds.length - failed} produk dipindahkan ke kategori. ${failed} gagal.`,
+            "warning"
+          );
+        } else if (data.productIds.length > 0) {
+          showToast(`${data.productIds.length} produk berhasil dipindahkan ke kategori`, "success");
+        }
+      }
+
       await fetchData();
       handleCloseModal();
     } catch {
@@ -120,12 +142,25 @@ export default function CategoriesPage() {
   };
 
   const handleToggleStatus = async (categoryId: string, is_active: boolean) => {
-    // Optimistic update
+    // Optimistic update on UI
     setCategories(prev =>
       prev.map(c => c.id === categoryId ? { ...c, is_active } : c)
     );
     const category = categories.find(c => c.id === categoryId);
     showToast(`Kategori "${category?.name}" ${is_active ? "diaktifkan" : "dinonaktifkan"}`, "success");
+
+    // Cascade status to products in this category
+    // Find products whose categoryName matches this category
+    const affectedProducts = products.filter(
+      (p) => p.categoryName === category?.name && p.isActive !== is_active
+    );
+    if (affectedProducts.length > 0) {
+      await Promise.allSettled(
+        affectedProducts.map((p) => productService.toggleStatus(p.id))
+      );
+      // Refresh to sync product statuses
+      fetchData();
+    }
   };
 
   const handleDeleteConfirm = async () => {
