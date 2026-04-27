@@ -186,8 +186,8 @@ export default function ShiftPage() {
                     className="w-full h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary transition-colors" />
                   <p className="text-xs text-text-disabled mt-1">Jumlah uang fisik yang ada di laci kasir sekarang</p>
                   {/* Indikator selisih live */}
-                  {closingCash !== "" && shift.expected_cash && (() => {
-                    const diff = parseFloat(closingCash) - Number(shift.expected_cash);
+                  {closingCash > 0 && shift.expected_cash && (() => {
+                    const diff = closingCash - Number(shift.expected_cash);
                     if (isNaN(diff)) return null;
                     const color = diff === 0 ? "text-emerald-600" : diff > 0 ? "text-amber-600" : "text-red-500";
                     const label = diff === 0 ? "Pas ✓" : diff > 0 ? `Lebih ${formatCurrency(diff)}` : `Kurang ${formatCurrency(Math.abs(diff))}`;
