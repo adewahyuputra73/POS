@@ -4,16 +4,21 @@ import { useState } from "react";
 import { PageHeader } from "@/components/layout";
 import { Button, Badge, useToast } from "@/components/ui";
 import { DateRangePicker } from "@/features/reports/components/date-range-picker";
-import { 
-  Download, 
-  FileSpreadsheet, 
-  CheckCircle2, 
+import { reportService } from "@/features/reports/services/report-service";
+import {
+  Download,
+  FileSpreadsheet,
+  CheckCircle2,
   AlertCircle,
   ShoppingCart,
   Wallet,
   Package,
   Calendar,
 } from "lucide-react";
+
+function toDateStr(d: Date): string {
+  return d.toISOString().split("T")[0];
+}
 
 type ReportType = "order" | "balance" | "item" | "daily-product";
 
@@ -87,78 +92,48 @@ export default function DownloadReportPage() {
     setIsExporting(true);
     setExportSuccess(false);
 
+    const params = {
+      start_date: toDateStr(dateRange.startDate),
+      end_date: toDateStr(dateRange.endDate),
+    };
+
     try {
-      const { ExcelExportService } = await import("@/lib/excel-export");
-      const exportService = new ExcelExportService();
+      let blob: Blob;
+      let filename: string;
 
-      const period = `${dateRange.startDate?.toLocaleDateString("id-ID")} - ${dateRange.endDate?.toLocaleDateString("id-ID")}`;
-      
-      exportService.addMetadataSheet({
-        title: reportOptions.find(o => o.id === selectedType)?.title || "Laporan",
-        period: period,
-        generatedAt: new Date().toLocaleString("id-ID"),
-        generatedBy: "Admin",
-        outletName: "Semua Outlet",
-      });
-
-      // Generate dummy data based on type
-      let data: any[] = [];
-      let columns: any[] = [];
-
-      if (selectedType === "order") {
-        columns = [
-          { header: "No. Order", key: "orderNo", width: 15 },
-          { header: "Tanggal", key: "date", width: 15 },
-          { header: "Pelanggan", key: "customer", width: 20 },
-          { header: "Total", key: "total", width: 15, style: { numFmt: '#,##0' } },
-        ];
-        data = Array.from({ length: 10 }).map((_, i) => ({
-          orderNo: `ORD-2026-${1000 + i}`,
-          date: new Date().toLocaleDateString("id-ID"),
-          customer: "Guest",
-          total: (i + 1) * 50000
-        }));
-      } else if (selectedType === "item") {
-        columns = [
-          { header: "Nama Produk", key: "product", width: 30 },
-          { header: "Kategori", key: "category", width: 20 },
-          { header: "Qty", key: "qty", width: 10 },
-          { header: "Total", key: "total", width: 15, style: { numFmt: '#,##0' } },
-        ];
-        data = Array.from({ length: 10 }).map((_, i) => ({
-          product: `Produk ${i + 1}`,
-          category: i % 2 === 0 ? "Makanan" : "Minuman",
-          qty: i + 1,
-          total: (i + 1) * 25000
-        }));
-      } else {
-        // Generic fallback
-        columns = [
-          { header: "Keterangan", key: "desc", width: 40 },
-          { header: "Nilai", key: "value", width: 20 },
-        ];
-        data = [
-          { desc: "Contoh Data 1", value: 100 },
-          { desc: "Contoh Data 2", value: 200 },
-        ];
+      switch (selectedType) {
+        case "order":
+          blob = await reportService.ordersExport(params);
+          filename = `Laporan_Pesanan_${params.start_date}_${params.end_date}.xlsx`;
+          break;
+        case "balance":
+          blob = await reportService.summaryExport(params);
+          filename = `Laporan_Saldo_${params.start_date}_${params.end_date}.xlsx`;
+          break;
+        case "item":
+        case "daily-product":
+          blob = await reportService.productsExport(params);
+          filename = `Laporan_Produk_${params.start_date}_${params.end_date}.xlsx`;
+          break;
+        default:
+          blob = await reportService.summaryExport(params);
+          filename = `Laporan_${selectedType}_${params.start_date}_${params.end_date}.xlsx`;
       }
 
-      exportService.addDataSheet({
-        name: "Data",
-        columns,
-        data
-      });
-
-      await exportService.download(`Laporan_${selectedType}_${new Date().getTime()}`);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
 
       setExportSuccess(true);
-      showToast(`Laporan ${selectedType} berhasil diunduh`, "success");
+      showToast("Laporan berhasil diunduh", "success");
     } catch (error) {
       console.error("Export failed:", error);
-      setError("Gagal mengunduh laporan");
+      setError("Gagal mengunduh laporan. Pastikan koneksi internet stabil dan coba lagi.");
     } finally {
       setIsExporting(false);
-      // Reset success message after 3 seconds
       setTimeout(() => setExportSuccess(false), 3000);
     }
   };

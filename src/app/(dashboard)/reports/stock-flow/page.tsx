@@ -8,7 +8,7 @@ import { OutletSelector } from "@/features/reports/components/outlet-selector";
 import { ModeToggle } from "@/features/reports/components/mode-toggle";
 import { DataTable } from "@/features/reports/components/data-table";
 import { ExportButton } from "@/features/reports/components/export-button";
-import { TrendingUp, Package, ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { TrendingUp, Package, ArrowUp, ArrowDown, Minus, AlertTriangle } from "lucide-react";
 
 // Mock data for stock flow
 const mockStockFlowData = [
@@ -364,6 +364,15 @@ export default function StockFlowPage() {
           />
         }
       />
+
+      {/* Data dummy notice */}
+      <div className="flex items-start gap-3 p-4 bg-warning-light border border-warning/30 rounded-xl">
+        <AlertTriangle className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-semibold text-warning">Data Sementara</p>
+          <p className="text-xs text-warning/80 mt-0.5">Halaman ini menampilkan data contoh. Endpoint BE untuk Arus Stok belum tersedia — data akan diperbarui setelah API tersedia.</p>
+        </div>
+      </div>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 p-4 bg-surface rounded-xl border border-border">

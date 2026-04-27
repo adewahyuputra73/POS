@@ -108,17 +108,38 @@ export default function ProductSalesPage() {
   const handleExport = async () => {
     setIsExporting(true);
     try {
-      const blob = await reportService.productsExport({
-        start_date: toDateStr(dateRange.startDate),
-        end_date: toDateStr(dateRange.endDate),
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Penjualan_Produk_${Date.now()}.xlsx`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast("Laporan berhasil diekspor", "success");
+      // If category/search filters are active, export filtered data as CSV client-side
+      if (hasActiveFilters) {
+        const header = ["Nama Produk", "Kategori", "Item Terjual", "Total Penjualan (Rp)"];
+        const rows = filteredProducts.map((p) => [
+          `"${p.name.replace(/"/g, '""')}"`,
+          `"${(p.category ?? "").replace(/"/g, '""')}"`,
+          p.total_qty,
+          p.total_revenue,
+        ]);
+        const csv = [header, ...rows].map((r) => r.join(",")).join("\n");
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Penjualan_Produk_Filtered_${toDateStr(dateRange.startDate)}_${toDateStr(dateRange.endDate)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Laporan (terfilter) berhasil diekspor sebagai CSV", "success");
+      } else {
+        // No active filters — download full data from BE as xlsx
+        const blob = await reportService.productsExport({
+          start_date: toDateStr(dateRange.startDate),
+          end_date: toDateStr(dateRange.endDate),
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Penjualan_Produk_${toDateStr(dateRange.startDate)}_${toDateStr(dateRange.endDate)}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Laporan berhasil diekspor", "success");
+      }
     } catch {
       showToast("Gagal mengekspor laporan", "error");
     } finally {
