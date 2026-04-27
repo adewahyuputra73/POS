@@ -45,11 +45,13 @@ export default function ProfilePage() {
   }, []);
 
   const handleSaveProfile = async (data: ProfileFormData) => {
-    const updated = await authService.updateProfile({
+    await authService.updateProfile({
       full_name: data.name,
       email: data.email,
     });
-    setProfile(mapApiUser(updated));
+    // Re-fetch fresh profile data after update
+    const fresh = await authService.profile();
+    setProfile(mapApiUser(fresh));
     setIsEditing(false);
   };
 

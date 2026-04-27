@@ -47,7 +47,7 @@ export function EditProfileForm({ profile, onSave, onCancel }: EditProfileFormPr
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Format email tidak valid";
     }
-    if (!formData.phone.trim()) newErrors.phone = "Nomor telepon wajib diisi";
+    // Phone is read-only (not sent to API), so no validation needed
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -104,13 +104,17 @@ export function EditProfileForm({ profile, onSave, onCancel }: EditProfileFormPr
               error={errors.email}
               placeholder="Masukkan email"
             />
-            <Input
-              label="Nomor Telepon"
-              value={formData.phone}
-              onChange={(e) => handleChange("phone", e.target.value)}
-              error={errors.phone}
-              placeholder="+62 xxx-xxxx-xxxx"
-            />
+            <div>
+              <Input
+                label="Nomor Telepon"
+                value={formData.phone}
+                onChange={() => {}}
+                placeholder="+62 xxx-xxxx-xxxx"
+                disabled
+                className="opacity-60 cursor-not-allowed"
+              />
+              <p className="text-xs text-text-secondary mt-1">Nomor telepon tidak dapat diubah</p>
+            </div>
             <Input
               label="Tanggal Lahir"
               type="date"

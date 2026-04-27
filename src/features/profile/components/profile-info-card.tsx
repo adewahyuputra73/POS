@@ -1,10 +1,12 @@
 "use client";
 
+import { useRef } from "react";
 import { Avatar, Badge } from "@/components/ui";
 import {
   Card,
   CardContent,
 } from "@/components/ui";
+import { useToast } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { formatDate, formatDateTime } from "@/lib/utils";
 import {
@@ -26,6 +28,22 @@ interface ProfileInfoCardProps {
 }
 
 export function ProfileInfoCard({ profile, onEditClick }: ProfileInfoCardProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useToast();
+
+  const handleCameraClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+    // Photo upload endpoint not yet available in BE
+    showToast("Fitur upload foto profil belum tersedia", "info");
+  };
+
   return (
     <Card>
       {/* Cover + Avatar section */}
@@ -33,6 +51,13 @@ export function ProfileInfoCard({ profile, onEditClick }: ProfileInfoCardProps) 
         <div className="h-32 bg-gradient-to-r from-primary via-primary-dark to-secondary rounded-t-xl" />
         <div className="absolute -bottom-12 left-6 flex items-end gap-4">
           <div className="relative group">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
             <Avatar
               src={profile.avatar}
               alt={profile.name}
@@ -40,8 +65,9 @@ export function ProfileInfoCard({ profile, onEditClick }: ProfileInfoCardProps) 
               className="h-24 w-24 text-2xl ring-4 ring-surface shadow-lg"
             />
             <button
+              type="button"
               className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-              onClick={() => {}}
+              onClick={handleCameraClick}
             >
               <Camera className="h-5 w-5 text-white" />
             </button>
