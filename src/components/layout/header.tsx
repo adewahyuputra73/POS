@@ -35,6 +35,7 @@ function timeAgo(iso: string) {
 }
 
 function NotificationPanel({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
   const [items, setItems] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -71,6 +72,21 @@ function NotificationPanel({ onClose }: { onClose: () => void }) {
       setUnreadCount(0);
     } catch { /* silent */ }
     setMarkingAll(false);
+  };
+
+  /** Klik notif: tandai dibaca + navigasi ke halaman terkait */
+  const handleNotifClick = async (item: Notification) => {
+    // Tandai dibaca (silent, tidak perlu tunggu)
+    if (!item.is_read) {
+      handleMarkRead(item.id);
+    }
+    // Navigasi berdasarkan data notifikasi
+    const orderId = item.data?.order_id;
+    const type = (item.type ?? "").toLowerCase();
+    if (orderId || type.includes("order") || type.includes("payment") || type.includes("transaksi")) {
+      router.push("/transactions");
+    }
+    onClose();
   };
 
   return (
@@ -113,7 +129,7 @@ function NotificationPanel({ onClose }: { onClose: () => void }) {
           </div>
         ) : (
           items.map((item) => (
-            <button key={item.id} onClick={() => !item.is_read && handleMarkRead(item.id)}
+            <button key={item.id} onClick={() => handleNotifClick(item)}
               className={cn(
                 "w-full text-left px-5 py-4 flex items-start gap-3 hover:bg-background/60 transition-colors",
                 !item.is_read && "bg-primary/[0.03]"
