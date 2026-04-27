@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui";
+import { Button, CurrencyInput } from "@/components/ui";
 import { Product, Variant, Tax, ServiceFee, ProductFormData } from "../types";
 import { StatusToggle } from "./status-toggle";
 import { ImageUploader } from "./image-uploader";
@@ -324,11 +324,9 @@ export function ProductModal({
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm">
                         Rp
                       </span>
-                      <input
-                        type="number"
-                        value={formData.price || ""}
-                        onChange={(e) => updateField("price", Number(e.target.value))}
-                        placeholder="0"
+                      <CurrencyInput
+                        value={formData.price}
+                        onChange={(v) => updateField("price", v)}
                         className={cn(
                           "w-full pl-10 pr-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
                           errors.price ? "border-error" : "border-border"
@@ -347,11 +345,9 @@ export function ProductModal({
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm">
                         Rp
                       </span>
-                      <input
-                        type="number"
-                        value={formData.comparePrice || ""}
-                        onChange={(e) => updateField("comparePrice", Number(e.target.value))}
-                        placeholder="0"
+                      <CurrencyInput
+                        value={formData.comparePrice}
+                        onChange={(v) => updateField("comparePrice", v)}
                         className="w-full pl-10 pr-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       />
                     </div>
@@ -378,13 +374,12 @@ export function ProductModal({
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm">
                             Rp
                           </span>
-                          <input
-                            type="number"
-                            value={formData.channelPrices[channel.key as keyof typeof formData.channelPrices] || ""}
-                            onChange={(e) =>
+                          <CurrencyInput
+                            value={formData.channelPrices[channel.key as keyof typeof formData.channelPrices]}
+                            onChange={(v) =>
                               updateField("channelPrices", {
                                 ...formData.channelPrices,
-                                [channel.key]: Number(e.target.value),
+                                [channel.key]: v,
                               })
                             }
                             placeholder="Sama dengan harga utama"
@@ -573,11 +568,9 @@ export function ProductModal({
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm">
                       Rp
                     </span>
-                    <input
-                      type="number"
-                      value={formData.takeawayFee || ""}
-                      onChange={(e) => updateField("takeawayFee", Number(e.target.value))}
-                      placeholder="0"
+                    <CurrencyInput
+                      value={formData.takeawayFee}
+                      onChange={(v) => updateField("takeawayFee", v)}
                       className="w-full pl-10 pr-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     />
                   </div>

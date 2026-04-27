@@ -6,6 +6,7 @@ import { formatCurrency } from "@/lib/utils";
 import { shiftService, ShiftStatusBadge } from "@/features/shifts";
 import type { ShiftStatus, ShiftHistoryItem, StartShiftRequest, EndShiftRequest } from "@/features/shifts";
 import { Clock, LogIn, LogOut, History, CheckCircle2, AlertCircle, Loader2, User, ShieldAlert } from "lucide-react";
+import { CurrencyInput } from "@/components/ui";
 import { useAuthStore } from "@/stores";
 
 function formatDateTime(iso: string) {
@@ -25,12 +26,12 @@ export default function ShiftPage() {
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(true);
 
-  const [openingCash, setOpeningCash] = useState("");
+  const [openingCash, setOpeningCash] = useState(0);
   const [submittingOpen, setSubmittingOpen] = useState(false);
   const [openError, setOpenError] = useState("");
 
-  const [closingCash, setClosingCash] = useState("");
-  const [cashDeposited, setCashDeposited] = useState("");
+  const [closingCash, setClosingCash] = useState(0);
+  const [cashDeposited, setCashDeposited] = useState(0);
   const [note, setNote] = useState("");
   const [submittingClose, setSubmittingClose] = useState(false);
   const [closeError, setCloseError] = useState("");
@@ -68,14 +69,13 @@ export default function ShiftPage() {
 
   const handleOpenShift = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cash = parseFloat(openingCash);
-    if (isNaN(cash) || cash < 0) { setOpenError("Masukkan jumlah kas awal yang valid"); return; }
+    if (openingCash < 0) { setOpenError("Masukkan jumlah kas awal yang valid"); return; }
     setSubmittingOpen(true);
     setOpenError("");
     try {
-      await shiftService.start({ opening_cash: cash } as StartShiftRequest);
+      await shiftService.start({ opening_cash: openingCash } as StartShiftRequest);
       setSuccessMsg("Shift berhasil dibuka!");
-      setOpeningCash("");
+      setOpeningCash(0);
       await fetchStatus();
       await fetchHistory();
       setTimeout(() => setSuccessMsg(""), 3000);
@@ -88,18 +88,16 @@ export default function ShiftPage() {
 
   const handleCloseShift = async (e: React.FormEvent) => {
     e.preventDefault();
-    const closing = parseFloat(closingCash);
-    const deposited = parseFloat(cashDeposited);
-    if (isNaN(closing) || closing < 0) { setCloseError("Masukkan jumlah kas akhir aktual yang valid"); return; }
-    if (isNaN(deposited) || deposited < 0) { setCloseError("Masukkan jumlah kas disetor yang valid"); return; }
+    if (closingCash < 0) { setCloseError("Masukkan jumlah kas akhir aktual yang valid"); return; }
+    if (cashDeposited < 0) { setCloseError("Masukkan jumlah kas disetor yang valid"); return; }
     setSubmittingClose(true);
     setCloseError("");
     try {
-      const payload: EndShiftRequest = { closing_cash: closing, cash_deposited: deposited };
+      const payload: EndShiftRequest = { closing_cash: closingCash, cash_deposited: cashDeposited };
       if (note.trim()) payload.note = note.trim();
       await shiftService.end(payload);
       setSuccessMsg("Shift berhasil ditutup!");
-      setClosingCash(""); setCashDeposited(""); setNote("");
+      setClosingCash(0); setCashDeposited(0); setNote("");
       await fetchStatus();
       await fetchHistory();
       setTimeout(() => setSuccessMsg(""), 3000);
@@ -184,8 +182,7 @@ export default function ShiftPage() {
                   <label className="block text-xs font-semibold text-text-secondary mb-1.5">
                     Kas Akhir Aktual (Rp) <span className="text-red-500">*</span>
                   </label>
-                  <input type="number" min="0" value={closingCash} onChange={(e) => setClosingCash(e.target.value)}
-                    placeholder="0" required
+                  <CurrencyInput value={closingCash} onChange={setClosingCash}
                     className="w-full h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary transition-colors" />
                   <p className="text-xs text-text-disabled mt-1">Jumlah uang fisik yang ada di laci kasir sekarang</p>
                   {/* Indikator selisih live */}
@@ -201,8 +198,7 @@ export default function ShiftPage() {
                   <label className="block text-xs font-semibold text-text-secondary mb-1.5">
                     Kas Disetor (Rp) <span className="text-red-500">*</span>
                   </label>
-                  <input type="number" min="0" value={cashDeposited} onChange={(e) => setCashDeposited(e.target.value)}
-                    placeholder="0" required
+                  <CurrencyInput value={cashDeposited} onChange={setCashDeposited}
                     className="w-full h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary transition-colors" />
                   <p className="text-xs text-text-disabled mt-1">Jumlah yang disetor ke kasir utama / brankas</p>
                 </div>
@@ -243,8 +239,7 @@ export default function ShiftPage() {
                 <label className="block text-xs font-semibold text-text-secondary mb-1.5">
                   Kas Awal (Rp) <span className="text-red-500">*</span>
                 </label>
-                <input type="number" min="0" value={openingCash} onChange={(e) => setOpeningCash(e.target.value)}
-                  placeholder="0" required
+                <CurrencyInput value={openingCash} onChange={setOpeningCash}
                   className="w-full h-10 rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary transition-colors" />
                 <p className="text-xs text-text-disabled mt-1">Masukkan jumlah uang tunai di laci kasir saat ini</p>
               </div>

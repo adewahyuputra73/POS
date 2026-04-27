@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout";
-import { Button, useToast } from "@/components/ui";
+import { Button, useToast, CurrencyInput } from "@/components/ui";
 import { TransactionTable } from "@/features/transactions/components/transaction-table";
 import { TransactionFilterBar } from "@/features/transactions/components/transaction-filters";
 import { TransactionDetail } from "@/features/transactions/components/transaction-detail";
@@ -624,12 +624,10 @@ export default function TransactionsPage() {
                   <label className="block text-sm font-medium text-text-primary mb-1.5">Jumlah Dibayar</label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-text-secondary">Rp</span>
-                    <input
-                      type="number"
+                    <CurrencyInput
                       value={paidAmount}
-                      onChange={(e) => setPaidAmount(Number(e.target.value))}
+                      onChange={setPaidAmount}
                       className="w-full pl-9 pr-4 py-2.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-medium"
-                      min={0}
                     />
                   </div>
                 </div>
