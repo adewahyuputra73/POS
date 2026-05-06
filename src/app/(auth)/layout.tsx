@@ -67,7 +67,7 @@ export default function AuthLayout() {
           </div>
 
           <div className="flex items-center gap-6 text-slate-500">
-            <p className="text-sm font-bold uppercase tracking-widest">&copy; 2026 Fere POS Global</p>
+            <p className="text-sm font-bold uppercase tracking-widest">&copy; 2026 Kodeka POS Global</p>
             <div className="h-px flex-1 bg-white/10"></div>
           </div>
         </div>

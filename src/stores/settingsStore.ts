@@ -56,7 +56,7 @@ export const useSettingsStore = create<SettingsState>()(
         }),
     }),
     {
-      name: "fere-pos-settings",
+      name: "kodeka-pos-settings",
     }
   )
 );

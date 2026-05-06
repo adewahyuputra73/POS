@@ -47,7 +47,7 @@ export function CustomerFooter() {
                 </div>
                 <div className="pt-8 text-center" style={{ borderTop: '1px solid rgba(245,158,11,0.12)' }}>
                     <p className="text-xs tracking-wider uppercase font-bold" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                        &copy; {new Date().getFullYear()} Fere POS. All rights reserved.
+                        &copy; {new Date().getFullYear()} Kodeka POS. All rights reserved.
                     </p>
                 </div>
             </div>

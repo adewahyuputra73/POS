@@ -1,4 +1,4 @@
-# Fere POS
+# Kodeka POS
 
 Modern Point of Sale (POS) web application built with **React 19**, **Vite**, **React Router v7**, **TypeScript**, and **Tailwind CSS 4**.
 
@@ -96,4 +96,4 @@ The frontend talks to a separate Golang backend service. There is no backend log
 
 ## License
 
-Private — Fere Corps.
+Private — Kodeka Labs.

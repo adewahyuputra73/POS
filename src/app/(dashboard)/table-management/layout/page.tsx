@@ -21,7 +21,7 @@ interface LocalObject {
   width: number; height: number;
 }
 
-const STORAGE_KEY = 'fere-table-layout-v1';
+const STORAGE_KEY = 'kodeka-table-layout-v1';
 
 // Ukuran meja proporsional terhadap kapasitas
 function getTableSize(capacity: number): { w: number; h: number } {

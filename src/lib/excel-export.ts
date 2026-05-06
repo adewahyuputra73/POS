@@ -25,8 +25,8 @@ export class ExcelExportService {
 
   constructor() {
     this.workbook = new ExcelJS.Workbook();
-    this.workbook.creator = 'Fere POS';
-    this.workbook.lastModifiedBy = 'Fere POS';
+    this.workbook.creator = 'Kodeka POS';
+    this.workbook.lastModifiedBy = 'Kodeka POS';
     this.workbook.created = new Date();
     this.workbook.modified = new Date();
   }
