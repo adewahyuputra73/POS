@@ -28,7 +28,7 @@ export const useUIStore = create<UIState>()(
     (set) => ({
       sidebarCollapsed: false,
       sidebarMobileOpen: false,
-      theme: "system",
+      theme: "dark",
       isGlobalLoading: false,
 
       toggleSidebar: () =>

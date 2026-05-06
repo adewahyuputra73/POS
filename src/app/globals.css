@@ -4,69 +4,159 @@
 
 @theme {
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  
+
   /* ========================================
-     FERE POS COLOR SYSTEM
-     Matching Flutter Mobile AppColor
+     KODEKA POS COLOR SYSTEM
+     Brand: Kodeka Labs (neon green on dark navy)
      ======================================== */
-  
-  /* Primary Colors - Blue */
-  --color-primary: #2196F3;
-  --color-primary-light: #E3F2FD;
-  --color-primary-dark: #1976D2;
-  
-  /* Secondary Colors - Navy Blue */
-  --color-secondary: #1E2C47;
-  --color-secondary-light: #334155;
-  --color-secondary-dark: #0F172A;
-  
-  /* Semantic Colors */
-  --color-success: #4CAF50;
-  --color-success-light: #E8F5E9;
-  --color-warning: #FF9800;
-  --color-warning-light: #FFF3E0;
-  --color-error: #F44336;
-  --color-error-light: #FFEBEE;
-  --color-info: #2196F3;
-  --color-info-light: #E3F2FD;
-  
-  /* Extended Palette */
-  --color-green: #4CAF50;
-  --color-red: #F44336;
-  --color-yellow: #FFEB3B;
-  --color-orange: #FF9800;
-  --color-purple: #9C27B0;
-  --color-pink: #E91E63;
-  --color-cyan: #00BCD4;
-  --color-teal: #009688;
-  --color-indigo: #3F51B5;
-  --color-amber: #FFC107;
-  --color-lime: #CDDC39;
-  
-  /* Neutral Colors */
-  --color-grey: #9E9E9E;
-  --color-blue-grey: #607D8B;
-  --color-brown: #795548;
-  
-  /* UI Colors */
+
+  /* Brand scale - Kodeka neon green */
+  --color-brand-50: #ECFDF3;
+  --color-brand-100: #D1FAE0;
+  --color-brand-200: #A7F3C0;
+  --color-brand-300: #6EE79A;
+  --color-brand-400: #3CE17A;
+  --color-brand-500: #22D55C;
+  --color-brand-600: #16A34A;
+  --color-brand-700: #128A3F;
+  --color-brand-800: #0E6B30;
+  --color-brand-900: #0A4F23;
+
+  /* Primary = Kodeka green */
+  --color-primary: #22D55C;
+  --color-primary-light: #D1FAE0;
+  --color-primary-dark: #16A34A;
+
+  /* Secondary = deep navy */
+  --color-secondary: #0A0E1F;
+  --color-secondary-light: #1F2438;
+  --color-secondary-dark: #060814;
+
+  /* Semantic */
+  --color-success: #22D55C;
+  --color-success-light: #D1FAE0;
+  --color-warning: #FBBF24;
+  --color-warning-light: #FEF3C7;
+  --color-error: #F87171;
+  --color-error-light: #FEE2E2;
+  --color-info: #38BDF8;
+  --color-info-light: #E0F2FE;
+
+  /* Extended palette */
+  --color-green: #22D55C;
+  --color-red: #F87171;
+  --color-yellow: #FBBF24;
+  --color-orange: #FB923C;
+  --color-purple: #A78BFA;
+  --color-pink: #F472B6;
+  --color-cyan: #22D3EE;
+  --color-teal: #14B8A6;
+  --color-indigo: #818CF8;
+  --color-amber: #F59E0B;
+  --color-lime: #A3E635;
+
+  /* Neutrals */
+  --color-grey: #9CA3B5;
+  --color-blue-grey: #64748B;
+  --color-brown: #92766A;
+
+  /* UI - light defaults (used when html does not have .dark) */
   --color-background: #F8F9FA;
   --color-surface: #FFFFFF;
-  --color-divider: #E0E0E0;
-  --color-border: #E0E0E0;
-  --color-border-input: #BDBDBD;
-  
-  /* Text Colors */
-  --color-text-primary: #212121;
-  --color-text-secondary: #757575;
-  --color-text-disabled: #9E9E9E;
-  --color-text-on-primary: #FFFFFF;
+  --color-divider: #E5E7EB;
+  --color-border: #E5E7EB;
+  --color-border-input: #CBD5E1;
+
+  --color-text-primary: #0A0E1F;
+  --color-text-secondary: #475569;
+  --color-text-disabled: #94A3B8;
+  --color-text-on-primary: #0A0E1F;
 }
 
+/* ========================================
+   DEFAULT (DARK) THEME — Kodeka brand
+   ======================================== */
 :root {
+  color-scheme: dark;
+
+  --color-background: #0A0E1F;
+  --color-surface: #13182B;
+  --color-divider: #1F2438;
+  --color-border: #1F2438;
+  --color-border-input: #2A3149;
+
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #9CA3B5;
+  --color-text-disabled: #606988;
+  --color-text-on-primary: #0A0E1F;
+
+  --color-primary-light: rgba(34, 213, 92, 0.15);
+  --color-secondary-light: #1F2438;
+  --color-success-light: rgba(34, 213, 92, 0.15);
+  --color-warning-light: rgba(251, 191, 36, 0.15);
+  --color-error-light: rgba(248, 113, 113, 0.15);
+  --color-info-light: rgba(56, 189, 248, 0.15);
+
+  --background: #0A0E1F;
+  --foreground: #F8FAFC;
+  --card: #13182B;
+  --nav-bg: #060814;
+}
+
+/* Explicit .dark class (parity with default :root) */
+.dark {
+  color-scheme: dark;
+
+  --color-background: #0A0E1F;
+  --color-surface: #13182B;
+  --color-divider: #1F2438;
+  --color-border: #1F2438;
+  --color-border-input: #2A3149;
+
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #9CA3B5;
+  --color-text-disabled: #606988;
+
+  --color-primary-light: rgba(34, 213, 92, 0.15);
+  --color-secondary-light: #1F2438;
+  --color-success-light: rgba(34, 213, 92, 0.15);
+  --color-warning-light: rgba(251, 191, 36, 0.15);
+  --color-error-light: rgba(248, 113, 113, 0.15);
+  --color-info-light: rgba(56, 189, 248, 0.15);
+
+  --background: #0A0E1F;
+  --foreground: #F8FAFC;
+  --card: #13182B;
+  --nav-bg: #060814;
+}
+
+/* ========================================
+   LIGHT THEME OVERRIDE — opt-in via .light class
+   ======================================== */
+.light {
+  color-scheme: light;
+
+  --color-background: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-divider: #E5E7EB;
+  --color-border: #E5E7EB;
+  --color-border-input: #CBD5E1;
+
+  --color-text-primary: #0A0E1F;
+  --color-text-secondary: #475569;
+  --color-text-disabled: #94A3B8;
+
+  --color-primary-light: #D1FAE0;
+  --color-secondary-light: #F1F5F9;
+  --color-success-light: #D1FAE0;
+  --color-warning-light: #FEF3C7;
+  --color-error-light: #FEE2E2;
+  --color-info-light: #E0F2FE;
+
   --background: #F8F9FA;
-  --foreground: #212121;
+  --foreground: #0A0E1F;
   --card: #FFFFFF;
-  --nav-bg: #1E2C47;
+  --nav-bg: #0A0E1F;
 }
 
 * {
@@ -86,31 +176,40 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Premium Shadows */
+/* Premium Shadows (dark-safe) */
 .shadow-card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35), 0 4px 12px 0 rgba(0, 0, 0, 0.20);
+}
+.shadow-card-hover:hover {
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.45), 0 8px 24px 0 rgba(0, 0, 0, 0.30);
+}
+
+.light .shadow-card {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 4px 12px 0 rgba(0, 0, 0, 0.04);
 }
-
-.shadow-card-hover:hover {
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08), 0 8px 24px 0 rgba(0, 0, 0, 0.06);
+.light .shadow-card-hover:hover {
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.10), 0 8px 24px 0 rgba(0, 0, 0, 0.06);
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar (default = dark) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #E0E0E0;
+  background: #2A3149;
   border-radius: 10px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
+  background: #3A4366;
+}
+.light ::-webkit-scrollbar-thumb {
+  background: #E0E0E0;
+}
+.light ::-webkit-scrollbar-thumb:hover {
   background: #BDBDBD;
 }
 
@@ -120,93 +219,48 @@ body {
   outline-offset: 2px;
 }
 
-/* ========================================
-   DARK MODE
-   ======================================== */
-
-.dark {
-  color-scheme: dark;
-
-  /* Override theme CSS variables for dark mode */
-  --color-background: #0F172A;
-  --color-surface: #1E293B;
-  --color-divider: #334155;
-  --color-border: #334155;
-  --color-border-input: #475569;
-
-  --color-text-primary: #F1F5F9;
-  --color-text-secondary: #94A3B8;
-  --color-text-disabled: #64748B;
-
-  --color-primary-light: rgba(33, 150, 243, 0.15);
-  --color-secondary-light: #334155;
-  --color-success-light: rgba(76, 175, 80, 0.15);
-  --color-warning-light: rgba(255, 152, 0, 0.15);
-  --color-error-light: rgba(244, 67, 54, 0.15);
-  --color-info-light: rgba(33, 150, 243, 0.15);
-
-  --color-grey: #64748B;
-
-  --background: #0F172A;
-  --foreground: #F1F5F9;
-  --card: #1E293B;
-  --nav-bg: #0B1120;
-}
-
-/* Dark mode: native inputs */
-.dark input[type="time"],
-.dark input[type="date"] {
+/* Native input dark-mode polish */
+input[type="time"],
+input[type="date"] {
   color-scheme: dark;
 }
+.light input[type="time"],
+.light input[type="date"] {
+  color-scheme: light;
+}
 
-.dark select,
-.dark textarea {
+select,
+textarea {
   color: var(--color-text-primary);
   background-color: var(--color-surface);
   border-color: var(--color-border);
 }
 
-.dark input[type="range"] {
+input[type="range"] {
   accent-color: var(--color-primary);
 }
 
-/* Dark mode: Scrollbar */
-.dark ::-webkit-scrollbar-thumb {
-  background: #475569;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #64748B;
-}
-
-/* Dark mode: Shadow adjustments */
-.dark .shadow-sm,
-.dark .shadow-card {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 12px 0 rgba(0, 0, 0, 0.2);
-}
-
-.dark .shadow-lg {
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4), 0 8px 24px 0 rgba(0, 0, 0, 0.3);
+/* Subtle hexagon backdrop helper (optional, used by auth layout) */
+.bg-hex-pattern {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'><polygon points='50,5 92,28 92,72 50,95 8,72 8,28' fill='none' stroke='%2322D55C' stroke-width='0.6' opacity='0.18'/></svg>");
+  background-size: 96px 96px;
+  background-repeat: repeat;
 }
 
 /* ========================================
-   PRINT STYLES (Invoice)
+   PRINT STYLES (Invoice — always white)
    ======================================== */
-
 @media print {
-  /* Hide navbar, footer, and elements marked print:hidden */
   nav, footer, .print\:hidden {
     display: none !important;
   }
-
   body {
     background: white !important;
+    color: black !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-
   main {
     padding: 0 !important;
   }
 }
-
