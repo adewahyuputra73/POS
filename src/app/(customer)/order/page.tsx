@@ -156,9 +156,9 @@ export default function OrderPage() {
     }, [selectingProduct]);
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-64px)]" style={{ backgroundColor: '#FEFAF5' }}>
+        <div className="flex flex-col min-h-[calc(100vh-64px)]" style={{ backgroundColor: '#0A0E1F' }}>
             {/* Hero / Banner section */}
-            <section className="text-white py-14 px-4 relative overflow-hidden" style={{ backgroundColor: '#1C0A00' }}>
+            <section className="text-white py-14 px-4 relative overflow-hidden" style={{ backgroundColor: '#F8FAFC' }}>
                 {/* Grain texture */}
                 <div
                     className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none"
@@ -174,7 +174,7 @@ export default function OrderPage() {
                 <div className="container mx-auto relative z-10 max-w-5xl text-center">
                     <h1 className="text-4xl md:text-5xl font-[700] mb-4 leading-[1.15] tracking-tight font-[family-name:var(--font-fraunces)]">
                         Selamat Datang di{" "}
-                        <span className="italic" style={{ color: '#F59E0B' }}>{storeInfo?.name ?? ""}</span>
+                        <span className="italic" style={{ color: '#22D55C' }}>{storeInfo?.name ?? ""}</span>
                     </h1>
                     <p className="max-w-2xl mx-auto font-medium text-sm md:text-base leading-relaxed mb-10" style={{ color: 'rgba(255,255,255,0.45)' }}>
                         {storeInfo?.address ?? ""}
@@ -187,7 +187,7 @@ export default function OrderPage() {
                         <Input
                             type="text"
                             placeholder="Cari menu favorit Anda..."
-                            className="pl-14 h-14 text-white rounded-2xl transition-all text-base border-2 focus-visible:ring-[#F59E0B] focus-visible:border-[#F59E0B]"
+                            className="pl-14 h-14 text-white rounded-2xl transition-all text-base border-2 focus-visible:ring-[#22D55C] focus-visible:border-[#22D55C]"
                             style={{
                                 backgroundColor: 'rgba(42,18,0,0.6)',
                                 borderColor: 'rgba(124,74,30,0.4)',
@@ -241,7 +241,7 @@ export default function OrderPage() {
 
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="h-10 w-10 animate-spin mb-4" style={{ color: '#D97706' }} />
+                        <Loader2 className="h-10 w-10 animate-spin mb-4" style={{ color: '#16A34A' }} />
                         <p className="text-text-secondary">Memuat menu...</p>
                     </div>
                 ) : error ? (
@@ -254,7 +254,7 @@ export default function OrderPage() {
                         <button
                             onClick={fetchProducts}
                             className="px-6 py-2.5 rounded-full text-sm font-bold text-white transition-colors"
-                            style={{ backgroundColor: '#D97706' }}
+                            style={{ backgroundColor: '#16A34A' }}
                         >
                             Coba Lagi
                         </button>
@@ -266,12 +266,12 @@ export default function OrderPage() {
                                 <div className="flex items-center gap-3 mb-5">
                                     <h2
                                         className="text-lg font-black tracking-tight"
-                                        style={{ color: '#1C0A00' }}
+                                        style={{ color: '#F8FAFC' }}
                                     >
                                         {categoryName}
                                     </h2>
-                                    <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(28,10,0,0.1)' }} />
-                                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>
+                                    <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#0E6B30', color: '#92400E' }}>
                                         {groupItems.length} menu
                                     </span>
                                 </div>
@@ -289,8 +289,8 @@ export default function OrderPage() {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-20 text-center">
-                        <div className="h-20 w-20 rounded-3xl flex items-center justify-center mb-6" style={{ backgroundColor: '#FEF3C7' }}>
-                            <Search className="h-10 w-10" style={{ color: '#D97706' }} />
+                        <div className="h-20 w-20 rounded-3xl flex items-center justify-center mb-6" style={{ backgroundColor: '#0E6B30' }}>
+                            <Search className="h-10 w-10" style={{ color: '#16A34A' }} />
                         </div>
                         <h3 className="text-xl font-bold text-text-primary mb-2">Menu Tidak Ditemukan</h3>
                         <p className="text-text-secondary max-w-xs">Maaf, kami tidak menemukan menu yang Anda cari. Coba kata kunci lain.</p>
@@ -304,7 +304,7 @@ export default function OrderPage() {
                     <Link
                         to="/order/cart"
                         className="pointer-events-auto flex items-center gap-4 text-white pl-6 pr-3 py-3.5 rounded-3xl transform hover:scale-105 active:scale-95 transition-all duration-300 w-full max-w-md group"
-                        style={{ backgroundColor: '#1C0A00', boxShadow: '0 20px 60px rgba(28,10,0,0.5)' }}
+                        style={{ backgroundColor: '#F8FAFC', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
                     >
                         <div className="flex-1 flex flex-col items-start leading-none">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] mb-1" style={{ color: 'rgba(245,158,11,0.6)' }}>Keranjang</span>
@@ -312,8 +312,8 @@ export default function OrderPage() {
                         </div>
                         <div className="h-px w-8 rotate-90" style={{ backgroundColor: 'rgba(245,158,11,0.2)' }} />
                         <div className="flex items-center gap-3">
-                            <span className="text-lg font-black tracking-tight" style={{ color: '#F59E0B' }}>{formatCurrency(subtotal)}</span>
-                            <div className="h-11 w-11 rounded-2xl flex items-center justify-center transition-colors" style={{ backgroundColor: '#F59E0B', color: '#1C0A00' }}>
+                            <span className="text-lg font-black tracking-tight" style={{ color: '#22D55C' }}>{formatCurrency(subtotal)}</span>
+                            <div className="h-11 w-11 rounded-2xl flex items-center justify-center transition-colors" style={{ backgroundColor: '#22D55C', color: '#F8FAFC' }}>
                                 <ShoppingBag className="h-5 w-5" />
                             </div>
                         </div>

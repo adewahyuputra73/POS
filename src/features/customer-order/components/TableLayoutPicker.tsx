@@ -48,7 +48,7 @@ function getTableSize(capacity: number): { w: number; h: number } {
 const STATUS_STYLE: Record<string, { bg: string; border: string; text: string }> = {
     AVAILABLE: { bg: "#ECFDF5", border: "#86EFAC", text: "#166534" },
     OCCUPIED: { bg: "#FEE2E2", border: "#FCA5A5", text: "#991B1B" },
-    RESERVED: { bg: "#FEF3C7", border: "#FCD34D", text: "#92400E" },
+    RESERVED: { bg: "#0E6B30", border: "#FCD34D", text: "#92400E" },
     UNAVAILABLE: { bg: "#F3F4F6", border: "#D1D5DB", text: "#9CA3AF" },
 };
 
@@ -136,8 +136,8 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center py-20">
-                <Loader2 className="h-10 w-10 animate-spin mb-4" style={{ color: "#D97706" }} />
-                <p className="text-sm font-medium" style={{ color: "#9C7D58" }}>Memuat layout meja...</p>
+                <Loader2 className="h-10 w-10 animate-spin mb-4" style={{ color: "#16A34A" }} />
+                <p className="text-sm font-medium" style={{ color: "#9CA3B5" }}>Memuat layout meja...</p>
             </div>
         );
     }
@@ -149,15 +149,15 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
                 <button
                     onClick={onBack}
                     className="h-10 w-10 rounded-xl flex items-center justify-center transition-all active:scale-90 border shrink-0"
-                    style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.2)", color: "#6B4C2A" }}
+                    style={{ backgroundColor: "#13182B", borderColor: "rgba(34,213,92,0.22)", color: "#9CA3B5" }}
                 >
                     <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
-                    <h2 className="text-lg md:text-xl font-black tracking-tight font-[family-name:var(--font-fraunces)]" style={{ color: "#1C0A00" }}>
+                    <h2 className="text-lg md:text-xl font-black tracking-tight font-[family-name:var(--font-fraunces)]" style={{ color: "#F8FAFC" }}>
                         {title}
                     </h2>
-                    <p className="text-xs font-medium" style={{ color: "#9C7D58" }}>
+                    <p className="text-xs font-medium" style={{ color: "#9CA3B5" }}>
                         Pilih meja yang tersedia
                     </p>
                 </div>
@@ -175,9 +175,9 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
                                 onClick={() => { setSelectedAreaId(area.id); setSelectedTableId(null); }}
                                 className="shrink-0 px-4 py-2 rounded-full text-xs font-bold border-2 transition-all"
                                 style={{
-                                    backgroundColor: isActive ? "#1C0A00" : "#FFFFFF",
-                                    borderColor: isActive ? "#F59E0B" : "#E5D5C0",
-                                    color: isActive ? "#F59E0B" : "#6B4C2A",
+                                    backgroundColor: isActive ? "#F8FAFC" : "#13182B",
+                                    borderColor: isActive ? "#22D55C" : "#E5D5C0",
+                                    color: isActive ? "#22D55C" : "#9CA3B5",
                                 }}
                             >
                                 {area.name}
@@ -195,7 +195,7 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
                     return (
                         <div key={status} className="flex items-center gap-1.5">
                             <div className="w-3 h-3 rounded-sm border" style={{ backgroundColor: s.bg, borderColor: s.border }} />
-                            <span className="text-[10px] font-bold" style={{ color: "#9C7D58" }}>{label}</span>
+                            <span className="text-[10px] font-bold" style={{ color: "#9CA3B5" }}>{label}</span>
                         </div>
                     );
                 })}
@@ -204,7 +204,7 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
             {/* Canvas */}
             <div
                 className="rounded-2xl border overflow-auto"
-                style={{ backgroundColor: "#FFFCF7", borderColor: "rgba(124,74,30,0.12)" }}
+                style={{ backgroundColor: "#FFFCF7", borderColor: "rgba(34,213,92,0.14)" }}
             >
                 {areaTables.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16">
@@ -218,7 +218,7 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
                             width: canvasDimensions.width,
                             height: canvasDimensions.height,
                             minWidth: "100%",
-                            backgroundImage: "radial-gradient(circle, rgba(124,74,30,0.08) 1px, transparent 1px)",
+                            backgroundImage: "radial-gradient(circle, rgba(34,213,92,0.10) 1px, transparent 1px)",
                             backgroundSize: "20px 20px",
                         }}
                     >
@@ -240,18 +240,18 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
                                         top: pos.y,
                                         width: w,
                                         height: h,
-                                        backgroundColor: isSelected ? "#FEF3C7" : style.bg,
-                                        borderColor: isSelected ? "#F59E0B" : style.border,
+                                        backgroundColor: isSelected ? "#0E6B30" : style.bg,
+                                        borderColor: isSelected ? "#22D55C" : style.border,
                                         color: style.text,
                                         cursor: isAvailable ? "pointer" : "not-allowed",
                                         opacity: !isAvailable ? 0.5 : 1,
-                                        boxShadow: isSelected ? "0 0 0 3px rgba(245,158,11,0.25)" : "none",
+                                        boxShadow: isSelected ? "0 0 0 3px rgba(34,213,92,0.28)" : "none",
                                     }}
                                 >
                                     {isSelected && (
                                         <div
                                             className="absolute -top-2 -right-2 h-5 w-5 rounded-full flex items-center justify-center"
-                                            style={{ backgroundColor: "#F59E0B" }}
+                                            style={{ backgroundColor: "#22D55C" }}
                                         >
                                             <Check className="h-3 w-3 text-white" />
                                         </div>
@@ -278,7 +278,7 @@ export function TableLayoutPicker({ onSelect, onBack, title = "Pilih Meja" }: Ta
                 <button
                     onClick={handleConfirm}
                     className="w-full h-13 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-                    style={{ backgroundColor: "#F59E0B", color: "#1C0A00", boxShadow: "0 8px 28px rgba(245,158,11,0.28)" }}
+                    style={{ backgroundColor: "#22D55C", color: "#F8FAFC", boxShadow: "0 8px 28px rgba(245,158,11,0.28)" }}
                 >
                     <Check className="h-4 w-4" />
                     Pilih {tables.find((t) => t.id === selectedTableId)?.name ?? "Meja"} ({tables.find((t) => t.id === selectedTableId)?.capacity} kursi)

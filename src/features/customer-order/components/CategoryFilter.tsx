@@ -21,8 +21,8 @@ export function CategoryFilter({
                     "whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 border-2 shrink-0"
                 )}
                 style={isAllActive
-                    ? { backgroundColor: '#1C0A00', borderColor: '#F59E0B', color: '#F59E0B' }
-                    : { backgroundColor: '#FFFFFF', borderColor: '#E5D5C0', color: '#6B4C2A' }
+                    ? { backgroundColor: '#F8FAFC', borderColor: '#22D55C', color: '#22D55C' }
+                    : { backgroundColor: '#13182B', borderColor: '#E5D5C0', color: '#9CA3B5' }
                 }
             >
                 Semua
@@ -38,8 +38,8 @@ export function CategoryFilter({
                             "whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 border-2 shrink-0"
                         )}
                         style={isActive
-                            ? { backgroundColor: '#1C0A00', borderColor: '#F59E0B', color: '#F59E0B' }
-                            : { backgroundColor: '#FFFFFF', borderColor: '#E5D5C0', color: '#6B4C2A' }
+                            ? { backgroundColor: '#F8FAFC', borderColor: '#22D55C', color: '#22D55C' }
+                            : { backgroundColor: '#13182B', borderColor: '#E5D5C0', color: '#9CA3B5' }
                         }
                     >
                         {category.name}

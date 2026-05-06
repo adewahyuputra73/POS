@@ -4,6 +4,7 @@ import { Button, CurrencyInput } from "@/components/ui";
 import { Product, Variant, Tax, ServiceFee, ProductFormData } from "../types";
 import { StatusToggle } from "./status-toggle";
 import { ImageUploader } from "./image-uploader";
+import { ProductVariantsSection } from "./product-variants-section";
 import { mockVariants, mockTaxes, mockServiceFees } from "../mock-data";
 import { 
   X, 
@@ -475,11 +476,29 @@ export function ProductModal({
                   </div>
                 )}
 
-                {/* Variants */}
+                {/* Per-product variants (mock-store, persisted client-side) */}
+                <ProductVariantsSection productId={product?.id ?? null} />
+
+                {/* Divider */}
+                <div className="relative pt-2">
+                  <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                    <div className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center">
+                    <span className="bg-surface px-3 text-xs font-bold uppercase tracking-wider text-text-disabled">
+                      Atau pakai pool global
+                    </span>
+                  </div>
+                </div>
+
+                {/* Global Variants Pool (legacy, by ID reference) */}
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1.5">
-                    Varian Produk
+                    Varian Bersama (Pool Global)
                   </label>
+                  <p className="text-xs text-text-secondary mb-3">
+                    Varian yang dipakai oleh banyak produk. Centang untuk meng-attach.
+                  </p>
                   <div className="space-y-2">
                     {mockVariants.filter(v => v.isActive).map((variant) => (
                       <label

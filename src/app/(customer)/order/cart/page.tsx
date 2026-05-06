@@ -31,8 +31,8 @@ export default function CartPage() {
 
     if (!mounted) {
         return (
-            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FEFAF5' }}>
-                <div className="h-8 w-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0A0E1F' }}>
+                <div className="h-8 w-8 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
             </div>
         );
     }
@@ -41,27 +41,27 @@ export default function CartPage() {
         return (
             <div
                 className="min-h-[70vh] flex flex-col items-center justify-center px-4 py-20 text-center"
-                style={{ backgroundColor: '#FEFAF5' }}
+                style={{ backgroundColor: '#0A0E1F' }}
             >
                 <div
                     className="h-24 w-24 rounded-3xl flex items-center justify-center mx-auto mb-7"
-                    style={{ backgroundColor: '#FEF3C7' }}
+                    style={{ backgroundColor: '#0E6B30' }}
                 >
-                    <ShoppingBag className="h-11 w-11" style={{ color: '#D97706' }} />
+                    <ShoppingBag className="h-11 w-11" style={{ color: '#16A34A' }} />
                 </div>
                 <h1
                     className="text-3xl font-black mb-3 tracking-tight font-[family-name:var(--font-fraunces)]"
-                    style={{ color: '#1C0A00' }}
+                    style={{ color: '#F8FAFC' }}
                 >
                     Keranjang Kosong
                 </h1>
-                <p className="leading-relaxed mb-10 font-medium max-w-xs text-sm" style={{ color: '#6B4C2A' }}>
+                <p className="leading-relaxed mb-10 font-medium max-w-xs text-sm" style={{ color: '#9CA3B5' }}>
                     Sepertinya Anda belum menambahkan menu apa pun. Mari jelajahi menu lezat kami!
                 </p>
                 <Link
                     to={orderUrl}
                     className="inline-flex items-center gap-3 h-13 px-8 rounded-2xl font-black text-sm transition-all duration-200 active:scale-95"
-                    style={{ backgroundColor: '#1C0A00', color: '#F59E0B', boxShadow: '0 8px 32px rgba(28,10,0,0.22)' }}
+                    style={{ backgroundColor: '#F8FAFC', color: '#22D55C', boxShadow: '0 8px 32px rgba(0,0,0,0.22)' }}
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Lihat Menu
@@ -73,7 +73,7 @@ export default function CartPage() {
     return (
         <div
             className="min-h-screen pb-32 lg:pb-10"
-            style={{ backgroundColor: '#FEFAF5' }}
+            style={{ backgroundColor: '#0A0E1F' }}
         >
             <div className="container mx-auto px-4 py-8 max-w-5xl">
                 {/* Header */}
@@ -81,18 +81,18 @@ export default function CartPage() {
                     <Link
                         to={orderUrl}
                         className="h-11 w-11 rounded-xl flex items-center justify-center transition-all active:scale-90 border"
-                        style={{ backgroundColor: '#FFF8EE', borderColor: 'rgba(124,74,30,0.2)', color: '#6B4C2A' }}
+                        style={{ backgroundColor: '#13182B', borderColor: 'rgba(34,213,92,0.22)', color: '#9CA3B5' }}
                     >
                         <ArrowLeft className="h-5 w-5" />
                     </Link>
                     <div>
                         <h1
                             className="text-2xl sm:text-3xl font-black tracking-tight font-[family-name:var(--font-fraunces)]"
-                            style={{ color: '#1C0A00' }}
+                            style={{ color: '#F8FAFC' }}
                         >
                             Keranjang Anda
                         </h1>
-                        <p className="text-sm font-medium mt-0.5" style={{ color: '#9C7D58' }}>
+                        <p className="text-sm font-medium mt-0.5" style={{ color: '#9CA3B5' }}>
                             {items.reduce((s, i) => s + i.quantity, 0)} item dipilih
                         </p>
                     </div>
@@ -125,7 +125,7 @@ export default function CartPage() {
                     <div className="lg:hidden">
                         <div
                             className="rounded-2xl p-4"
-                            style={{ backgroundColor: '#1C0A00', border: '1px solid rgba(245,158,11,0.15)' }}
+                            style={{ backgroundColor: '#F8FAFC', border: '1px solid rgba(34,213,92,0.18)' }}
                         >
                             <div
                                 className="flex items-center gap-2.5 mb-4 pb-3"
@@ -135,7 +135,7 @@ export default function CartPage() {
                                     className="h-8 w-8 rounded-lg flex items-center justify-center"
                                     style={{ backgroundColor: 'rgba(245,158,11,0.1)' }}
                                 >
-                                    <ReceiptText className="h-3.5 w-3.5" style={{ color: '#F59E0B' }} />
+                                    <ReceiptText className="h-3.5 w-3.5" style={{ color: '#22D55C' }} />
                                 </div>
                                 <h2
                                     className="text-sm font-black tracking-tight font-[family-name:var(--font-fraunces)]"
@@ -173,7 +173,7 @@ export default function CartPage() {
                                 >
                                     <div className="flex justify-between items-end">
                                         <span className="font-black text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>Total Akhir</span>
-                                        <span className="text-xl font-black tracking-tight tabular-nums" style={{ color: '#F59E0B' }}>
+                                        <span className="text-xl font-black tracking-tight tabular-nums" style={{ color: '#22D55C' }}>
                                             {formatCurrency(total)}
                                         </span>
                                     </div>
@@ -194,7 +194,7 @@ export default function CartPage() {
                     <div className="hidden lg:block lg:col-span-5">
                         <div
                             className="sticky top-24 rounded-[24px] p-7"
-                            style={{ backgroundColor: '#1C0A00', border: '1px solid rgba(245,158,11,0.15)' }}
+                            style={{ backgroundColor: '#F8FAFC', border: '1px solid rgba(34,213,92,0.18)' }}
                         >
                             {/* Summary header */}
                             <div
@@ -205,7 +205,7 @@ export default function CartPage() {
                                     className="h-9 w-9 rounded-xl flex items-center justify-center"
                                     style={{ backgroundColor: 'rgba(245,158,11,0.1)' }}
                                 >
-                                    <ReceiptText className="h-4 w-4" style={{ color: '#F59E0B' }} />
+                                    <ReceiptText className="h-4 w-4" style={{ color: '#22D55C' }} />
                                 </div>
                                 <h2
                                     className="text-base font-black tracking-tight font-[family-name:var(--font-fraunces)]"
@@ -245,7 +245,7 @@ export default function CartPage() {
                                 >
                                     <div className="flex justify-between items-end mb-1">
                                         <span className="font-black text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Total Akhir</span>
-                                        <span className="text-2xl font-black tracking-tight tabular-nums" style={{ color: '#F59E0B' }}>
+                                        <span className="text-2xl font-black tracking-tight tabular-nums" style={{ color: '#22D55C' }}>
                                             {formatCurrency(total)}
                                         </span>
                                     </div>
@@ -264,7 +264,7 @@ export default function CartPage() {
                             <Link
                                 to="/order/checkout"
                                 className="flex items-center justify-center gap-3 w-full h-14 rounded-2xl font-black text-base transition-all duration-200 active:scale-[0.98] group"
-                                style={{ backgroundColor: '#F59E0B', color: '#1C0A00', boxShadow: '0 8px 28px rgba(245,158,11,0.28)' }}
+                                style={{ backgroundColor: '#22D55C', color: '#F8FAFC', boxShadow: '0 8px 28px rgba(245,158,11,0.28)' }}
                             >
                                 Lanjut ke Checkout
                                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -285,8 +285,8 @@ export default function CartPage() {
             <div
                 className="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-3 z-50"
                 style={{
-                    backgroundColor: '#1C0A00',
-                    borderTop: '1px solid rgba(245,158,11,0.15)',
+                    backgroundColor: '#F8FAFC',
+                    borderTop: '1px solid rgba(34,213,92,0.18)',
                     paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))',
                 }}
             >
@@ -301,20 +301,20 @@ export default function CartPage() {
                         </span>
                         <span
                             className="text-lg font-black tabular-nums leading-none"
-                            style={{ color: '#F59E0B' }}
+                            style={{ color: '#22D55C' }}
                         >
                             {formatCurrency(total)}
                         </span>
                     </div>
 
                     {/* Divider */}
-                    <div className="h-8 w-px shrink-0" style={{ backgroundColor: 'rgba(245,158,11,0.15)' }} />
+                    <div className="h-8 w-px shrink-0" style={{ backgroundColor: 'rgba(34,213,92,0.18)' }} />
 
                     {/* Checkout link */}
                     <Link
                         to="/order/checkout"
                         className="flex-1 h-12 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-center"
-                        style={{ backgroundColor: '#F59E0B', color: '#1C0A00' }}
+                        style={{ backgroundColor: '#22D55C', color: '#F8FAFC' }}
                     >
                         Lanjut ke Checkout
                         <ArrowRight className="h-4 w-4" />

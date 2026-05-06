@@ -4,7 +4,7 @@ import { CustomerFooter } from "@/features/customer-order/components/CustomerFoo
 
 export default function CustomerLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-background font-sans selection:bg-[#F59E0B]/20" style={{ fontFamily: "var(--font-fraunces), sans-serif" }}>
+    <div className="min-h-screen flex flex-col bg-background font-sans selection:bg-[#22D55C]/20" style={{ fontFamily: "var(--font-fraunces), sans-serif" }}>
       <CustomerNavbar />
       <main className="flex-1">
         <Outlet />

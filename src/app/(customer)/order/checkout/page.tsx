@@ -60,12 +60,12 @@ function isPastSlot(date: string, slot: string): boolean {
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
 const inputStyle = {
-    backgroundColor: "#FFF8EE",
+    backgroundColor: "#13182B",
     borderColor: "rgba(124,74,30,0.18)",
-    color: "#1C0A00",
+    color: "#F8FAFC",
 };
 function onFocus(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    e.currentTarget.style.borderColor = "#F59E0B";
+    e.currentTarget.style.borderColor = "#22D55C";
 }
 function onBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     e.currentTarget.style.borderColor = "rgba(124,74,30,0.18)";
@@ -77,9 +77,9 @@ function SectionCard({ children }: { children: React.ReactNode }) {
         <div
             className="rounded-[22px] p-5"
             style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "#13182B",
                 border: "1.5px solid rgba(124,74,30,0.1)",
-                boxShadow: "0 2px 12px rgba(28,10,0,0.04)",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
             }}
         >
             {children}
@@ -90,10 +90,10 @@ function SectionCard({ children }: { children: React.ReactNode }) {
 function SectionTitle({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
     return (
         <div className="flex items-center gap-2.5 mb-4">
-            <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "#FEF3C7" }}>
-                <Icon className="h-3.5 w-3.5" style={{ color: "#D97706" }} />
+            <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "#0E6B30" }}>
+                <Icon className="h-3.5 w-3.5" style={{ color: "#16A34A" }} />
             </div>
-            <span className="text-[13px] font-black uppercase tracking-wider" style={{ color: "#1C0A00" }}>
+            <span className="text-[13px] font-black uppercase tracking-wider" style={{ color: "#F8FAFC" }}>
                 {label}
             </span>
         </div>
@@ -102,7 +102,7 @@ function SectionTitle({ icon: Icon, label }: { icon: React.ElementType; label: s
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
     return (
-        <label className="block text-[11px] font-black uppercase tracking-widest mb-1.5" style={{ color: "#9C7D58" }}>
+        <label className="block text-[11px] font-black uppercase tracking-widest mb-1.5" style={{ color: "#9CA3B5" }}>
             {children}
         </label>
     );
@@ -412,8 +412,8 @@ export default function CheckoutPage() {
     // ── Tunggu client mount (hindari Zustand persist hydration mismatch) ──────
     if (!mounted) {
         return (
-            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#FEFAF5" }}>
-                <div className="h-8 w-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0A0E1F" }}>
+                <div className="h-8 w-8 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
             </div>
         );
     }
@@ -421,7 +421,7 @@ export default function CheckoutPage() {
     // ── Table picker overlay ───────────────────────────────────────────────────
     if (showTablePicker) {
         return (
-            <div className="min-h-screen p-4" style={{ backgroundColor: "#FEFAF5" }}>
+            <div className="min-h-screen p-4" style={{ backgroundColor: "#0A0E1F" }}>
                 <div className="container mx-auto max-w-2xl">
                     <TableLayoutPicker
                         onSelect={(table) => {
@@ -437,7 +437,7 @@ export default function CheckoutPage() {
 
     // ── Main form ──────────────────────────────────────────────────────────────
     return (
-        <div className="min-h-screen pb-36 lg:pb-12" style={{ backgroundColor: "#FEFAF5" }}>
+        <div className="min-h-screen pb-36 lg:pb-12" style={{ backgroundColor: "#0A0E1F" }}>
             <div className="container mx-auto px-4 py-8 max-w-5xl">
 
                 {/* Header */}
@@ -445,18 +445,18 @@ export default function CheckoutPage() {
                     <Link
                         to="/order/cart"
                         className="h-11 w-11 rounded-xl flex items-center justify-center border shrink-0 transition-all active:scale-90"
-                        style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.2)", color: "#6B4C2A" }}
+                        style={{ backgroundColor: "#13182B", borderColor: "rgba(34,213,92,0.22)", color: "#9CA3B5" }}
                     >
                         <ArrowLeft className="h-5 w-5" />
                     </Link>
                     <div>
                         <h1
                             className="text-2xl sm:text-3xl font-black tracking-tight font-[family-name:var(--font-fraunces)]"
-                            style={{ color: "#1C0A00" }}
+                            style={{ color: "#F8FAFC" }}
                         >
                             Konfirmasi Pesanan
                         </h1>
-                        <p className="text-sm font-medium mt-0.5" style={{ color: "#9C7D58" }}>
+                        <p className="text-sm font-medium mt-0.5" style={{ color: "#9CA3B5" }}>
                             {items.length} menu · {formatCurrency(total + (selectedRate?.price ?? 0))}
                         </p>
                     </div>
@@ -480,23 +480,23 @@ export default function CheckoutPage() {
                                             onClick={() => setFulfillmentType(type)}
                                             className="flex-1 flex flex-col items-center gap-1.5 py-3.5 px-2 rounded-2xl border-2 transition-all active:scale-[0.97]"
                                             style={{
-                                                backgroundColor: active ? "#FEF3C7" : "#FEFAF5",
-                                                borderColor: active ? "#F59E0B" : "rgba(124,74,30,0.12)",
+                                                backgroundColor: active ? "#0E6B30" : "#0A0E1F",
+                                                borderColor: active ? "#22D55C" : "rgba(34,213,92,0.14)",
                                             }}
                                         >
                                             <div
                                                 className="h-9 w-9 rounded-xl flex items-center justify-center"
                                                 style={
                                                     active
-                                                        ? { backgroundColor: "#F59E0B", color: "#1C0A00" }
-                                                        : { backgroundColor: "rgba(124,74,30,0.07)", color: "#9C7D58" }
+                                                        ? { backgroundColor: "#22D55C", color: "#F8FAFC" }
+                                                        : { backgroundColor: "rgba(124,74,30,0.07)", color: "#9CA3B5" }
                                                 }
                                             >
                                                 <Icon className="h-4 w-4" />
                                             </div>
                                             <span
                                                 className="text-[11px] font-black leading-tight text-center"
-                                                style={{ color: active ? "#92400E" : "#6B4C2A" }}
+                                                style={{ color: active ? "#92400E" : "#9CA3B5" }}
                                             >
                                                 {label}
                                             </span>
@@ -520,10 +520,10 @@ export default function CheckoutPage() {
                                                 <Check className="h-5 w-5" style={{ color: "#059669" }} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-black" style={{ color: "#1C0A00" }}>
+                                                <p className="text-sm font-black" style={{ color: "#F8FAFC" }}>
                                                     {selectedTable.name}
                                                 </p>
-                                                <p className="text-xs font-medium" style={{ color: "#9C7D58" }}>
+                                                <p className="text-xs font-medium" style={{ color: "#9CA3B5" }}>
                                                     {selectedTable.area?.name
                                                         ? `${selectedTable.area.name} · `
                                                         : ""}
@@ -543,7 +543,7 @@ export default function CheckoutPage() {
                                             type="button"
                                             onClick={() => setShowTablePicker(true)}
                                             className="text-xs font-black px-3 py-1.5 rounded-xl transition-all active:scale-95"
-                                            style={{ color: "#D97706", backgroundColor: "#FEF3C7" }}
+                                            style={{ color: "#16A34A", backgroundColor: "#0E6B30" }}
                                         >
                                             Ganti
                                         </button>
@@ -553,7 +553,7 @@ export default function CheckoutPage() {
                                         type="button"
                                         onClick={() => setShowTablePicker(true)}
                                         className="w-full h-12 rounded-2xl border-2 border-dashed flex items-center justify-center gap-2 font-bold text-sm transition-all"
-                                        style={{ borderColor: "rgba(124,74,30,0.25)", color: "#9C7D58" }}
+                                        style={{ borderColor: "rgba(34,213,92,0.28)", color: "#9CA3B5" }}
                                     >
                                         <MapPin className="h-4 w-4" />
                                         Buka Denah Meja
@@ -577,23 +577,23 @@ export default function CheckoutPage() {
                                     <div className="flex items-center gap-2.5">
                                         <div
                                             className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0"
-                                            style={{ backgroundColor: isPreOrder ? "#FEF3C7" : "rgba(124,74,30,0.07)" }}
+                                            style={{ backgroundColor: isPreOrder ? "#0E6B30" : "rgba(124,74,30,0.07)" }}
                                         >
                                             <Calendar
                                                 className="h-3.5 w-3.5"
-                                                style={{ color: isPreOrder ? "#D97706" : "#9C7D58" }}
+                                                style={{ color: isPreOrder ? "#16A34A" : "#9CA3B5" }}
                                             />
                                         </div>
                                         <span
                                             className="text-[13px] font-black uppercase tracking-wider"
-                                            style={{ color: isPreOrder ? "#1C0A00" : "#9C7D58" }}
+                                            style={{ color: isPreOrder ? "#F8FAFC" : "#9CA3B5" }}
                                         >
                                             Jadwalkan untuk nanti
                                         </span>
                                         {isPreOrder && scheduledDate && scheduledTime && (
                                             <span
                                                 className="text-[10px] font-black px-2 py-0.5 rounded-full"
-                                                style={{ backgroundColor: "#FEF3C7", color: "#D97706" }}
+                                                style={{ backgroundColor: "#0E6B30", color: "#16A34A" }}
                                             >
                                                 {scheduledTime}
                                             </span>
@@ -602,7 +602,7 @@ export default function CheckoutPage() {
                                     {/* Toggle pill */}
                                     <div
                                         className="relative h-6 w-11 rounded-full transition-colors shrink-0"
-                                        style={{ backgroundColor: isPreOrder ? "#F59E0B" : "rgba(124,74,30,0.15)" }}
+                                        style={{ backgroundColor: isPreOrder ? "#22D55C" : "rgba(34,213,92,0.18)" }}
                                     >
                                         <div
                                             className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"
@@ -639,8 +639,8 @@ export default function CheckoutPage() {
                                                 </span>
                                             </FieldLabel>
                                             {loadingSlots ? (
-                                                <div className="flex items-center justify-center h-12 gap-2" style={{ color: "#9C7D58" }}>
-                                                    <div className="h-4 w-4 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+                                                <div className="flex items-center justify-center h-12 gap-2" style={{ color: "#9CA3B5" }}>
+                                                    <div className="h-4 w-4 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
                                                     <span className="text-xs font-medium">Memuat slot waktu...</span>
                                                 </div>
                                             ) : (
@@ -656,9 +656,9 @@ export default function CheckoutPage() {
                                                                 onClick={() => setScheduledTime(slot)}
                                                                 className="py-2.5 rounded-xl text-xs font-bold border-2 transition-all"
                                                                 style={{
-                                                                    backgroundColor: active ? "#F59E0B" : past ? "#F5F5F5" : "#FFF8EE",
-                                                                    borderColor: active ? "#D97706" : past ? "#E5E7EB" : "rgba(124,74,30,0.15)",
-                                                                    color: active ? "#1C0A00" : past ? "#9CA3AF" : "#6B4C2A",
+                                                                    backgroundColor: active ? "#22D55C" : past ? "#F5F5F5" : "#13182B",
+                                                                    borderColor: active ? "#16A34A" : past ? "#E5E7EB" : "rgba(34,213,92,0.18)",
+                                                                    color: active ? "#F8FAFC" : past ? "#9CA3AF" : "#9CA3B5",
                                                                     cursor: past ? "not-allowed" : "pointer",
                                                                 }}
                                                             >
@@ -695,7 +695,7 @@ export default function CheckoutPage() {
                                     <div className="relative">
                                         <span
                                             className="absolute inset-y-0 left-4 flex items-center text-sm font-black pointer-events-none"
-                                            style={{ color: "#9C7D58" }}
+                                            style={{ color: "#9CA3B5" }}
                                         >
                                             +62
                                         </span>
@@ -727,19 +727,19 @@ export default function CheckoutPage() {
                                             {outlets.length === 1 ? (
                                                 <div
                                                     className="flex items-start gap-3 px-4 py-3 rounded-2xl border-2"
-                                                    style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.18)" }}
+                                                    style={{ backgroundColor: "#13182B", borderColor: "rgba(124,74,30,0.18)" }}
                                                 >
                                                     <div
                                                         className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                                                        style={{ backgroundColor: "#FEF3C7" }}
+                                                        style={{ backgroundColor: "#0E6B30" }}
                                                     >
-                                                        <MapPin className="h-3.5 w-3.5" style={{ color: "#D97706" }} />
+                                                        <MapPin className="h-3.5 w-3.5" style={{ color: "#16A34A" }} />
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <p className="text-sm font-black" style={{ color: "#1C0A00" }}>
+                                                        <p className="text-sm font-black" style={{ color: "#F8FAFC" }}>
                                                             {outlets[0].name}
                                                         </p>
-                                                        <p className="text-xs font-medium mt-0.5" style={{ color: "#9C7D58" }}>
+                                                        <p className="text-xs font-medium mt-0.5" style={{ color: "#9CA3B5" }}>
                                                             {outlets[0].address}
                                                         </p>
                                                     </div>
@@ -757,19 +757,19 @@ export default function CheckoutPage() {
                                                                 onClick={() => setSelectedOutletId(o.id)}
                                                                 className="flex items-start gap-3 px-4 py-3 rounded-2xl border-2 text-left transition-all active:scale-[0.99]"
                                                                 style={{
-                                                                    backgroundColor: active ? "#FEF3C7" : "#FFF8EE",
-                                                                    borderColor: active ? "#F59E0B" : "rgba(124,74,30,0.18)",
+                                                                    backgroundColor: active ? "#0E6B30" : "#13182B",
+                                                                    borderColor: active ? "#22D55C" : "rgba(124,74,30,0.18)",
                                                                 }}
                                                             >
                                                                 <div
                                                                     className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                                                                    style={{ backgroundColor: active ? "#FDE68A" : "#FEF3C7" }}
+                                                                    style={{ backgroundColor: active ? "#FDE68A" : "#0E6B30" }}
                                                                 >
-                                                                    <MapPin className="h-3.5 w-3.5" style={{ color: "#D97706" }} />
+                                                                    <MapPin className="h-3.5 w-3.5" style={{ color: "#16A34A" }} />
                                                                 </div>
                                                                 <div className="min-w-0 flex-1">
                                                                     <div className="flex items-center gap-2">
-                                                                        <p className="text-sm font-black" style={{ color: "#1C0A00" }}>
+                                                                        <p className="text-sm font-black" style={{ color: "#F8FAFC" }}>
                                                                             {o.name}
                                                                         </p>
                                                                         {!hasCoords && (
@@ -781,12 +781,12 @@ export default function CheckoutPage() {
                                                                             </span>
                                                                         )}
                                                                     </div>
-                                                                    <p className="text-xs font-medium mt-0.5" style={{ color: "#9C7D58" }}>
+                                                                    <p className="text-xs font-medium mt-0.5" style={{ color: "#9CA3B5" }}>
                                                                         {o.address}
                                                                     </p>
                                                                 </div>
                                                                 {active && (
-                                                                    <Check className="h-4 w-4 shrink-0 mt-1" style={{ color: "#D97706" }} />
+                                                                    <Check className="h-4 w-4 shrink-0 mt-1" style={{ color: "#16A34A" }} />
                                                                 )}
                                                             </button>
                                                         );
@@ -794,7 +794,7 @@ export default function CheckoutPage() {
                                                 </div>
                                             )}
                                             {selectedOutlet && !(typeof selectedOutlet.latitude === "number" && typeof selectedOutlet.longitude === "number") && (
-                                                <p className="mt-2 text-[11px] font-bold" style={{ color: "#D97706" }}>
+                                                <p className="mt-2 text-[11px] font-bold" style={{ color: "#16A34A" }}>
                                                     * Cabang ini belum punya titik lokasi — origin akan di-geocode dari alamat (kurang akurat). Atur titik di dashboard Cabang.
                                                 </p>
                                             )}
@@ -864,7 +864,7 @@ export default function CheckoutPage() {
                                                 type="button"
                                                 onClick={() => pickedLocation.address && setRecipientAddress(pickedLocation.address)}
                                                 className="mt-1.5 text-[11px] font-black px-2 py-1 rounded-lg transition-all active:scale-95"
-                                                style={{ backgroundColor: "#FEF3C7", color: "#D97706" }}
+                                                style={{ backgroundColor: "#0E6B30", color: "#16A34A" }}
                                             >
                                                 Gunakan alamat dari peta
                                             </button>
@@ -911,17 +911,17 @@ export default function CheckoutPage() {
 
                                     {/* Validation hints */}
                                     {!destinationArea && (
-                                        <p className="text-xs font-bold" style={{ color: "#D97706" }}>
+                                        <p className="text-xs font-bold" style={{ color: "#16A34A" }}>
                                             * Pilih kecamatan/kelurahan tujuan untuk melihat kurir tersedia
                                         </p>
                                     )}
                                     {destinationArea && !selectedRate && (
-                                        <p className="text-xs font-bold" style={{ color: "#D97706" }}>
+                                        <p className="text-xs font-bold" style={{ color: "#16A34A" }}>
                                             * Pilih layanan pengiriman
                                         </p>
                                     )}
                                     {destinationArea && selectedRate && !recipientAddress.trim() && (
-                                        <p className="text-xs font-bold" style={{ color: "#D97706" }}>
+                                        <p className="text-xs font-bold" style={{ color: "#16A34A" }}>
                                             * Masukkan alamat lengkap tujuan
                                         </p>
                                     )}
@@ -949,17 +949,17 @@ export default function CheckoutPage() {
                             <SectionTitle icon={ReceiptText} label="Pembayaran" />
                             <div
                                 className="flex items-center gap-3 py-3 px-4 rounded-2xl border-2"
-                                style={{ backgroundColor: "#FEF3C7", borderColor: "#F59E0B" }}
+                                style={{ backgroundColor: "#0E6B30", borderColor: "#22D55C" }}
                             >
                                 <div
                                     className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0"
-                                    style={{ backgroundColor: "#F59E0B" }}
+                                    style={{ backgroundColor: "#22D55C" }}
                                 >
-                                    <ReceiptText className="h-4 w-4" style={{ color: "#1C0A00" }} />
+                                    <ReceiptText className="h-4 w-4" style={{ color: "#F8FAFC" }} />
                                 </div>
                                 <div>
                                     <p className="text-[13px] font-black" style={{ color: "#92400E" }}>Tunai (Cash)</p>
-                                    <p className="text-[11px] font-medium" style={{ color: "#9C7D58" }}>Bayar di kasir</p>
+                                    <p className="text-[11px] font-medium" style={{ color: "#9CA3B5" }}>Bayar di kasir</p>
                                 </div>
                             </div>
                         </SectionCard>
@@ -969,7 +969,7 @@ export default function CheckoutPage() {
                     <div className="hidden lg:block lg:col-span-5">
                         <div
                             className="sticky top-24 rounded-[24px] p-7"
-                            style={{ backgroundColor: "#1C0A00", border: "1px solid rgba(245,158,11,0.15)" }}
+                            style={{ backgroundColor: "#F8FAFC", border: "1px solid rgba(34,213,92,0.18)" }}
                         >
                             <div
                                 className="flex items-center gap-3 mb-6 pb-5"
@@ -979,7 +979,7 @@ export default function CheckoutPage() {
                                     className="h-9 w-9 rounded-xl flex items-center justify-center"
                                     style={{ backgroundColor: "rgba(245,158,11,0.1)" }}
                                 >
-                                    <ReceiptText className="h-4 w-4" style={{ color: "#F59E0B" }} />
+                                    <ReceiptText className="h-4 w-4" style={{ color: "#22D55C" }} />
                                 </div>
                                 <h2
                                     className="text-base font-black tracking-tight font-[family-name:var(--font-fraunces)]"
@@ -1020,7 +1020,7 @@ export default function CheckoutPage() {
                                 <div className="pt-4" style={{ borderTop: "1px dashed rgba(245,158,11,0.2)" }}>
                                     <div className="flex justify-between items-end">
                                         <span className="font-black text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>Total</span>
-                                        <span className="text-2xl font-black tracking-tight tabular-nums" style={{ color: "#F59E0B" }}>
+                                        <span className="text-2xl font-black tracking-tight tabular-nums" style={{ color: "#22D55C" }}>
                                             {formatCurrency(total + (selectedRate?.price ?? 0))}
                                         </span>
                                     </div>
@@ -1048,11 +1048,11 @@ export default function CheckoutPage() {
                                 onClick={handleSubmit}
                                 disabled={isSubmitting || !canSubmit}
                                 className="w-full h-14 rounded-2xl font-black text-base flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-55"
-                                style={{ backgroundColor: "#F59E0B", color: "#1C0A00", boxShadow: "0 8px 24px rgba(245,158,11,0.28)" }}
+                                style={{ backgroundColor: "#22D55C", color: "#F8FAFC", boxShadow: "0 8px 24px rgba(245,158,11,0.28)" }}
                             >
                                 {isSubmitting ? (
                                     <>
-                                        <div className="h-4 w-4 rounded-full border-2 border-[#1C0A00]/40 border-t-[#1C0A00] animate-spin" />
+                                        <div className="h-4 w-4 rounded-full border-2 border-[#F8FAFC]/40 border-t-[#F8FAFC] animate-spin" />
                                         Memproses...
                                     </>
                                 ) : (
@@ -1064,7 +1064,7 @@ export default function CheckoutPage() {
                                 className="mt-4 flex items-center justify-center gap-2 py-2.5 rounded-xl"
                                 style={{ backgroundColor: "rgba(245,158,11,0.07)", border: "1px solid rgba(245,158,11,0.12)" }}
                             >
-                                <div className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: "#F59E0B" }} />
+                                <div className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: "#22D55C" }} />
                                 <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: "rgba(245,158,11,0.65)" }}>
                                     Bayar di Kasir
                                 </p>
@@ -1078,8 +1078,8 @@ export default function CheckoutPage() {
             <div
                 className="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-3 z-50"
                 style={{
-                    backgroundColor: "#1C0A00",
-                    borderTop: "1px solid rgba(245,158,11,0.15)",
+                    backgroundColor: "#F8FAFC",
+                    borderTop: "1px solid rgba(34,213,92,0.18)",
                     paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))",
                 }}
             >
@@ -1088,20 +1088,20 @@ export default function CheckoutPage() {
                         <span className="text-[10px] font-black uppercase tracking-[0.18em] mb-0.5" style={{ color: "rgba(245,158,11,0.5)" }}>
                             Total
                         </span>
-                        <span className="text-lg font-black tabular-nums leading-none" style={{ color: "#F59E0B" }}>
+                        <span className="text-lg font-black tabular-nums leading-none" style={{ color: "#22D55C" }}>
                             {formatCurrency(total + (selectedRate?.price ?? 0))}
                         </span>
                     </div>
-                    <div className="h-8 w-px shrink-0" style={{ backgroundColor: "rgba(245,158,11,0.15)" }} />
+                    <div className="h-8 w-px shrink-0" style={{ backgroundColor: "rgba(34,213,92,0.18)" }} />
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting || !canSubmit}
                         className="flex-1 h-12 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-55"
-                        style={{ backgroundColor: "#F59E0B", color: "#1C0A00" }}
+                        style={{ backgroundColor: "#22D55C", color: "#F8FAFC" }}
                     >
                         {isSubmitting ? (
                             <>
-                                <div className="h-3.5 w-3.5 rounded-full border-2 border-[#1C0A00]/40 border-t-[#1C0A00] animate-spin" />
+                                <div className="h-3.5 w-3.5 rounded-full border-2 border-[#F8FAFC]/40 border-t-[#F8FAFC] animate-spin" />
                                 Memproses...
                             </>
                         ) : (

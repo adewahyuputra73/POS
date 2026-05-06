@@ -27,15 +27,15 @@ function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label:
     <div className="flex items-start gap-3">
       <div
         className="h-8 w-8 rounded-xl flex items-center justify-center shrink-0"
-        style={{ backgroundColor: "#FEF3C7" }}
+        style={{ backgroundColor: "#0E6B30" }}
       >
-        <Icon className="h-3.5 w-3.5" style={{ color: "#D97706" }} />
+        <Icon className="h-3.5 w-3.5" style={{ color: "#16A34A" }} />
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: "#9C7D58" }}>
+        <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: "#9CA3B5" }}>
           {label}
         </p>
-        <p className="text-sm font-bold mt-0.5" style={{ color: "#1C0A00" }}>
+        <p className="text-sm font-bold mt-0.5" style={{ color: "#F8FAFC" }}>
           {value}
         </p>
       </div>
@@ -156,15 +156,15 @@ export default function TrackingPage() {
   // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#FEFAF5" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0A0E1F" }}>
         <div className="flex flex-col items-center gap-4">
           <div
             className="h-14 w-14 rounded-2xl flex items-center justify-center animate-pulse"
-            style={{ backgroundColor: "#FEF3C7" }}
+            style={{ backgroundColor: "#0E6B30" }}
           >
-            <Package className="h-7 w-7" style={{ color: "#D97706" }} />
+            <Package className="h-7 w-7" style={{ color: "#16A34A" }} />
           </div>
-          <p className="text-sm font-black" style={{ color: "#9C7D58" }}>
+          <p className="text-sm font-black" style={{ color: "#9CA3B5" }}>
             Memuat informasi pengiriman...
           </p>
         </div>
@@ -175,7 +175,7 @@ export default function TrackingPage() {
   // ── Error ──────────────────────────────────────────────────────────────────
   if (error && !orderData) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: "#FEFAF5" }}>
+      <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: "#0A0E1F" }}>
         <div className="text-center max-w-xs">
           <div
             className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
@@ -183,12 +183,12 @@ export default function TrackingPage() {
           >
             <AlertCircle className="h-8 w-8" style={{ color: "#DC2626" }} />
           </div>
-          <p className="text-base font-black mb-2" style={{ color: "#1C0A00" }}>Gagal Memuat</p>
-          <p className="text-sm font-medium mb-5" style={{ color: "#9C7D58" }}>{error}</p>
+          <p className="text-base font-black mb-2" style={{ color: "#F8FAFC" }}>Gagal Memuat</p>
+          <p className="text-sm font-medium mb-5" style={{ color: "#9CA3B5" }}>{error}</p>
           <button
             onClick={() => loadData()}
             className="h-11 px-6 rounded-2xl font-black text-sm"
-            style={{ backgroundColor: "#F59E0B", color: "#1C0A00" }}
+            style={{ backgroundColor: "#22D55C", color: "#F8FAFC" }}
           >
             Coba Lagi
           </button>
@@ -198,7 +198,7 @@ export default function TrackingPage() {
   }
 
   return (
-    <div className="min-h-screen pb-10" style={{ backgroundColor: "#FEFAF5" }}>
+    <div className="min-h-screen pb-10" style={{ backgroundColor: "#0A0E1F" }}>
       <div className="container mx-auto px-4 py-6 max-w-lg">
 
         {/* Header */}
@@ -207,19 +207,19 @@ export default function TrackingPage() {
             type="button"
             onClick={() => navigate(-1)}
             className="h-11 w-11 rounded-xl flex items-center justify-center border shrink-0 transition-all active:scale-90"
-            style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.2)", color: "#6B4C2A" }}
+            style={{ backgroundColor: "#13182B", borderColor: "rgba(34,213,92,0.22)", color: "#9CA3B5" }}
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div className="flex-1 min-w-0">
             <h1
               className="text-xl font-black tracking-tight font-[family-name:var(--font-fraunces)]"
-              style={{ color: "#1C0A00" }}
+              style={{ color: "#F8FAFC" }}
             >
               Lacak Pesanan
             </h1>
             {orderData?.order_number && (
-              <p className="text-xs font-bold mt-0.5" style={{ color: "#9C7D58" }}>
+              <p className="text-xs font-bold mt-0.5" style={{ color: "#9CA3B5" }}>
                 #{orderData.order_number}
               </p>
             )}
@@ -229,7 +229,7 @@ export default function TrackingPage() {
             onClick={() => loadData(false)}
             disabled={refreshing}
             className="h-11 w-11 rounded-xl flex items-center justify-center border transition-all active:scale-90 disabled:opacity-50"
-            style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.2)", color: "#D97706" }}
+            style={{ backgroundColor: "#13182B", borderColor: "rgba(34,213,92,0.22)", color: "#16A34A" }}
           >
             <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
           </button>
@@ -240,27 +240,27 @@ export default function TrackingPage() {
           <div
             className="rounded-[22px] p-8 text-center"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#13182B",
               border: "1.5px solid rgba(124,74,30,0.1)",
-              boxShadow: "0 2px 12px rgba(28,10,0,0.04)",
+              boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
             }}
           >
             <div
               className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: "#FEF3C7" }}
+              style={{ backgroundColor: "#0E6B30" }}
             >
-              <Package className="h-8 w-8" style={{ color: "#D97706" }} />
+              <Package className="h-8 w-8" style={{ color: "#16A34A" }} />
             </div>
-            <p className="text-base font-black mb-2" style={{ color: "#1C0A00" }}>
+            <p className="text-base font-black mb-2" style={{ color: "#F8FAFC" }}>
               Kurir Belum Ditemukan
             </p>
-            <p className="text-sm font-medium mb-4" style={{ color: "#9C7D58" }}>
+            <p className="text-sm font-medium mb-4" style={{ color: "#9CA3B5" }}>
               Pesanan kamu sedang diproses. Kami sedang mencari kurir terdekat —
               halaman ini akan memperbarui otomatis setiap 30 detik.
             </p>
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black"
-              style={{ backgroundColor: "#FEF3C7", color: "#D97706" }}
+              style={{ backgroundColor: "#0E6B30", color: "#16A34A" }}
             >
               <RefreshCw className="h-3.5 w-3.5 animate-spin" />
               Mencari kurir...
@@ -307,9 +307,9 @@ export default function TrackingPage() {
             <div
               className="rounded-[22px] p-5 mb-5 space-y-4"
               style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "#13182B",
                 border: "1.5px solid rgba(124,74,30,0.1)",
-                boxShadow: "0 2px 12px rgba(28,10,0,0.04)",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
               }}
             >
               {displayAddress && (
@@ -347,7 +347,7 @@ export default function TrackingPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-black px-4 py-2 rounded-xl transition-all active:scale-95"
-                    style={{ backgroundColor: "#FEF3C7", color: "#D97706" }}
+                    style={{ backgroundColor: "#0E6B30", color: "#16A34A" }}
                   >
                     <Package className="h-3.5 w-3.5" />
                     Lacak di Situs Kurir

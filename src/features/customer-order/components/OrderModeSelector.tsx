@@ -35,29 +35,29 @@ export function OrderModeSelector({ onSelect }: OrderModeSelectorProps) {
                     onClick={() => onSelect(mode)}
                     className="w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 active:scale-[0.98] group"
                     style={{
-                        backgroundColor: "#FFFFFF",
-                        borderColor: "rgba(124,74,30,0.15)",
+                        backgroundColor: "#13182B",
+                        borderColor: "rgba(34,213,92,0.18)",
                     }}
                     onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = "#F59E0B";
-                        e.currentTarget.style.boxShadow = "0 4px 20px rgba(245,158,11,0.15)";
+                        e.currentTarget.style.borderColor = "#22D55C";
+                        e.currentTarget.style.boxShadow = "0 4px 20px rgba(34,213,92,0.18)";
                     }}
                     onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(124,74,30,0.15)";
+                        e.currentTarget.style.borderColor = "rgba(34,213,92,0.18)";
                         e.currentTarget.style.boxShadow = "none";
                     }}
                 >
                     <div
                         className="h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-colors"
-                        style={{ backgroundColor: "#FEF3C7" }}
+                        style={{ backgroundColor: "#0E6B30" }}
                     >
                         <Icon className="h-5 w-5" style={{ color: "#92400E" }} />
                     </div>
                     <div className="flex-1 text-left">
-                        <p className="text-sm font-black tracking-tight" style={{ color: "#1C0A00" }}>
+                        <p className="text-sm font-black tracking-tight" style={{ color: "#F8FAFC" }}>
                             {label}
                         </p>
-                        <p className="text-xs font-medium mt-0.5" style={{ color: "#9C7D58" }}>
+                        <p className="text-xs font-medium mt-0.5" style={{ color: "#9CA3B5" }}>
                             {desc}
                         </p>
                     </div>
@@ -66,7 +66,7 @@ export function OrderModeSelector({ onSelect }: OrderModeSelectorProps) {
                         style={{ backgroundColor: "rgba(245,158,11,0.1)" }}
                     >
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                            <path d="M5.25 3.5L8.75 7L5.25 10.5" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M5.25 3.5L8.75 7L5.25 10.5" stroke="#22D55C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </div>
                 </button>

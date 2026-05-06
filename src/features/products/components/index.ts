@@ -5,3 +5,4 @@ export { ProductTable } from './product-table';
 export { ProductModal } from './product-modal';
 export { VariantTable } from './variant-table';
 export { VariantModal } from './variant-modal';
+export { ProductVariantsSection } from './product-variants-section';

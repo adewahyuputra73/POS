@@ -14,10 +14,10 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove }: CartItemCardP
     return (
         <div
             className="flex gap-3 p-3 md:p-5 rounded-2xl md:rounded-3xl border group transition-all duration-300"
-            style={{ backgroundColor: '#FFFFFF', borderColor: 'rgba(124,74,30,0.12)', boxShadow: '0 2px 8px rgba(28,10,0,0.04)' }}
+            style={{ backgroundColor: '#13182B', borderColor: 'rgba(34,213,92,0.14)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
         >
             {/* Image */}
-            <div className="relative h-16 w-16 md:h-24 md:w-24 rounded-xl md:rounded-2xl overflow-hidden shrink-0" style={{ backgroundColor: '#FEF3C7' }}>
+            <div className="relative h-16 w-16 md:h-24 md:w-24 rounded-xl md:rounded-2xl overflow-hidden shrink-0" style={{ backgroundColor: '#0E6B30' }}>
                 {primaryImage ? (
                     <img
                         src={primaryImage.url}
@@ -26,7 +26,7 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove }: CartItemCardP
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-lg md:text-xl font-black" style={{ color: '#D97706', opacity: 0.3 }}>
+                        <span className="text-lg md:text-xl font-black" style={{ color: '#16A34A', opacity: 0.3 }}>
                             {item.product.name.charAt(0)}
                         </span>
                     </div>
@@ -37,7 +37,7 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove }: CartItemCardP
             <div className="flex-1 min-w-0 flex flex-col justify-between">
                 <div>
                     <div className="flex justify-between items-start gap-2">
-                        <h3 className="text-sm md:text-base font-black line-clamp-1 tracking-tight" style={{ color: '#1C0A00' }}>
+                        <h3 className="text-sm md:text-base font-black line-clamp-1 tracking-tight" style={{ color: '#F8FAFC' }}>
                             {item.product.name}
                         </h3>
                         <button
@@ -52,7 +52,7 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove }: CartItemCardP
                     </div>
 
                     {item.selectedVariants.length > 0 && (
-                        <p className="text-[10px] md:text-xs font-medium mt-0.5 md:mt-1" style={{ color: '#9C7D58' }}>
+                        <p className="text-[10px] md:text-xs font-medium mt-0.5 md:mt-1" style={{ color: '#9CA3B5' }}>
                             {item.selectedVariants.map(v => v.optionName).join(", ")}
                         </p>
                     )}
@@ -60,9 +60,9 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove }: CartItemCardP
                     {item.notes && (
                         <div
                             className="mt-1.5 md:mt-2 px-2 md:px-3 py-1 md:py-1.5 rounded-lg border"
-                            style={{ backgroundColor: '#FFF8EE', borderColor: 'rgba(124,74,30,0.15)' }}
+                            style={{ backgroundColor: '#13182B', borderColor: 'rgba(34,213,92,0.18)' }}
                         >
-                            <p className="text-[10px] font-bold italic line-clamp-1" style={{ color: '#9C7D58' }}>
+                            <p className="text-[10px] font-bold italic line-clamp-1" style={{ color: '#9CA3B5' }}>
                                 &ldquo;{item.notes}&rdquo;
                             </p>
                         </div>
@@ -70,28 +70,28 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove }: CartItemCardP
                 </div>
 
                 <div className="flex items-center justify-between mt-2 md:mt-3">
-                    <span className="text-sm md:text-base font-black tracking-tight" style={{ color: '#1C0A00' }}>
+                    <span className="text-sm md:text-base font-black tracking-tight" style={{ color: '#F8FAFC' }}>
                         {formatCurrency(item.subtotal)}
                     </span>
 
                     <div
                         className="flex items-center gap-2 md:gap-3 p-0.5 md:p-1 rounded-lg md:rounded-xl border"
-                        style={{ backgroundColor: '#FFF8EE', borderColor: 'rgba(124,74,30,0.15)' }}
+                        style={{ backgroundColor: '#13182B', borderColor: 'rgba(34,213,92,0.18)' }}
                     >
                         <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                             className="h-6 w-6 md:h-7 md:w-7 rounded-md md:rounded-lg flex items-center justify-center transition-all border"
-                            style={{ backgroundColor: '#FFFFFF', color: '#6B4C2A', borderColor: 'rgba(124,74,30,0.2)' }}
+                            style={{ backgroundColor: '#13182B', color: '#9CA3B5', borderColor: 'rgba(34,213,92,0.22)' }}
                         >
                             <Minus className="h-3 w-3 md:h-3.5 md:w-3.5" />
                         </button>
-                        <span className="text-xs md:text-sm font-black w-4 text-center" style={{ color: '#1C0A00' }}>
+                        <span className="text-xs md:text-sm font-black w-4 text-center" style={{ color: '#F8FAFC' }}>
                             {item.quantity}
                         </span>
                         <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
                             className="h-6 w-6 md:h-7 md:w-7 rounded-md md:rounded-lg flex items-center justify-center transition-all"
-                            style={{ backgroundColor: '#F59E0B', color: '#1C0A00', boxShadow: '0 2px 8px rgba(245,158,11,0.3)' }}
+                            style={{ backgroundColor: '#22D55C', color: '#F8FAFC', boxShadow: '0 2px 8px rgba(245,158,11,0.3)' }}
                         >
                             <Plus className="h-3 w-3 md:h-3.5 md:w-3.5" />
                         </button>

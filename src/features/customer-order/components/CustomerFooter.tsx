@@ -19,7 +19,7 @@ export function CustomerFooter() {
         <footer
             className="py-12 px-4"
             style={{
-                backgroundColor: '#1C0A00',
+                backgroundColor: '#F8FAFC',
                 borderTop: '1px solid rgba(245,158,11,0.2)',
             }}
         >
@@ -28,7 +28,7 @@ export function CustomerFooter() {
                     <div>
                         <h3
                             className="text-lg font-bold mb-3 font-[family-name:var(--font-fraunces)] italic"
-                            style={{ color: '#F59E0B' }}
+                            style={{ color: '#22D55C' }}
                         >
                             {storeName}
                         </h3>
