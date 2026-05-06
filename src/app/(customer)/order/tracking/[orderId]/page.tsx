@@ -1,8 +1,6 @@
-"use client";
-
 import { useState, useEffect, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
+import { useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   ArrowLeft,
   Package,
@@ -48,7 +46,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label:
 // ── Main Page ──────────────────────────────────────────────────────────────────
 export default function TrackingPage() {
   const params = useParams();
-  const router = useRouter();
+  const navigate = useNavigate();
   const orderId = params.orderId as string;
 
   const [orderData, setOrderData] = useState<any>(null);
@@ -207,7 +205,7 @@ export default function TrackingPage() {
         <div className="flex items-center gap-4 mb-6">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => navigate(-1)}
             className="h-11 w-11 rounded-xl flex items-center justify-center border shrink-0 transition-all active:scale-90"
             style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.2)", color: "#6B4C2A" }}
           >
@@ -345,7 +343,7 @@ export default function TrackingPage() {
               {trackingData.courier?.link && (
                 <div className="pt-1">
                   <Link
-                    href={trackingData.courier.link}
+                    to={trackingData.courier.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-black px-4 py-2 rounded-xl transition-all active:scale-95"

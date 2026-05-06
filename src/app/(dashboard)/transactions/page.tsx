@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout";
 import { Button, useToast, CurrencyInput } from "@/components/ui";
 import { TransactionTable } from "@/features/transactions/components/transaction-table";
@@ -102,8 +100,8 @@ function mapApiOrder(raw: any): Order {
 
 export default function TransactionsPage() {
   const { showToast } = useToast();
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // Data state
   const [orders, setOrders] = useState<Order[]>([]);
@@ -170,9 +168,9 @@ export default function TransactionsPage() {
       setSelectedOrder(target);
       setView("detail");
       // Bersihkan query param dari URL agar tidak re-trigger saat fetchData ulang
-      router.replace("/transactions", { scroll: false });
+      navigate("/transactions", { replace: true });
     }
-  }, [searchParams, orders, router]);
+  }, [searchParams, orders, navigate]);
 
   const handleUpdateStatus = useCallback(async (orderId: string | number, newStatus: string) => {
     try {

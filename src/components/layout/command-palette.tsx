@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -218,7 +216,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export function CommandPalette() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { logout } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -244,10 +242,10 @@ export function CommandPalette() {
       keywords: ["logout", "signout", "keluar", "exit"],
       action: () => {
         logout();
-        router.push("/login");
+        navigate("/login");
       },
     },
-  ], [logout, router]);
+  ], [logout, navigate]);
 
   // Filter results based on query
   const filteredItems = useMemo(() => {
@@ -359,7 +357,7 @@ export function CommandPalette() {
     if (item.action) {
       item.action();
     } else if (item.href) {
-      router.push(item.href);
+      navigate(item.href);
     }
 
     // Close and reset
@@ -548,20 +546,19 @@ export function CommandPalette() {
         </div>
       </div>
 
-      {/* CSS animations */}
-      <style jsx global>{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
         }
         @keyframes slideIn {
-          from { 
-            opacity: 0; 
-            transform: scale(0.96) translateY(-10px); 
+          from {
+            opacity: 0;
+            transform: scale(0.96) translateY(-10px);
           }
-          to { 
-            opacity: 1; 
-            transform: scale(1) translateY(0); 
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
           }
         }
       `}</style>

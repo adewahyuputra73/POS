@@ -1,24 +1,12 @@
-"use client";
-
-import { useState } from "react";
-import dynamic from "next/dynamic";
+import { useState, lazy, Suspense } from "react";
 import { Card, CardContent, Button, Input } from "@/components/ui";
 import { useToast } from "@/components/ui";
 import { Clock, MapPin, Loader2, Crosshair } from "lucide-react";
 import type { Outlet, CreateOutletRequest, OutletOperatingHours } from "../types";
 import type { PickedLocation } from "@/features/delivery/components/LocationPickerInner";
 
-const LocationPickerInner = dynamic(
-  () => import("@/features/delivery/components/LocationPickerInner"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-divider bg-background h-[280px]">
-        <Loader2 className="h-5 w-5 animate-spin text-primary" />
-        <p className="text-xs font-medium text-text-secondary">Memuat peta...</p>
-      </div>
-    ),
-  }
+const LocationPickerInner = lazy(
+  () => import("@/features/delivery/components/LocationPickerInner")
 );
 
 const DAYS: { key: keyof OutletOperatingHours; label: string }[] = [
@@ -181,11 +169,18 @@ export function OutletModal({ outlet, onClose, onSave }: OutletModalProps) {
                 </Button>
               </div>
 
-              <LocationPickerInner
-                initialLat={initialLat}
-                initialLng={initialLng}
-                onPick={handlePick}
-              />
+              <Suspense fallback={
+                <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-divider bg-background h-[280px]">
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                  <p className="text-xs font-medium text-text-secondary">Memuat peta...</p>
+                </div>
+              }>
+                <LocationPickerInner
+                  initialLat={initialLat}
+                  initialLng={initialLng}
+                  onPick={handlePick}
+                />
+              </Suspense>
 
               {locateError && (
                 <p className="text-xs text-error font-medium">{locateError}</p>

@@ -1,8 +1,6 @@
-"use client";
-
 import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     ArrowLeft, MapPin, ShoppingBag, Truck, User,
     ClipboardList, ReceiptText, Send, Calendar, Clock,
@@ -112,7 +110,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function CheckoutPage() {
-    const router = useRouter();
+    const navigate = useNavigate();
     const { showToast } = useToast();
     const { items, getSubtotal, getTax, getServiceFee, getTotal, clearCart } = useCustomerCartStore();
 
@@ -224,8 +222,8 @@ export default function CheckoutPage() {
         // tanpa diintervensi guard ini (race condition: dine-in/pickup nggak
         // punya await panjang seperti Biteship, jadi useEffect ini balap
         // duluan push ke confirmation).
-        if (items.length === 0 && !isSubmitting) router.push("/order");
-    }, [items.length, router, isSubmitting]);
+        if (items.length === 0 && !isSubmitting) navigate("/order");
+    }, [items.length, navigate, isSubmitting]);
 
     // Reset pre-order state when switching to delivery
     useEffect(() => {
@@ -399,7 +397,7 @@ export default function CheckoutPage() {
                 ...(fulfillmentType === "delivery" ? { hasDelivery: "1" } : {}),
                 ...(isPreOrder ? { preOrder: "1" } : {}),
             });
-            router.push(`/order/confirmation?${confirmParams.toString()}`);
+            navigate(`/order/confirmation?${confirmParams.toString()}`);
         } catch (err: any) {
             const status = err?.response?.status;
             const beMsg = err?.response?.data?.error ?? err?.response?.data?.message;
@@ -445,7 +443,7 @@ export default function CheckoutPage() {
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <Link
-                        href="/order/cart"
+                        to="/order/cart"
                         className="h-11 w-11 rounded-xl flex items-center justify-center border shrink-0 transition-all active:scale-90"
                         style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.2)", color: "#6B4C2A" }}
                     >

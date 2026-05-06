@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { APP_NAME } from "@/lib/constants";
 
 export default function NotFound() {
@@ -13,7 +13,7 @@ export default function NotFound() {
           Halaman yang Anda cari tidak ada atau sudah dipindahkan.
         </p>
         <Link
-          href="/dashboard"
+          to="/dashboard"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
         >
           Kembali ke Dashboard

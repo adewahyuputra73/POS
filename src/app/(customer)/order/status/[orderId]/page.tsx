@@ -1,8 +1,6 @@
-"use client";
-
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams } from "next/navigation";
-import Link from "next/link";
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     ArrowLeft, RefreshCw, CheckCircle2, Clock,
     ChefHat, XCircle, ShoppingBag, FileText,
@@ -264,7 +262,7 @@ export default function OrderStatusPage() {
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-8">
                     <Link
-                        href="/order"
+                        to="/order"
                         className="h-11 w-11 rounded-xl flex items-center justify-center border shrink-0 transition-all active:scale-90"
                         style={{ backgroundColor: "#FFF8EE", borderColor: "rgba(124,74,30,0.2)", color: "#6B4C2A" }}
                     >
@@ -333,7 +331,7 @@ export default function OrderStatusPage() {
                 {/* Action buttons */}
                 <div className="space-y-3">
                     <Link
-                        href={`/invoice/${orderId}`}
+                        to={`/invoice/${orderId}`}
                         className="inline-flex items-center justify-center gap-3 font-semibold transition-all duration-200 rounded-2xl active:scale-[0.98] w-full h-14 text-base border-2"
                         style={{ borderColor: "rgba(245,158,11,0.4)", color: "#D97706", backgroundColor: "#FFFBEB" }}
                     >
@@ -342,7 +340,7 @@ export default function OrderStatusPage() {
                     </Link>
 
                     <Link
-                        href="/order"
+                        to="/order"
                         className="inline-flex items-center justify-center gap-3 font-semibold transition-all duration-200 rounded-2xl active:scale-[0.98] w-full h-14 text-base"
                         style={{ backgroundColor: "#1C0A00", color: "#FFFFFF", boxShadow: "0 6px 20px rgba(28,10,0,0.25)" }}
                     >

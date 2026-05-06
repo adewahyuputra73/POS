@@ -1,7 +1,5 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { ShoppingCart, Store } from "lucide-react";
 import { useCustomerCartStore } from "@/stores/customer-cart-store";
 import { APP_NAME } from "@/lib/constants";
@@ -14,7 +12,7 @@ export function CustomerNavbar() {
     return (
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-divider shadow-sm">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                <Link href="/order" className="flex items-center gap-2 group">
+                <Link to="/order" className="flex items-center gap-2 group">
                     <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-lg transform group-hover:rotate-6 transition-all duration-300" style={{ backgroundColor: '#1C0A00' }}>
                         <Store className="h-6 w-6 text-white" />
                     </div>
@@ -26,7 +24,7 @@ export function CustomerNavbar() {
                 </Link>
 
                 <Link
-                    href="/order/cart"
+                    to="/order/cart"
                     className="relative p-2.5 rounded-full hover:bg-[#FEF3C7] text-text-primary hover:text-[#D97706] transition-all duration-200"
                 >
                     <ShoppingCart className="h-6 w-6" />

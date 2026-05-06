@@ -1,14 +1,7 @@
-"use client";
-
-import { use } from "react";
+import { useParams } from "react-router-dom";
 import { InvoiceView } from "@/features/invoice";
 
-interface InvoicePageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default function InvoicePage({ params }: InvoicePageProps) {
-  const { id } = use(params);
-
-  return <InvoiceView orderId={id} />;
+export default function InvoicePage() {
+  const { id } = useParams<{ id: string }>();
+  return <InvoiceView orderId={id!} />;
 }

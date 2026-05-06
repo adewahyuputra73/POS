@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore, useUIStore } from "@/stores";
 import { Avatar, Button } from "@/components/ui";
 import { CommandPalette } from "./command-palette";
@@ -23,7 +21,7 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -44,7 +42,7 @@ interface NotificationPanelProps {
 }
 
 function NotificationPanel({ onClose, permission, isSupported, onRequestPermission }: NotificationPanelProps) {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [items, setItems] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -93,7 +91,7 @@ function NotificationPanel({ onClose, permission, isSupported, onRequestPermissi
     const orderId = item.data?.order_id;
     const type = (item.type ?? "").toLowerCase();
     if (orderId || type.includes("order") || type.includes("payment") || type.includes("transaksi")) {
-      router.push("/transactions");
+      navigate("/transactions");
     }
     onClose();
   };
@@ -193,7 +191,7 @@ function NotificationPanel({ onClose, permission, isSupported, onRequestPermissi
 }
 
 export function Header() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   const { setSidebarMobileOpen, sidebarCollapsed, theme, setTheme } = useUIStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -226,7 +224,7 @@ export function Header() {
   const handleLogout = () => {
     setDropdownOpen(false);
     logout();
-    router.push("/login");
+    navigate("/login");
   };
 
   return (
@@ -334,7 +332,7 @@ export function Header() {
 
                 <div className="px-2 space-y-0.5">
                   <Link
-                    href="/profile"
+                    to="/profile"
                     onClick={() => setDropdownOpen(false)}
                     className="flex items-center gap-3 px-3 py-2 text-sm text-text-primary hover:bg-primary-light hover:text-primary rounded-lg transition-all"
                   >
@@ -344,7 +342,7 @@ export function Header() {
                     <span className="font-medium">Profil Saya</span>
                   </Link>
                   <Link
-                    href="/settings"
+                    to="/settings"
                     onClick={() => setDropdownOpen(false)}
                     className="flex items-center gap-3 px-3 py-2 text-sm text-text-primary hover:bg-warning-light hover:text-warning rounded-lg transition-all"
                   >

@@ -1,11 +1,5 @@
-import { Metadata } from "next";
 import { RegisterForm } from "@/features/auth";
 import { APP_NAME } from "@/lib/constants";
-
-export const metadata: Metadata = {
-  title: "Daftar",
-  description: `Buat akun ${APP_NAME} baru`,
-};
 
 export default function RegisterPage() {
   return (

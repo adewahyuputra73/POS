@@ -1,7 +1,5 @@
-"use client";
-
 import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useNavigate, useParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -17,7 +15,7 @@ import { SupplierMaterial, SupplierMaterialFormData } from "@/features/inventory
 
 export default function SupplierDetailClient() {
   const params = useParams();
-  const router = useRouter();
+  const navigate = useNavigate();
   const { showToast } = useToast();
 
   const supplierId = Number(params.id);
@@ -35,7 +33,7 @@ export default function SupplierDetailClient() {
           breadcrumbs={[{ label: "Inventory" }, { label: "Supplier", href: "/inventory/suppliers" }, { label: "Detail" }]}
         />
         <div className="bg-surface rounded-xl border border-border p-12 text-center">
-          <Button variant="outline" onClick={() => router.back()}>Kembali</Button>
+          <Button variant="outline" onClick={() => navigate(-1)}>Kembali</Button>
         </div>
       </div>
     );
@@ -77,7 +75,7 @@ export default function SupplierDetailClient() {
           { label: supplier.name },
         ]}
         actions={
-          <Button variant="outline" onClick={() => router.back()} className="gap-1.5">
+          <Button variant="outline" onClick={() => navigate(-1)} className="gap-1.5">
             <ArrowLeft className="h-4 w-4" /> Kembali
           </Button>
         }

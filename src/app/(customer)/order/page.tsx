@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { Search, ShoppingBag, Loader2, RefreshCw, MapPin } from "lucide-react";
 import { mockVariants } from "@/features/products/mock-data";
 import type { Product, Variant } from "@/features/products";
@@ -304,7 +302,7 @@ export default function OrderPage() {
             {mounted && itemCount > 0 && (
                 <div className="fixed bottom-6 left-0 right-0 px-4 md:px-0 flex justify-center z-50 pointer-events-none">
                     <Link
-                        href="/order/cart"
+                        to="/order/cart"
                         className="pointer-events-auto flex items-center gap-4 text-white pl-6 pr-3 py-3.5 rounded-3xl transform hover:scale-105 active:scale-95 transition-all duration-300 w-full max-w-md group"
                         style={{ backgroundColor: '#1C0A00', boxShadow: '0 20px 60px rgba(28,10,0,0.5)' }}
                     >

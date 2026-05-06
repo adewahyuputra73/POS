@@ -1,6 +1,4 @@
-"use client";
-
-import dynamic from "next/dynamic";
+import { lazy, Suspense } from "react";
 import { useState } from "react";
 import {
   Card,
@@ -28,25 +26,8 @@ import {
 import type { StoreInfo, UpdateStoreRequest, StoreProductType } from "../types";
 import type { PickedLocation } from "@/features/delivery/components/LocationPicker";
 
-const LocationPickerInner = dynamic(
-  () => import("@/features/delivery/components/LocationPickerInner"),
-  {
-    ssr: false,
-    loading: () => (
-      <div
-        className="w-full flex flex-col items-center justify-center gap-3"
-        style={{
-          height: 280,
-          backgroundColor: "#F9FAFB",
-          borderRadius: 12,
-          border: "2px dashed #E5E7EB",
-        }}
-      >
-        <Loader2 className="h-5 w-5 animate-spin text-primary" />
-        <p className="text-sm font-medium text-text-secondary">Memuat peta...</p>
-      </div>
-    ),
-  }
+const LocationPickerInner = lazy(
+  () => import("@/features/delivery/components/LocationPickerInner")
 );
 
 interface StoreInfoFormProps {
@@ -275,11 +256,26 @@ export function StoreInfoForm({ store, onSave }: StoreInfoFormProps) {
               Klik peta atau seret pin untuk menentukan koordinat toko. Digunakan untuk menghitung tarif pengiriman.
             </p>
 
-            <LocationPickerInner
-              initialLat={store.latitude ?? undefined}
-              initialLng={store.longitude ?? undefined}
-              onPick={setPickedLocation}
-            />
+            <Suspense fallback={
+              <div
+                className="w-full flex flex-col items-center justify-center gap-3"
+                style={{
+                  height: 280,
+                  backgroundColor: "#F9FAFB",
+                  borderRadius: 12,
+                  border: "2px dashed #E5E7EB",
+                }}
+              >
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <p className="text-sm font-medium text-text-secondary">Memuat peta...</p>
+              </div>
+            }>
+              <LocationPickerInner
+                initialLat={store.latitude ?? undefined}
+                initialLng={store.longitude ?? undefined}
+                onPick={setPickedLocation}
+              />
+            </Suspense>
 
             {/* Result display */}
             {pickedLocation ? (

@@ -1,7 +1,5 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { ArrowLeft, ShoppingBag, ReceiptText, ArrowRight, Plus } from "lucide-react";
 import { useCustomerCartStore } from "@/stores/customer-cart-store";
 import { CartItemCard } from "@/features/customer-order";
@@ -61,7 +59,7 @@ export default function CartPage() {
                     Sepertinya Anda belum menambahkan menu apa pun. Mari jelajahi menu lezat kami!
                 </p>
                 <Link
-                    href={orderUrl}
+                    to={orderUrl}
                     className="inline-flex items-center gap-3 h-13 px-8 rounded-2xl font-black text-sm transition-all duration-200 active:scale-95"
                     style={{ backgroundColor: '#1C0A00', color: '#F59E0B', boxShadow: '0 8px 32px rgba(28,10,0,0.22)' }}
                 >
@@ -81,7 +79,7 @@ export default function CartPage() {
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <Link
-                        href={orderUrl}
+                        to={orderUrl}
                         className="h-11 w-11 rounded-xl flex items-center justify-center transition-all active:scale-90 border"
                         style={{ backgroundColor: '#FFF8EE', borderColor: 'rgba(124,74,30,0.2)', color: '#6B4C2A' }}
                     >
@@ -114,7 +112,7 @@ export default function CartPage() {
 
                         {/* Add more items */}
                         <Link
-                            href={orderUrl}
+                            to={orderUrl}
                             className="flex items-center justify-center gap-2 w-full h-13 rounded-2xl font-black text-sm transition-all duration-200 border-2 active:scale-[0.98]"
                             style={{ borderColor: 'rgba(245,158,11,0.3)', color: '#92400E', borderStyle: 'dashed' }}
                         >
@@ -264,7 +262,7 @@ export default function CartPage() {
 
                             {/* CTA */}
                             <Link
-                                href="/order/checkout"
+                                to="/order/checkout"
                                 className="flex items-center justify-center gap-3 w-full h-14 rounded-2xl font-black text-base transition-all duration-200 active:scale-[0.98] group"
                                 style={{ backgroundColor: '#F59E0B', color: '#1C0A00', boxShadow: '0 8px 28px rgba(245,158,11,0.28)' }}
                             >
@@ -314,7 +312,7 @@ export default function CartPage() {
 
                     {/* Checkout link */}
                     <Link
-                        href="/order/checkout"
+                        to="/order/checkout"
                         className="flex-1 h-12 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-center"
                         style={{ backgroundColor: '#F59E0B', color: '#1C0A00' }}
                     >

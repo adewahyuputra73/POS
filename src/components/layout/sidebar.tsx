@@ -1,8 +1,6 @@
-"use client";
-
 import { useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUIStore, useAuthStore } from "@/stores";
 import {
@@ -189,7 +187,7 @@ const bottomNavItems: NavItem[] = [
 ];
 
 export function Sidebar() {
-  const pathname = usePathname();
+  const { pathname } = useLocation();
   const { sidebarCollapsed, sidebarMobileOpen, toggleSidebar, setSidebarMobileOpen } =
     useUIStore();
   const { user } = useAuthStore();
@@ -243,7 +241,7 @@ export function Sidebar() {
 
   const NavLink = ({ item }: { item: NavItem }) => (
     <Link
-      href={item.href}
+      to={item.href}
       onClick={() => setSidebarMobileOpen(false)}
       className={cn(
         "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 mb-0.5",

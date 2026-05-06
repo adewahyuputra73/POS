@@ -1,12 +1,8 @@
-import { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 import { Store, ShieldCheck, Zap, BarChart3 } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
-interface AuthLayoutProps {
-  children: ReactNode;
-}
-
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout() {
   return (
     <div className="min-h-screen flex bg-surface font-sans">
       {/* Left side - Dynamic Branding Panel */}
@@ -16,7 +12,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-600/20 rounded-full blur-[120px] animate-pulse"></div>
           <div className="absolute top-1/2 -right-24 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px] animate-pulse delay-700"></div>
           <div className="absolute -bottom-24 left-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-[140px] animate-pulse delay-1000"></div>
-          
+
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] invert"></div>
         </div>
@@ -36,7 +32,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             <h1 className="text-5xl font-black text-white leading-[1.1] mb-8 tracking-tight">
               Empower Your <span className="text-brand-500">Business</span> With Intelligence.
             </h1>
-            
+
             <div className="grid gap-6">
               <div className="flex gap-4 group">
                 <div className="h-12 w-12 shrink-0 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-brand-600/20 group-hover:border-brand-500/30 transition-all duration-300">
@@ -80,7 +76,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       {/* Right side - Login Form */}
       <div className="w-full lg:w-[45%] flex items-center justify-center p-8 bg-[#fcfcfd]">
         <div className="w-full max-w-[440px]">
-          {children}
+          <Outlet />
         </div>
       </div>
     </div>

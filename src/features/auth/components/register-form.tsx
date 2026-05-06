@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Button, Input } from "@/components/ui";
 import { useAuthStore } from "@/stores";
 import { authService } from "../services/auth-service";
@@ -12,7 +10,7 @@ import {
 type Step = "credentials" | "otp";
 
 export function RegisterForm() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { login } = useAuthStore();
 
   const [step, setStep] = useState<Step>("credentials");
@@ -174,7 +172,7 @@ export function RegisterForm() {
         },
         response.token
       );
-      router.push("/dashboard");
+      navigate("/dashboard");
     } catch {
       setOtpError("Kode OTP salah atau sudah kedaluwarsa.");
     } finally {

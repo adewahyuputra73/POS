@@ -1,15 +1,13 @@
-"use client";
-
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Star, CheckCircle2, Loader2 } from "lucide-react";
 import { pubOrderService, pubCustomerService } from "@/features/customer-order/services/pub-services";
 
 type PageState = "loading" | "no_account" | "form" | "submitted" | "error";
 
 function ReviewContent() {
-    const searchParams = useSearchParams();
+    const [searchParams] = useSearchParams();
     const orderId = searchParams.get("order_id") ?? "";
 
     const [pageState, setPageState] = useState<PageState>("loading");
@@ -93,7 +91,7 @@ function ReviewContent() {
                     </p>
                 </div>
                 <Link
-                    href="/order"
+                    to="/order"
                     className="inline-flex items-center justify-center gap-3 font-semibold rounded-2xl h-14 px-8 text-base transition-all active:scale-[0.98]"
                     style={{ backgroundColor: "#1C0A00", color: "#FFFFFF", boxShadow: "0 6px 20px rgba(28,10,0,0.25)" }}
                 >
@@ -134,7 +132,7 @@ function ReviewContent() {
                     </p>
                 </div>
                 <Link
-                    href="/order"
+                    to="/order"
                     className="inline-flex items-center justify-center gap-3 font-semibold rounded-2xl h-14 px-8 text-base transition-all active:scale-[0.98]"
                     style={{ backgroundColor: "#1C0A00", color: "#FFFFFF", boxShadow: "0 6px 20px rgba(28,10,0,0.25)" }}
                 >
@@ -149,7 +147,7 @@ function ReviewContent() {
             <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 gap-6" style={{ backgroundColor: "#FEFAF5" }}>
                 <p className="text-sm font-medium" style={{ color: "#9C7D58" }}>Pesanan tidak ditemukan.</p>
                 <Link
-                    href="/order"
+                    to="/order"
                     className="inline-flex items-center justify-center gap-3 font-semibold rounded-2xl h-14 px-8 text-base transition-all active:scale-[0.98]"
                     style={{ backgroundColor: "#1C0A00", color: "#FFFFFF", boxShadow: "0 6px 20px rgba(28,10,0,0.25)" }}
                 >

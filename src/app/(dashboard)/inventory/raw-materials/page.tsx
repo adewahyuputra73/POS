@@ -1,6 +1,4 @@
-// TODO: Halaman ini belum menggunakan data real — dinonaktifkan sementara.
-// Aktifkan kembali setelah endpoint inventory API tersedia.
-import { redirect } from "next/navigation";
+import { Navigate } from "react-router-dom";
 export default function RawMaterialsPage() {
-  redirect("/dashboard");
+  return <Navigate to="/dashboard" replace />;
 }

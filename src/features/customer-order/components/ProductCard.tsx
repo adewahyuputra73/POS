@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Plus } from "lucide-react";
 import { Product } from "@/features/products/types";
 import { formatCurrency } from "@/lib/utils/format";
@@ -18,11 +17,10 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
         <div className={`bg-white rounded-2xl md:rounded-3xl overflow-hidden border border-divider shadow-card transition-all duration-300 group flex flex-col h-full ${isOutOfStock ? 'opacity-60' : 'hover:shadow-card-hover'}`}>
             <div className="relative aspect-[5/4] md:aspect-[4/3] lg:aspect-[4/3] w-full overflow-hidden bg-[#FEF3C7]">
                 {primaryImage ? (
-                    <Image
+                    <img
                         src={primaryImage.url}
                         alt={product.name}
-                        fill
-                        className={`object-cover transition-transform duration-500 ${isOutOfStock ? 'grayscale' : 'group-hover:scale-110'}`}
+                        className={`w-full h-full object-cover transition-transform duration-500 ${isOutOfStock ? 'grayscale' : 'group-hover:scale-110'}`}
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">

@@ -1,11 +1,5 @@
-import { Metadata } from "next";
 import { LoginForm } from "@/features/auth";
 import { APP_NAME } from "@/lib/constants";
-
-export const metadata: Metadata = {
-  title: "Login",
-  description: `Sign in to your ${APP_NAME} account`,
-};
 
 export default function LoginPage() {
   return (
@@ -23,7 +17,6 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* Login Form */}
       <LoginForm />
     </div>
   );

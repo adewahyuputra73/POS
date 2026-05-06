@@ -1,7 +1,4 @@
-"use client";
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation, Outlet } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   FileBarChart,
@@ -16,65 +13,21 @@ import {
   Clock,
 } from "lucide-react";
 
-interface ReportsLayoutProps {
-  children: React.ReactNode;
-}
-
 const reportNavItems = [
-  {
-    label: "Ringkasan Penjualan",
-    href: "/reports/sales-summary",
-    icon: FileBarChart,
-  },
-  {
-    label: "Penjualan Produk",
-    href: "/reports/product-sales",
-    icon: Package,
-  },
-  {
-    label: "Kategori Produk",
-    href: "/reports/category-sales",
-    icon: FolderTree,
-  },
-  {
-    label: "Arus Stok",
-    href: "/reports/stock-flow",
-    icon: TrendingUp,
-  },
-  {
-    label: "Laba Kotor",
-    href: "/reports/gross-profit",
-    icon: DollarSign,
-  },
-  {
-    label: "Pembatalan / Void",
-    href: "/reports/void-report",
-    icon: XCircle,
-  },
-  {
-    label: "Kirim Laporan",
-    href: "/reports/send-report",
-    icon: Mail,
-  },
-  {
-    label: "Unduh Laporan",
-    href: "/reports/download-report",
-    icon: Download,
-  },
-  {
-    label: "Riwayat Pesanan",
-    href: "/reports/order-history",
-    icon: History,
-  },
-  {
-    label: "Laporan Shift",
-    href: "/reports/shifts",
-    icon: Clock,
-  },
+  { label: "Ringkasan Penjualan", href: "/reports/sales-summary", icon: FileBarChart },
+  { label: "Penjualan Produk", href: "/reports/product-sales", icon: Package },
+  { label: "Kategori Produk", href: "/reports/category-sales", icon: FolderTree },
+  { label: "Arus Stok", href: "/reports/stock-flow", icon: TrendingUp },
+  { label: "Laba Kotor", href: "/reports/gross-profit", icon: DollarSign },
+  { label: "Pembatalan / Void", href: "/reports/void-report", icon: XCircle },
+  { label: "Kirim Laporan", href: "/reports/send-report", icon: Mail },
+  { label: "Unduh Laporan", href: "/reports/download-report", icon: Download },
+  { label: "Riwayat Pesanan", href: "/reports/order-history", icon: History },
+  { label: "Laporan Shift", href: "/reports/shifts", icon: Clock },
 ];
 
-export default function ReportsLayout({ children }: ReportsLayoutProps) {
-  const pathname = usePathname();
+export default function ReportsLayout() {
+  const { pathname } = useLocation();
 
   return (
     <div className="space-y-6">
@@ -86,7 +39,7 @@ export default function ReportsLayout({ children }: ReportsLayoutProps) {
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 className={cn(
                   "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   isActive
@@ -103,7 +56,9 @@ export default function ReportsLayout({ children }: ReportsLayoutProps) {
       </div>
 
       {/* Content */}
-      <div>{children}</div>
+      <div>
+        <Outlet />
+      </div>
     </div>
   );
 }

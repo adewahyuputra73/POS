@@ -1,19 +1,14 @@
-"use client";
-
-import { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useNavigate, Outlet } from "react-router-dom";
+import DashboardErrorBoundary from "./error";
 import { Sidebar, Header } from "@/components/layout";
 import { useUIStore, useAuthStore } from "@/stores";
 import { cn } from "@/lib/utils";
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-}
-
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout() {
   const { sidebarCollapsed } = useUIStore();
   const { isAuthenticated, token } = useAuthStore();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,11 +18,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   useEffect(() => {
     if (!mounted) return;
     if (!isAuthenticated || !token) {
-      router.replace("/login");
+      navigate("/login", { replace: true });
     }
-  }, [mounted, isAuthenticated, token, router]);
+  }, [mounted, isAuthenticated, token, navigate]);
 
-  // Tampilkan blank screen saat cek auth (hindari flash konten)
   if (!mounted || !isAuthenticated || !token) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -49,7 +43,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Header />
 
         <main className="flex-1 mt-16 p-4 lg:p-8 max-w-[1600px] mx-auto w-full">
-          {children}
+          <DashboardErrorBoundary>
+            <Outlet />
+          </DashboardErrorBoundary>
         </main>
       </div>
     </div>

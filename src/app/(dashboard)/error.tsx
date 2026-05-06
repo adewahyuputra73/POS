@@ -1,19 +1,13 @@
-"use client";
+import { Component, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-interface ErrorPageProps {
-  error: Error & { digest?: string };
+interface ErrorFallbackProps {
+  error: Error;
   reset: () => void;
 }
 
-export default function DashboardError({ error, reset }: ErrorPageProps) {
-  const router = useRouter();
-
-  useEffect(() => {
-    console.error("Dashboard error:", error);
-  }, [error]);
+function ErrorFallback({ error, reset }: ErrorFallbackProps) {
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] gap-6 py-16">
@@ -28,8 +22,8 @@ export default function DashboardError({ error, reset }: ErrorPageProps) {
         <p className="text-sm text-text-secondary">
           Terjadi kesalahan saat memuat halaman ini. Silakan coba lagi.
         </p>
-        {error.digest && (
-          <p className="text-xs text-text-disabled font-mono mt-2">ID: {error.digest}</p>
+        {error.message && (
+          <p className="text-xs text-text-disabled font-mono mt-2">{error.message}</p>
         )}
       </div>
       <div className="flex items-center gap-3">
@@ -40,7 +34,7 @@ export default function DashboardError({ error, reset }: ErrorPageProps) {
           Coba Lagi
         </button>
         <button
-          onClick={() => router.push("/dashboard")}
+          onClick={() => navigate("/dashboard")}
           className="px-5 py-2.5 bg-surface border border-border text-text-primary text-sm font-semibold rounded-xl hover:bg-background transition-colors"
         >
           Ke Dashboard
@@ -48,4 +42,39 @@ export default function DashboardError({ error, reset }: ErrorPageProps) {
       </div>
     </div>
   );
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+export default class DashboardErrorBoundary extends Component<
+  { children: ReactNode },
+  ErrorBoundaryState
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error) {
+    console.error("Dashboard error:", error);
+  }
+
+  render() {
+    if (this.state.hasError && this.state.error) {
+      return (
+        <ErrorFallback
+          error={this.state.error}
+          reset={() => this.setState({ hasError: false, error: null })}
+        />
+      );
+    }
+    return this.props.children;
+  }
 }

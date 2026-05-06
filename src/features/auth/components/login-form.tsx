@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Button, Input } from "@/components/ui";
 import { useAuthStore } from "@/stores";
 import { authService } from "../services/auth-service";
@@ -10,7 +8,7 @@ import { Eye, EyeOff, Phone, Lock, LogIn, ArrowLeft, RefreshCw } from "lucide-re
 type Step = "credentials" | "otp";
 
 export function LoginForm() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { login } = useAuthStore();
 
   const [step, setStep] = useState<Step>("credentials");
@@ -151,7 +149,7 @@ export function LoginForm() {
         },
         response.token
       );
-      router.push("/dashboard");
+      navigate("/dashboard");
     } catch {
       setOtpError("Kode OTP salah atau sudah kedaluwarsa.");
     } finally {

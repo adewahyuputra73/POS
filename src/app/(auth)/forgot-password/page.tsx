@@ -1,11 +1,5 @@
-import { Metadata } from "next";
 import { ForgotPasswordForm } from "@/features/auth";
 import { APP_NAME } from "@/lib/constants";
-
-export const metadata: Metadata = {
-  title: "Lupa Password",
-  description: `Reset password akun ${APP_NAME} Anda`,
-};
 
 export default function ForgotPasswordPage() {
   return (
@@ -23,7 +17,6 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
 
-      {/* Forgot Password Form */}
       <ForgotPasswordForm />
     </div>
   );

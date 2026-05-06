@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -34,7 +32,7 @@ function mapApiReview(raw: any): Review {
 }
 
 export default function ReviewsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<ReviewFilters>({
@@ -69,7 +67,7 @@ export default function ReviewsPage() {
   const stats = useMemo(() => getReviewStats(reviews), [reviews]);
 
   const handleViewCustomer = (customerId: string) => {
-    router.push(`/customers?view=detail&id=${customerId}`);
+    navigate(`/customers?view=detail&id=${customerId}`);
   };
 
   return (
@@ -86,7 +84,7 @@ export default function ReviewsPage() {
           <Button
             variant="outline"
             className="gap-1.5"
-            onClick={() => router.push("/customers/reviews/settings")}
+            onClick={() => navigate("/customers/reviews/settings")}
           >
             <Settings className="h-4 w-4" /> Pengaturan Ulasan
           </Button>

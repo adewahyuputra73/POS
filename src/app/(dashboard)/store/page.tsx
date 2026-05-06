@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-
+import { Navigate } from "react-router-dom";
 export default function StoreSettingsPage() {
-  redirect("/settings");
+  return <Navigate to="/settings" replace />;
 }

@@ -1,23 +1,10 @@
-"use client";
-
-import dynamic from "next/dynamic";
+import { lazy, Suspense } from "react";
 import { MapPin, Loader2 } from "lucide-react";
 import type { PickedLocation } from "./LocationPickerInner";
 
 export type { PickedLocation };
 
-const LocationPickerInner = dynamic(() => import("./LocationPickerInner"), {
-  ssr: false,
-  loading: () => (
-    <div
-      className="w-full flex flex-col items-center justify-center gap-3"
-      style={{ height: 280, backgroundColor: "#F9FAFB", borderRadius: 16, border: "2px dashed #E5E7EB" }}
-    >
-      <Loader2 className="h-6 w-6 animate-spin" style={{ color: "#D97706" }} />
-      <p className="text-sm font-bold" style={{ color: "#9C7D58" }}>Memuat peta...</p>
-    </div>
-  ),
-});
+const LocationPickerInner = lazy(() => import("./LocationPickerInner"));
 
 interface Props {
   initialLat?: number;
@@ -47,11 +34,21 @@ export function LocationPicker({ initialLat, initialLng, pickedLocation, onPick,
       </div>
 
       {/* Map */}
-      <LocationPickerInner
-        initialLat={initialLat}
-        initialLng={initialLng}
-        onPick={onPick}
-      />
+      <Suspense fallback={
+        <div
+          className="w-full flex flex-col items-center justify-center gap-3"
+          style={{ height: 280, backgroundColor: "#F9FAFB", borderRadius: 16, border: "2px dashed #E5E7EB" }}
+        >
+          <Loader2 className="h-6 w-6 animate-spin" style={{ color: "#D97706" }} />
+          <p className="text-sm font-bold" style={{ color: "#9C7D58" }}>Memuat peta...</p>
+        </div>
+      }>
+        <LocationPickerInner
+          initialLat={initialLat}
+          initialLng={initialLng}
+          onPick={onPick}
+        />
+      </Suspense>
 
       {/* Picked location result */}
       {pickedLocation ? (

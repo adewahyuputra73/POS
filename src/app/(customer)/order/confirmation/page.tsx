@@ -1,8 +1,6 @@
-"use client";
-
 import { Suspense, useEffect, useState, useRef } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     CheckCircle2, Ticket, Printer, Share2, Home, CreditCard,
     ChevronRight, FileText, Truck, MessageCircle, BellOff, ShoppingBag, Eye,
@@ -145,7 +143,7 @@ function WhatsAppNotifSheet({
 
 // ── Main Content ───────────────────────────────────────────────────────────────
 function ConfirmationContent() {
-    const searchParams = useSearchParams();
+    const [searchParams] = useSearchParams();
     const orderNumber = searchParams.get("orderNumber") || "ORD-0000";
     const customerName = searchParams.get("name") || "Pelanggan";
     const orderId = searchParams.get("orderId") || "";
@@ -351,7 +349,7 @@ function ConfirmationContent() {
                     {/* PICKUP: Pantau Status — primary CTA */}
                     {isPickup && orderId && (
                         <Link
-                            href={`/order/status/${orderId}`}
+                            to={`/order/status/${orderId}`}
                             className="inline-flex items-center justify-center font-black transition-all duration-200 rounded-2xl active:scale-[0.98] w-full h-16 text-lg"
                             style={{
                                 backgroundColor: "#F59E0B",
@@ -367,7 +365,7 @@ function ConfirmationContent() {
                     {/* DELIVERY: Lacak Pesanan */}
                     {orderId && isDelivery && (
                         <Link
-                            href={`/order/tracking/${orderId}`}
+                            to={`/order/tracking/${orderId}`}
                             className="inline-flex items-center justify-center font-black transition-all duration-200 rounded-2xl active:scale-[0.98] w-full h-16 text-lg"
                             style={{
                                 backgroundColor: "#F59E0B",
@@ -402,7 +400,7 @@ function ConfirmationContent() {
                     {/* Invoice (semua tipe) */}
                     {orderId && (
                         <Link
-                            href={`/invoice/${orderId}`}
+                            to={`/invoice/${orderId}`}
                             className="inline-flex items-center justify-center font-black transition-all duration-200 rounded-2xl active:scale-[0.98] w-full h-14 text-base border-2"
                             style={{
                                 borderColor: "rgba(124,74,30,0.2)",
@@ -418,7 +416,7 @@ function ConfirmationContent() {
                     {/* Ulasan (semua tipe) */}
                     {orderId && (
                         <Link
-                            href={`/order/review?order_id=${orderId}`}
+                            to={`/order/review?order_id=${orderId}`}
                             className="inline-flex items-center justify-center font-black transition-all duration-200 rounded-2xl active:scale-[0.98] w-full h-14 text-base border-2"
                             style={{
                                 borderColor: "rgba(124,74,30,0.2)",
@@ -432,7 +430,7 @@ function ConfirmationContent() {
 
                     {/* Kembali ke Menu — dikunci 8 detik untuk dine_in */}
                     <Link
-                        href="/order"
+                        to="/order"
                         onClick={(e) => { if (backButtonLocked) e.preventDefault(); }}
                         className="inline-flex items-center justify-center font-black transition-all duration-200 rounded-2xl active:scale-[0.98] w-full h-16 text-lg"
                         style={

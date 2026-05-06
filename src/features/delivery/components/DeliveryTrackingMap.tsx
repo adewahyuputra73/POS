@@ -1,24 +1,7 @@
-"use client";
-
-import dynamic from "next/dynamic";
+import { lazy, Suspense } from "react";
 import { MapPin } from "lucide-react";
 
-const DeliveryMapInner = dynamic(() => import("./DeliveryMapInner"), {
-  ssr: false,
-  loading: () => (
-    <div
-      className="w-full rounded-2xl flex items-center justify-center"
-      style={{ height: 280, backgroundColor: "#F3F4F6" }}
-    >
-      <div className="text-center">
-        <MapPin className="h-8 w-8 mx-auto mb-2" style={{ color: "#D97706" }} />
-        <p className="text-sm font-bold" style={{ color: "#9C7D58" }}>
-          Memuat peta...
-        </p>
-      </div>
-    </div>
-  ),
-});
+const DeliveryMapInner = lazy(() => import("./DeliveryMapInner"));
 
 interface Props {
   driverLat?: number;
@@ -52,5 +35,21 @@ export function DeliveryTrackingMap(props: Props) {
     );
   }
 
-  return <DeliveryMapInner {...props} />;
+  return (
+    <Suspense fallback={
+      <div
+        className="w-full rounded-2xl flex items-center justify-center"
+        style={{ height: 280, backgroundColor: "#F3F4F6" }}
+      >
+        <div className="text-center">
+          <MapPin className="h-8 w-8 mx-auto mb-2" style={{ color: "#D97706" }} />
+          <p className="text-sm font-bold" style={{ color: "#9C7D58" }}>
+            Memuat peta...
+          </p>
+        </div>
+      </div>
+    }>
+      <DeliveryMapInner {...props} />
+    </Suspense>
+  );
 }

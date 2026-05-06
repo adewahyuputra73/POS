@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronRight, Home } from "lucide-react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 interface BreadcrumbItem {
   label: string;
@@ -28,7 +28,7 @@ export function PageHeader({
       <div className="space-y-3">
         {/* Modern Breadcrumbs */}
         <nav className="flex items-center gap-2 text-[11px] font-bold text-text-secondary uppercase tracking-widest">
-          <Link href="/" className="hover:text-brand-600 transition-colors flex items-center gap-1">
+          <Link to="/" className="hover:text-brand-600 transition-colors flex items-center gap-1">
             <Home className="h-3 w-3" />
             <span>Home</span>
           </Link>
@@ -40,7 +40,7 @@ export function PageHeader({
               {index > 0 && <ChevronRight className="h-3.5 w-3.5" />}
               {item.href ? (
                 <Link
-                  href={item.href}
+                  to={item.href}
                   className="hover:text-brand-600 transition-colors"
                 >
                   {item.label}
