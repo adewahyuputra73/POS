@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef } from "react";
 import { Avatar, Badge } from "@/components/ui";
 import {

@@ -1,5 +1,3 @@
-"use client";
-
 // This file is loaded dynamically (no SSR) to avoid leaflet window errors.
 import { useEffect, useRef } from "react";
 import type { Map as LeafletMap } from "leaflet";
@@ -126,7 +124,6 @@ export default function DeliveryMapInner({
 
   return (
     <>
-      {/* eslint-disable-next-line @next/next/no-css-tags */}
       <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"

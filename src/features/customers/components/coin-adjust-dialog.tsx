@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from 'react';
 import { CoinCustomer } from '../types';
 import { coinSettings } from '../mock-data';

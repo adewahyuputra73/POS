@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { ArrowLeft, CalendarClock, Check, Users } from "lucide-react";
 import type { Table } from "@/features/tables/types";

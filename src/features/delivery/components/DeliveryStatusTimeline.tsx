@@ -1,5 +1,3 @@
-"use client";
-
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
 import { CheckCircle2, Circle } from "lucide-react";

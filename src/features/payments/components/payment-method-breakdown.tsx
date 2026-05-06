@@ -1,5 +1,3 @@
-"use client";
-
 import { formatCurrency, formatNumber } from "@/lib/utils/format";
 import { cn } from "@/lib/utils";
 import {

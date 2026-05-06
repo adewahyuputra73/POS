@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useMemo } from "react";
 import { X, Plus, Minus, Search, ShoppingBag, Trash2 } from "lucide-react";
 import { Button, useToast } from "@/components/ui";

@@ -1,5 +1,3 @@
-"use client";
-
 import { Plus } from "lucide-react";
 import { Product } from "@/features/products/types";
 import { formatCurrency } from "@/lib/utils/format";

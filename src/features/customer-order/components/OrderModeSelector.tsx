@@ -1,5 +1,3 @@
-"use client";
-
 import { UtensilsCrossed, ShoppingBag, CalendarClock } from "lucide-react";
 import type { OrderMode } from "../types";
 

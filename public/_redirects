@@ -1,4 +1,1 @@
-/inventory/raw-materials/:id /inventory/raw-materials/ 200
-/inventory/raw-materials/:id/ /inventory/raw-materials/ 200
-/inventory/suppliers/:id /inventory/suppliers/ 200
-/inventory/suppliers/:id/ /inventory/suppliers/ 200
+/* /index.html 200

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { voucherService } from '@/features/vouchers/services/voucher-service';
 import type { Voucher as ApiVoucher, CreateVoucherRequest } from '@/features/vouchers/types';

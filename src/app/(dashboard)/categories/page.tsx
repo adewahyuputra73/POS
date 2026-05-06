@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout";
 import {

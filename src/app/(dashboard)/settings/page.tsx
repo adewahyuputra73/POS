@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/layout";
 import { Store, Clock, Receipt, CreditCard, Globe, Printer } from "lucide-react";

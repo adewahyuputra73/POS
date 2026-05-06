@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Shield, Loader2, AlertCircle, X } from "lucide-react";
 import { roleService } from "../services/role-service";

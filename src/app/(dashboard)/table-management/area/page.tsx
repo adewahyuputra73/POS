@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { tableService } from '@/features/tables/services/table-service';
 import type { Area } from '@/features/tables/types';

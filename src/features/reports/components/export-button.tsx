@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui";
 import { Download, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";

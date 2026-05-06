@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import { Search, MapPin, Loader2, X } from "lucide-react";
 import { biteshipService } from "../services/biteship-service";

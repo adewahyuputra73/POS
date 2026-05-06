@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout";
 import { Card, CardContent, Button, Badge } from "@/components/ui";

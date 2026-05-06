@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { AxiosError } from "axios";
 import { PageHeader } from "@/components/layout";

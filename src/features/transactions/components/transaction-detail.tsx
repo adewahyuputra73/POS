@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { formatCurrency, formatDateTime } from "@/lib/utils/format";
 import { Badge } from "@/components/ui/badge";

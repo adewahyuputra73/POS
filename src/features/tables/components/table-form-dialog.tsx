@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Button, Input, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";

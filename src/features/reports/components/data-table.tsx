@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronUp, ChevronDown, Search, ChevronLeft, ChevronRight } from "lucide-react";

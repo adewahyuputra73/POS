@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 import { APP_NAME } from "@/lib/constants";
 

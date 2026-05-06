@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/layout";
 import { Badge, useToast } from "@/components/ui";

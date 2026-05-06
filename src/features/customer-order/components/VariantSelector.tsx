@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Plus, Minus, X, Check, PenLine } from "lucide-react";
 import { Product, Variant } from "@/features/products/types";

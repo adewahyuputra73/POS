@@ -1,5 +1,3 @@
-"use client";
-
 import { ToastProvider } from "@/components/ui";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { ArrowLeft, Users, Check, Loader2, Layers } from "lucide-react";
 import { pubTableService } from "@/features/customer-order/services/pub-services";

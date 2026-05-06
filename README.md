@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fere POS
+
+Modern Point of Sale (POS) web application built with **React 19**, **Vite**, **React Router v7**, **TypeScript**, and **Tailwind CSS 4**.
+
+## Tech Stack
+
+- **Framework:** React 19 + Vite 6
+- **Routing:** React Router v7
+- **Language:** TypeScript 5
+- **Styling:** Tailwind CSS 4
+- **State Management:** Zustand 5
+- **Forms:** React Hook Form + Zod
+- **HTTP Client:** Axios
+- **UI Primitives:** Radix UI
+- **Icons:** Lucide React
+- **Charts:** Recharts
+- **Maps:** Leaflet
 
 ## Getting Started
 
-First, run the development server:
+### Requirements
+
+- Node.js 18+ (recommended: 20+)
+- npm / yarn / pnpm
+
+### Installation
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+Production build is output to `dist/`.
 
-To learn more about Next.js, take a look at the following resources:
+### Preview Production Build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run preview
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Other Scripts
 
-## Deploy on Vercel
+```bash
+npm run type-check   # TypeScript type-check
+npm run lint         # ESLint
+npm run format       # Prettier
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Copy `.env.example` to `.env.local` and adjust the values:
+
+```bash
+cp .env.example .env.local
+```
+
+Available variables:
+
+- `VITE_API_URL` — Base URL for the backend API.
+
+## Project Structure
+
+```
+src/
+├── app/              # Root app shell, providers, global styles
+├── components/       # Shared/reusable UI components
+├── features/         # Feature modules (auth, products, inventory, reports, etc.)
+├── lib/              # API client, utilities, constants
+├── pages/            # Route page components
+├── routes/           # Route definitions (React Router)
+├── stores/           # Zustand stores
+├── App.tsx           # Root component with router
+└── main.tsx          # Vite entry point
+```
+
+## Backend
+
+The frontend talks to a separate Golang backend service. There is no backend logic in this repository — all API calls go through `src/lib/api/` clients.
+
+## License
+
+Private — Fere Corps.

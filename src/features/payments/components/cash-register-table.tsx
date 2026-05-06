@@ -1,5 +1,3 @@
-"use client";
-
 import { formatCurrency, formatDateTime } from "@/lib/utils/format";
 import { Badge } from "@/components/ui/badge";
 import {

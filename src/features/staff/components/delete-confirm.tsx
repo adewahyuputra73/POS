@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, Button } from "@/components/ui";
 import { UserX } from "lucide-react";
 import type { StaffMember } from "../types";

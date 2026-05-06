@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Truck, Loader2, AlertCircle, PackageX, ChevronRight, Store } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/format";

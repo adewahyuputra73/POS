@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { pubStoreService } from "@/features/customer-order/services/pub-services";
 import type { StoreInfo } from "@/features/store-settings/types";

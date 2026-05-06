@@ -1,5 +1,3 @@
-"use client";
-
 // Di-load secara dynamic (no SSR) agar tidak error karena window
 import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";

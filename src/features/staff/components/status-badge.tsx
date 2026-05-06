@@ -1,5 +1,3 @@
-"use client";
-
 import { Badge } from "@/components/ui";
 import type { StaffStatus } from "../types";
 

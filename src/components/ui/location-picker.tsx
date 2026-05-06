@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState, useCallback } from "react";
 import { MapPin, Search, X, Check, Loader2, Navigation, LocateFixed } from "lucide-react";
 

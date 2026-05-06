@@ -1,5 +1,3 @@
-"use client";
-
 import { Phone, User, Star, Bike } from "lucide-react";
 import type { BiteshipDriver } from "../types";
 
@@ -55,7 +53,6 @@ export function DriverInfoCard({ driver, courierCompany }: Props) {
           style={{ backgroundColor: "#F3F4F6" }}
         >
           {driver.photo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={driver.photo_url}
               alt={driver.name}

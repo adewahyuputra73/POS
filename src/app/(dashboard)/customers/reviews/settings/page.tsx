@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { mockReviewQuestions } from "@/features/customers/mock-data";

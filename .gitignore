@@ -13,19 +13,15 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
-# vite
+# vite build output
 /dist
-
-# open-next / cloudflare build artifacts
-/.open-next/
-.hasil_qa/
-
-# production
 /build
+
+# legacy Next.js / OpenNext / Wrangler artifacts (kept ignored for safety)
+/.next/
+/.open-next/
+/.wrangler/
+/.hasil_qa/
 
 # misc
 .DS_Store
@@ -41,12 +37,8 @@ yarn-error.log*
 .env*
 !.env.example
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # claude
 .claude/

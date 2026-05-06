@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import { Button, Input } from "@/components/ui";
 import { authService } from "../services/auth-service";

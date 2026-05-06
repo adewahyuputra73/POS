@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, Button } from "@/components/ui";
 import { Trash2 } from "lucide-react";
 

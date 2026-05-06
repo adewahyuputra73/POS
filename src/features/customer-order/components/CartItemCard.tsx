@@ -1,5 +1,3 @@
-"use client";
-
 import { Trash2, Plus, Minus } from "lucide-react";
 import { CartItem as CartItemType } from "@/features/customer-order/types";
 import { formatCurrency } from "@/lib/utils/format";

@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowDownLeft, ArrowUpRight, Wallet } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/format";
 

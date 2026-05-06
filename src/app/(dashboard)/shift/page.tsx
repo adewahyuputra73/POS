@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout";
 import { formatCurrency } from "@/lib/utils";

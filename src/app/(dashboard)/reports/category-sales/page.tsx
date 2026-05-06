@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/layout";
 import { useToast } from "@/components/ui";
@@ -176,7 +174,7 @@ export default function CategorySalesPage() {
                       tick={{ fontSize: 11, fill: "#757575" }}
                     />
                     <Tooltip
-                      formatter={(value: number | undefined) => formatCurrency(value ?? 0)}
+                      formatter={(value) => formatCurrency(Number(value) || 0)}
                       contentStyle={{ backgroundColor: "#fff", border: "1px solid #E0E0E0", borderRadius: "8px" }}
                     />
                     <Bar dataKey="revenue" fill="#4CAF50" radius={[0, 4, 4, 0]} />
