@@ -5,7 +5,7 @@
  * persisted client-side via Zustand + localStorage. When the BE is live,
  * swap the in-memory mutators with API calls (productService.variants.*).
  *
- * Storage key: kodeka-pos-product-variants-mock
+ * Storage key: kodeone-pos-product-variants-mock
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -116,6 +116,6 @@ export const useProductVariantsMockStore = create<ProductVariantsState>()(
         });
       },
     }),
-    { name: "kodeka-pos-product-variants-mock" }
+    { name: "kodeone-pos-product-variants-mock" }
   )
 );

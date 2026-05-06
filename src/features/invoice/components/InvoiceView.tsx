@@ -571,7 +571,7 @@ export function InvoiceView({ orderId }: InvoiceViewProps) {
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
             style={{ color: "rgba(124,74,30,0.3)" }}
           >
-            Powered by <span style={{ color: "rgba(124,74,30,0.5)" }}>Kodeka POS</span>
+            Powered by <span style={{ color: "rgba(124,74,30,0.5)" }}>KodeOne POS</span>
           </p>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { APP_NAME } from "@/lib/constants";
 export default function AuthLayout() {
   return (
     <div className="min-h-screen flex font-sans bg-[#0A0E1F]">
-      {/* Left side - Kodeka Branding Panel */}
+      {/* Left side - KodeOne Branding Panel */}
       <div className="hidden lg:flex lg:w-[55%] bg-[#0A0E1F] relative overflow-hidden">
         {/* Subtle hexagon pattern backdrop */}
         <div className="absolute inset-0 z-0 bg-hex-pattern opacity-40" />
@@ -25,7 +25,7 @@ export default function AuthLayout() {
             </div>
             <div>
               <span className="text-2xl font-black tracking-tight">
-                <span className="text-brand-500">Kodeka</span>
+                <span className="text-brand-500">KodeOne</span>
                 <span className="text-white"> POS</span>
               </span>
               <div className="h-1 w-8 bg-brand-500 rounded-full mt-0.5" />
@@ -80,7 +80,7 @@ export default function AuthLayout() {
           {/* Footer */}
           <div className="flex items-center gap-6 text-slate-500">
             <p className="text-sm font-bold uppercase tracking-widest">
-              &copy; 2026 {APP_NAME} &middot; by Kodeka Labs
+              &copy; 2026 {APP_NAME} &middot; by KodeOne Labs
             </p>
             <div className="h-px flex-1 bg-white/10" />
           </div>

@@ -39,7 +39,7 @@ export const useStoreSettingsStore = create<StoreSettingsState>()(
       resetAll: () => set(DEFAULT_STATE),
     }),
     {
-      name: "kodeka-pos-store-settings",
+      name: "kodeone-pos-store-settings",
     }
   )
 );

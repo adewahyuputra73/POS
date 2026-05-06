@@ -2,8 +2,8 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { notificationService } from "@/features/notifications";
 
 const POLL_INTERVAL_MS = 30_000; // 30 detik
-const SEEN_KEY = "kodeka_seen_notif_ids";
-const PERM_ASKED_KEY = "kodeka_notif_perm_asked";
+const SEEN_KEY = "kodeone_seen_notif_ids";
+const PERM_ASKED_KEY = "kodeone_notif_perm_asked";
 
 function getSeenIds(): Set<string> {
   try {
@@ -79,7 +79,7 @@ export function useDesktopNotifications() {
           body: n.body || undefined,
           icon: "/favicon.ico",
           // tag mencegah duplikat notifikasi dengan ID yang sama
-          tag: `kodeka-pos-${n.id}`,
+          tag: `kodeone-pos-${n.id}`,
         });
 
         // Klik notifikasi → fokus tab POS + buka detail order jika ada order_id

@@ -6,11 +6,11 @@
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 
   /* ========================================
-     KODEKA POS COLOR SYSTEM
-     Brand: Kodeka Labs (neon green on dark navy)
+     KODEONE POS COLOR SYSTEM
+     Brand: KodeOne Labs (neon green on dark navy)
      ======================================== */
 
-  /* Brand scale - Kodeka neon green */
+  /* Brand scale - KodeOne neon green */
   --color-brand-50: #ECFDF3;
   --color-brand-100: #D1FAE0;
   --color-brand-200: #A7F3C0;
@@ -22,7 +22,7 @@
   --color-brand-800: #0E6B30;
   --color-brand-900: #0A4F23;
 
-  /* Primary = Kodeka green */
+  /* Primary = KodeOne green */
   --color-primary: #22D55C;
   --color-primary-light: #D1FAE0;
   --color-primary-dark: #16A34A;
@@ -74,7 +74,7 @@
 }
 
 /* ========================================
-   DEFAULT (DARK) THEME — Kodeka brand
+   DEFAULT (DARK) THEME — KodeOne brand
    ======================================== */
 :root {
   color-scheme: dark;

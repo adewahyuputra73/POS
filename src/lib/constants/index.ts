@@ -1,4 +1,4 @@
-export const APP_NAME = "Kodeka POS";
+export const APP_NAME = "KodeOne POS";
 export const APP_DESCRIPTION = "Point of Sale Admin Dashboard";
 
 // API Configuration

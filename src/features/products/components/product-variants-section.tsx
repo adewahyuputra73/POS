@@ -16,15 +16,26 @@ import { VariantModal } from "./variant-modal";
 import { useProductVariantsMockStore } from "../stores/product-variants-mock-store";
 import type { Variant, VariantFormData } from "../types";
 
+// Stable empty array reference — DO NOT inline `[]` inside selectors.
+// Returning a fresh array each render makes Zustand/React's
+// useSyncExternalStore think the snapshot changed every render, which
+// triggers an infinite re-render loop ("Maximum update depth exceeded").
+const EMPTY_VARIANTS: Variant[] = [];
+
 interface ProductVariantsSectionProps {
   /** Product ID. Pass `null` if the product hasn't been saved yet. */
   productId: string | null;
 }
 
 export function ProductVariantsSection({ productId }: ProductVariantsSectionProps) {
-  const variants = useProductVariantsMockStore((s) =>
-    productId ? s.variantsByProduct[productId] ?? [] : []
+  // Select only the slot for this product. Returns the existing array
+  // reference (stable across renders) or undefined; we coalesce to a
+  // module-level constant so the result reference is stable too.
+  const variantsForProduct = useProductVariantsMockStore((s) =>
+    productId ? s.variantsByProduct[productId] : undefined
   );
+  const variants: Variant[] = variantsForProduct ?? EMPTY_VARIANTS;
+
   const add = useProductVariantsMockStore((s) => s.add);
   const update = useProductVariantsMockStore((s) => s.update);
   const remove = useProductVariantsMockStore((s) => s.remove);

@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useUIStore } from "@/stores/uiStore";
 
 /**
- * Kodeka theme model:
- * - Default (no class on <html>) = DARK theme (Kodeka brand)
+ * KodeOne theme model:
+ * - Default (no class on <html>) = DARK theme (KodeOne brand)
  * - `.light` class on <html>     = LIGHT theme (opt-in)
  * - `.dark`  class on <html>     = DARK  theme (explicit, mirrors default)
  *

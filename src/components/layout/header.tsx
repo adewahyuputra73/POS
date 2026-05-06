@@ -327,7 +327,7 @@ export function Header() {
                   <p className="text-sm font-bold text-text-primary leading-none">
                     {user?.name || "Admin User"}
                   </p>
-                  <p className="text-xs text-text-secondary font-medium mt-1.5">{user?.email || "admin@kodekapos.com"}</p>
+                  <p className="text-xs text-text-secondary font-medium mt-1.5">{user?.email || "admin@kodeonepos.com"}</p>
                 </div>
 
                 <div className="px-2 space-y-0.5">

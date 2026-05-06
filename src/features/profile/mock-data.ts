@@ -3,7 +3,7 @@ import { UserProfile, ActivityLog } from "./types";
 export const mockUserProfile: UserProfile = {
   id: "USR-001",
   name: "Ahmad Rizky",
-  email: "admin@kodekapos.com",
+  email: "admin@kodeonepos.com",
   phone: "+62 812-3456-7890",
   role: "owner",
   avatar: undefined,
@@ -14,7 +14,7 @@ export const mockUserProfile: UserProfile = {
   last_login: "2025-01-10T14:30:00Z",
   is_active: true,
   outlet_id: "OUT-001",
-  outlet_name: "Kodeka Café - Cabang Utama",
+  outlet_name: "KodeOne Café - Cabang Utama",
 };
 
 export const mockActivityLogs: ActivityLog[] = [

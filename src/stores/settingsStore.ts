@@ -56,7 +56,7 @@ export const useSettingsStore = create<SettingsState>()(
         }),
     }),
     {
-      name: "kodeka-pos-settings",
+      name: "kodeone-pos-settings",
     }
   )
 );

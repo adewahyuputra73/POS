@@ -10,7 +10,7 @@ interface TableLayoutPickerProps {
 }
 
 // Same storage key as admin — shares layout positions
-const STORAGE_KEY = "kodeka-table-layout-v1";
+const STORAGE_KEY = "kodeone-table-layout-v1";
 
 interface TablePos {
     x: number;
