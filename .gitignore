@@ -17,6 +17,13 @@
 /.next/
 /out/
 
+# vite
+/dist
+
+# open-next / cloudflare build artifacts
+/.open-next/
+.hasil_qa/
+
 # production
 /build
 
